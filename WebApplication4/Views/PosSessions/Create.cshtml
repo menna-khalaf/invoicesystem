@@ -1,0 +1,880 @@
+﻿
+@model WebApplication4.Models.CreatePosSessionViewModel
+
+@{
+    ViewData["Title"] = "نظام نقاط البيع";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #1abc9c;
+            --purple-color: #9b59b6;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--primary-color);
+        }
+
+        /* Header Styles */
+        .pos-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 8px;
+            align-items: center;
+        }
+
+        .header-item {
+            padding: 5px 8px;
+        }
+
+        .header-label {
+            font-size: 11px;
+            opacity: 0.85;
+            color: #ecf0f1;
+            margin-bottom: 2px;
+        }
+
+        .header-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .header-btn {
+            padding: 5px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 600;
+            margin-right: 5px;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .transfer-btn {
+            background: var(--purple-color);
+        }
+
+        .report-btn {
+            background: var(--info-color);
+        }
+
+        .end-shift-btn {
+            background: var(--danger-color);
+        }
+
+        /* Products Section */
+        .search-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-input {
+            border-radius: 20px;
+            padding-right: 35px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 9px;
+            color: #95a5a6;
+        }
+
+        .action-btn {
+            padding: 7px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .return-btn {
+            background: var(--accent-color);
+            color: white;
+            margin-left: 10px;
+        }
+
+        /* Products Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .product-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s ease;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        .product-image-container {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .product-image {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .product-image-placeholder {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .product-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 4px;
+        }
+
+        .product-vat {
+            font-size: 12px;
+            color: var(--warning-color);
+            margin-bottom: 4px;
+        }
+
+        .product-stock {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 7px;
+            font-size: 13px;
+            margin-top: auto;
+            background: var(--accent-color);
+            border: none;
+            font-weight: 600;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #2980b9;
+        }
+
+        /* Cart Section */
+        .cart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.06);
+            height: calc(100vh - 220px);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0e0e0;
+        }
+
+        .cart-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+        }
+
+        .cart-body {
+            padding: 12px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-items-container {
+            min-height: 180px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .cart-item-price {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        .cart-item-vat {
+            color: var(--warning-color);
+            font-size: 12px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-btn {
+            width: 26px;
+            height: 26px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .quantity-btn:hover {
+            background: #ecf0f1;
+        }
+
+        .quantity-display {
+            margin: 0 8px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            margin-left: 8px;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .cart-totals {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #eee;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .total-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .total-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .grand-total {
+            font-size: 16px;
+            color: var(--success-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Empty Cart State */
+        .empty-cart-message {
+            text-align: center;
+            padding: 30px 0;
+            color: #95a5a6;
+        }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 768px) {
+            .header-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-btn {
+                margin-top: 5px;
+                width: 100%;
+            }
+            
+            .search-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .cart-container {
+                height: auto;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-2">
+        <div class="pos-header">
+            <input type="hidden" asp-for="PosSession.SessionId" />
+            <div class="header-grid">
+                <div class="header-item">
+                    <label class="header-label">الفرع</label>
+                    <input value="@Model.BranchName" class="form-control header-control" readonly />
+                </div>
+                <div class="header-item">
+                    <label class="header-label">نقطة البيع</label>
+                    <input value="@Model.PosName" class="form-control header-control" readonly />
+                </div>
+                <div class="header-item">
+                    <label class="header-label">المخزن</label>
+                    <input value="@Model.StorehouseName" class="form-control header-control" readonly />
+                </div>
+                <div class="header-item">
+                    <label for="CashAccountBalance">النقديه بالخزينه</label>
+                    <input type="text" class="form-control" id="CashAccountBalance" value="@Model.CashAccountBalance?.ToString("0.00")" readonly />
+                </div>
+                <div class="header-item">
+                    <button class="header-btn transfer-btn" id="transfer-btn">
+                        <i class="fas fa-exchange-alt me-1"></i> تحويل نقديه
+                    </button>
+                </div>
+                <div class="header-item">
+                    <button class="header-btn report-btn" id="shift-report-btn" onclick="openShiftReport()">
+                        <i class="fas fa-file-alt me-1"></i> تقرير الشيفت
+                    </button>
+                </div>
+                <div class="header-item">
+                    <label class="header-label">عدد الفواتير</label>
+                    <span id="invoiceCount" class="header-value">@Model.InvoiceCount</span>
+                </div>
+                <div class="header-item">
+                    <a href="@Url.Action("closingshift", "PosSessions")" class="header-btn end-shift-btn" id="end-shift-btn">
+                        <i class="fas fa-sign-out-alt me-1"></i> إنهاء الشيفت
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Products Column -->
+            <div class="col-lg-8 col-md-7">
+                <!-- Products Search and Buttons -->
+                <div class="search-area">
+                    <h4 class="mb-0">المنتجات المتاحة</h4>
+                    <div class="d-flex">
+                        <button class="header-btn return-btn" id="returns-report-btn" onclick="openReturnsReport()">
+                            <i class="fas fa-exchange-alt me-1"></i> تقرير المرتجعات
+                        </button>
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="form-control search-input" placeholder="ابحث عن منتج..." id="product-search">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Products Grid -->
+                <div class="product-grid">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="product-card" data-productid="@product.ProductId">
+                            <div class="product-image-container">
+                                @if (product.Image != null)
+                                {
+                                    <img src="data:image;base64,@Convert.ToBase64String(product.Image)" 
+                                         class="product-image" alt="@product.ProductName">
+                                }
+                                else
+                                {
+                                    <div class="product-image-placeholder">
+                                        <i class="fas fa-box-open fa-2x"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">@product.ProductName</div>
+                                <div class="product-price">@product.Price.ToString("C")</div>
+                                <div class="product-vat">الضريبة: @product.Vatrate%</div>
+                                <div class="product-stock">المخزون: @product.Balance</div>
+                                <button class="btn add-to-cart-btn"
+                                        data-productid="@product.ProductId"
+                                        data-productname="@product.ProductName"
+                                        data-price="@product.Price"
+                                        data-vat="@product.Vatrate">
+                                    <i class="fas fa-cart-plus me-1"></i> أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Cart Column -->
+            <div class="col-lg-4 col-md-5">
+                <div class="cart-container">
+                    <div class="cart-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">سلة المشتريات</h5>
+                            <span id="cart-item-count" class="badge bg-white text-primary">0 عناصر</span>
+                        </div>
+                    </div>
+                    <div class="cart-body">
+                        <div id="cart-items-container" class="cart-items-container">
+                            <div class="empty-cart-message">
+                                <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                                <p>سلة المشتريات فارغة</p>
+                            </div>
+                        </div>
+                        <div class="cart-totals">
+                            <div class="total-row">
+                                <span class="total-label">المجموع:</span>
+                                <span class="total-value" id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="total-row">
+                                <span class="total-label">الضريبة:</span>
+                                <span class="total-value" id="cart-tax">$0.00</span>
+                            </div>
+                            <div class="total-row grand-total">
+                                <span class="total-label">الإجمالي:</span>
+                                <span class="total-value" id="cart-total">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-top">
+                        <button class="btn btn-primary checkout-btn mt-2" id="checkout-btn" onclick="processPayment(event)">
+                            <i class="fas fa-credit-card me-2"></i>دفع الآن
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let cart = [];
+        const cartId = '@Model.Cart.CartId';
+        
+        // Document ready
+        $(document).ready(function () {
+            console.log("Document ready - initializing cart");
+            
+            // Add to cart button click handler
+            $('.add-to-cart-btn').click(function () {
+                const productId = $(this).data('productid');
+                const productName = $(this).data('productname');
+                const price = parseFloat($(this).data('price'));
+                const vatRate = parseFloat($(this).data('vat'));
+                addToCart(productId, productName, price, vatRate);
+            });
+            
+            // Handle cart item quantity changes
+            $('#cart-items-container').on('click', '.plus', function () {
+                const productId = $(this).data('productid');
+                const item = cart.find(item => item.productId === productId);
+                if (item) {
+                    item.quantity++;
+                    updateCartDisplay();
+                    updateCartOnServer(productId, item.quantity);
+                }
+            });
+            
+            $('#cart-items-container').on('click', '.minus', function () {
+                const productId = $(this).data('productid');
+                const item = cart.find(item => item.productId === productId);
+                if (item && item.quantity > 1) {
+                    item.quantity--;
+                    updateCartDisplay();
+                    updateCartOnServer(productId, item.quantity);
+                }
+            });
+            
+            // Handle item removal
+            $('#cart-items-container').on('click', '.remove-btn', function () {
+                const productId = $(this).data('productid');
+                cart = cart.filter(item => item.productId !== productId);
+                updateCartDisplay();
+                removeFromCartOnServer(productId);
+            });
+            
+            // Product search functionality
+            $('#product-search').on('keyup', function () {
+                const searchText = $(this).val().toLowerCase();
+                $('.product-card').each(function () {
+                    const productName = $(this).find('.product-name').text().toLowerCase();
+                    if (productName.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            
+            // Cash Transfer button handler
+            $('#transfer-btn').click(function() {
+                window.location.href = '@Url.Action("Create", "Transfers")';
+            });
+            
+            // Function to update invoice count
+            function updateInvoiceCount() {
+                var sessionId = @Model.PosSession.SessionId;
+                if (sessionId > 0) {
+                    $.get('@Url.Action("GetSessionInvoiceCount", "PosSessions")',
+                        { sessionId: sessionId })
+                        .done(function (data) {
+                            if (data.success) {
+                                $('#invoiceCount').text(data.count);
+                            } else {
+                                console.error('Error:', data.error);
+                            }
+                        })
+                        .fail(function (error) {
+                            console.error('AJAX error:', error);
+                        });
+                }
+            }
+
+            // Initial update
+            updateInvoiceCount();
+
+            // Set up periodic refresh (every 30 seconds)
+            setInterval(updateInvoiceCount, 30000);
+
+            // Also update after important actions (like creating an invoice)
+            $(document).on('invoiceCreated', function () {
+                updateInvoiceCount();
+            });
+        });
+        
+        // Process payment function
+        function processPayment(event) {
+            if (event) event.preventDefault();
+            
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            if (totalItems === 0) {
+                showAlert('سلة المشتريات فارغة!', 'warning');
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = calculateSubtotal();
+            const tax = calculateTax();
+            const total = calculateTotal(subtotal, tax);
+            
+            // Show loading state
+            $('#checkout-btn').prop('disabled', true)
+                .html('<span class="spinner-border spinner-border-sm" role="status"></span> جاري المعالجة...');
+            
+            // Prepare cart data
+            const cartData = prepareCartData();
+            
+            // Save to session and redirect
+            saveCartAndRedirect(cartData, subtotal, tax, total);
+        }
+        
+        // Add item to cart
+        function addToCart(productId, productName, price, vatRate) {
+            console.log(`Adding item: ${productId} - ${productName} - ${price} - VAT: ${vatRate}%`);
+            
+            const existingItem = cart.find(item => item.productId === productId);
+            if (existingItem) {
+                existingItem.quantity++;
+                console.log(`Updated quantity to ${existingItem.quantity} for product ${productId}`);
+            } else {
+                cart.push({
+                    productId: productId,
+                    productName: productName,
+                    price: price,
+                    vatRate: vatRate,
+                    quantity: 1
+                });
+                console.log(`Added new item to cart: ${productId}`);
+            }
+            
+            updateCartDisplay();
+            updateCartOnServer(productId, existingItem ? existingItem.quantity : 1);
+            
+            // Visual feedback
+            const productCard = $(`.product-card[data-productid="${productId}"]`);
+            productCard.addClass('animate__animated animate__pulse');
+            setTimeout(() => {
+                productCard.removeClass('animate__animated animate__pulse');
+            }, 1000);
+        }
+        
+        // Update cart UI
+        function updateCartDisplay() {
+            const cartItemsContainer = $('#cart-items-container');
+            const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const subtotal = calculateSubtotal();
+            const tax = calculateTax();
+            const total = calculateTotal(subtotal, tax);
+            
+            // Update item count
+            $('#cart-item-count').text(`${itemCount} ${itemCount === 1 ? 'عنصر' : 'عناصر'}`);
+            
+            // Update cart items list
+            if (cart.length === 0) {
+                cartItemsContainer.html(`
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                        <p>سلة المشتريات فارغة</p>
+                    </div>
+                `);
+            } else {
+                let html = '';
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    const itemVat = (item.price * item.quantity * item.vatRate / 100).toFixed(2);
+                    html += `
+                        <div class="cart-item" data-productid="${item.productId}">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.productName}</div>
+                                <div class="cart-item-price">$${item.price.toFixed(2)} لكل قطعة</div>
+                                <div class="cart-item-vat">الضريبة: ${item.vatRate}% ($${itemVat})</div>
+                            </div>
+                            <div class="cart-item-controls">
+                                <button class="quantity-btn plus" data-productid="${item.productId}">+</button>
+                                <span class="quantity-display">${item.quantity}</span>
+                                <button class="quantity-btn minus" data-productid="${item.productId}">-</button>
+                                <button class="remove-btn" data-productid="${item.productId}" title="إزالة">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                cartItemsContainer.html(html);
+            }
+            
+            // Update totals
+            $('#cart-subtotal').text(`$${subtotal.toFixed(2)}`);
+            $('#cart-tax').text(`$${tax.toFixed(2)}`);
+            $('#cart-total').text(`$${total.toFixed(2)}`);
+        }
+        
+        // Helper functions
+        function calculateSubtotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+        
+        function calculateTax() {
+            return cart.reduce((total, item) => {
+                return total + (item.price * item.quantity * item.vatRate / 100);
+            }, 0);
+        }
+        
+        function calculateTotal(subtotal, tax) {
+            return subtotal + tax;
+        }
+        
+        function prepareCartData() {
+            return cart.map(item => ({
+                ProductId: item.productId,
+                ProductName: item.productName,
+                Price: item.price,
+                VatRate: item.vatRate,
+                Quantity: item.quantity
+            }));
+        }
+
+        function saveCartAndRedirect(cartItems, subtotal, tax, total) {
+            console.log("Saving cart to session:", { cartItems, subtotal, tax, total });
+
+            $.ajax({
+                url: '@Url.Action("SaveCartToSession", "PosSessions")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    sessionId: '@Model.PosSession.SessionId',
+                    cartItems: cartItems,
+                    subtotal: subtotal,
+                    tax: tax,
+                    total: total
+                }),
+                success: function (response) {
+                    console.log("Cart saved successfully, redirecting...");
+                    window.location.href = '@Url.Action("Payment", "PosSessions")';
+                },
+                error: function (xhr) {
+                    console.error("Error saving cart:", xhr.responseText);
+                    showAlert('حدث خطأ أثناء حفظ سلة المشتريات!', 'danger');
+                    $('#checkout-btn').prop('disabled', false).html('<i class="fas fa-credit-card me-2"></i>دفع الآن');
+                }
+            });
+        }
+        
+        function updateCartOnServer(productId, quantity) {
+            $.ajax({
+                url: '/PosSessions/AddToCart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    CartId: cartId,
+                    ProductId: productId,
+                    Quantity: quantity
+                }),
+                success: function (response) {
+                    console.log('Cart updated on server');
+                },
+                error: function (error) {
+                    console.error('Error updating cart:', error);
+                }
+            });
+        }
+        
+        function removeFromCartOnServer(productId) {
+            $.ajax({
+                url: '/PosSessions/RemoveFromCart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    CartId: cartId,
+                    ProductId: productId
+                }),
+                success: function (response) {
+                    console.log('Item removed from cart on server');
+                },
+                error: function (error) {
+                    console.error('Error removing item:', error);
+                }
+            });
+        }
+        
+        // Utility function to show alerts
+        function showAlert(message, type) {
+            const alert = $(`
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+            
+            $('.container-fluid').prepend(alert);
+            
+            setTimeout(() => {
+                alert.alert('close');
+            }, 3000);
+        }
+
+        function openShiftReport() {
+            var sessionId = '@ViewBag.SessionId';
+            if (sessionId) {
+                window.location.href = '@Url.Action("ShiftReport", "PosSessions")?sessionId=' + sessionId;
+            } else {
+                alert('لا يوجد شيفت نشط لعرض تقريره');
+            }
+        }
+
+        function openReturnsReport() {
+            var sessionId = '@ViewBag.SessionId';
+            if (sessionId) {
+                window.location.href = '@Url.Action("SessionReturnsReport", "PosSessions")?sessionId=' + sessionId;
+            } else {
+                alert('لا يوجد شيفت نشط لعرض تقرير المرتجعات');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+﻿@model IEnumerable<WebApplication4.Models.JournalEntry>
+@{
+    ViewData["Title"] = "تقرير القيود اليومية - " + ViewBag.AccountName;
+    Layout = "_Layout";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-blue: #207cd4;
+        --secondary-blue: #3a86ff;
+        --light-blue: #f0f8ff;
+        --dark-blue: #1a5b9e;
+        --success-green: #28a745;
+        --danger-red: #dc3545;
+        --warning-orange: #fd7e14;
+        --info-cyan: #17a2b8;
+        --border-radius: 12px;
+        --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: #f8fafc;
+        direction: rtl;
+        color: #2d3748;
+    }
+
+    .card {
+        border-radius: var(--border-radius);
+        border: none;
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        transition: var(--transition);
+    }
+
+    .card-header {
+        background-color: var(--primary-blue);
+        color: white;
+        padding: 1.5rem;
+        font-weight: 700;
+        border-bottom: none;
+        position: relative;
+    }
+
+    .card-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 4px;
+        background-color: rgba(255,255,255,0.3);
+    }
+
+    .table-responsive {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    #journalTable {
+        direction: ltr; /* Base direction for column reversal */
+        width: 100%;
+    }
+
+    #journalTable thead tr,
+    #journalTable tbody tr {
+        display: flex;
+        flex-direction: row-reverse; /* Visually reverse columns */
+    }
+
+    #journalTable th,
+    #journalTable td {
+        flex: 1;
+        text-align: right;
+        direction: rtl; /* RTL for content */
+    }
+
+    #journalTable thead th {
+        background-color: var(--primary-blue);
+        color: white;
+        font-weight: 600;
+        padding: 1.2rem 1.5rem;
+        border: none;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    #journalTable tbody tr {
+        transition: var(--transition);
+    }
+
+    #journalTable tbody tr:nth-child(even) {
+        background-color: rgba(240, 248, 255, 0.5);
+    }
+
+    #journalTable tbody tr:hover {
+        background-color: rgba(32, 124, 212, 0.1);
+        transform: translateX(-5px);
+    }
+
+    #journalTable td {
+        padding: 1.2rem 1.5rem;
+        vertical-align: middle;
+        border-top: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+        font-weight: 600;
+        border-radius: 6px;
+        min-width: 70px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-blue);
+        border-color: var(--primary-blue);
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 0.6rem 1.5rem;
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(32, 124, 212, 0.2);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--dark-blue);
+        border-color: var(--dark-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(32, 124, 212, 0.3);
+    }
+
+    .text-success {
+        color: var(--success-green) !important;
+    }
+
+    .text-danger {
+        color: var(--danger-red) !important;
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .animated {
+        animation: fadeIn 0.6s ease forwards;
+    }
+
+    /* DataTables customization */
+    .dataTables_wrapper .dataTables_filter input {
+        border-radius: 8px;
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #ced4da;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        border-radius: 8px;
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border-radius: 8px !important;
+        margin: 0 2px;
+        transition: var(--transition);
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: var(--primary-blue) !important;
+        color: white !important;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .table td, .table th {
+            padding: 0.8rem;
+        }
+        
+        #journalTable thead tr,
+        #journalTable tbody tr {
+            flex-direction: column;
+        }
+        
+        #journalTable th,
+        #journalTable td {
+            width: 100%;
+            flex: none;
+        }
+    }
+</style>
+
+<div class="container-fluid py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card animated">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <h3 class="mb-3 mb-md-0">
+                        <i class="fas fa-file-alt me-2"></i>تقرير القيود اليومية - @ViewBag.AccountName
+                    </h3>
+                   
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="journalTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>الوصف</th>
+                                    <th>المدين</th>
+                                    <th>الدائن</th>
+                                    <th>نوع القيد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.EntryDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@item.Description</td>
+                                        <td class="text-success fw-bold">@(item.DebitAmount > 0 ? item.DebitAmount.ToString("C") : "-")</td>
+                                        <td class="text-danger fw-bold">@(item.CreditAmount > 0 ? item.CreditAmount.ToString("C") : "-")</td>
+                                        <td>
+                                            <span class="badge bg-info">@item.InvoiceType</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#journalTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json'
+            },
+            dom: '<"top"<"d-flex justify-content-between align-items-center"lf>><"table-responsive"tr><"bottom"ip>',
+            responsive: true,
+            initComplete: function () {
+                $('.dataTables_filter input').addClass('form-control')
+                    .attr('placeholder', 'ابحث...');
+                $('.dataTables_length select').addClass('form-select');
+            },
+            drawCallback: function () {
+                $('tbody tr').each(function(i) {
+                    $(this).css('animation-delay', (i * 0.1) + 's')
+                        .addClass('animated');
+                });
+            }
+        });
+    });
+</script>

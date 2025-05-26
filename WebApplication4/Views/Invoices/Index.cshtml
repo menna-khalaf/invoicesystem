@@ -1,0 +1,414 @@
+﻿@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+            --info-color: #4895ef;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --branch-color: #7209b7;
+            --product-color: #f48c06;
+            --employee-color: #06d6a0;
+            --warehouse-color: #118ab2;
+            
+            --card-bg: #ffffff;
+            --text-primary: #2b2d42;
+            --text-secondary: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            direction: rtl;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .dashboard-title {
+            color: var(--text-primary);
+            font-weight: 900;
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dashboard-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 1rem 0;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-decoration: none;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--card-color), var(--card-color-light));
+            transition: var(--transition);
+            z-index: 1;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .dashboard-card:hover::before {
+            height: 8px;
+        }
+
+        /* Individual card colors with gradients */
+        .card-1 { --card-color: #4361ee; --card-color-light: #4cc9f0; }
+        .card-2 { --card-color: #4cc9f0; --card-color-light: #4895ef; }
+        .card-3 { --card-color: #f8961e; --card-color-light: #f9c74f; }
+        .card-4 { --card-color: #f72585; --card-color-light: #b5179e; }
+        .card-5 { --card-color: #4895ef; --card-color-light: #4361ee; }
+        .card-6 { --card-color: #3f37c9; --card-color-light: #560bad; }
+        .card-7 { --card-color: #7209b7; --card-color-light: #b5179e; }
+        .card-8 { --card-color: #f48c06; --card-color-light: #faa307; }
+        .card-9 { --card-color: #06d6a0; --card-color-light: #4cc9f0; }
+        .card-10 { --card-color: #118ab2; --card-color-light: #06d6a0; }
+
+        .card-icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(var(--card-rgb), 0.1) 0%, rgba(var(--card-rgb), 0.05) 100%);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            color: var(--card-color);
+            transition: var(--transition);
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-hover-text {
+            position: absolute;
+            bottom: -20px;
+            opacity: 0;
+            color: var(--card-color);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .dashboard-card:hover .card-icon-container {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(var(--card-rgb), 0.15) 0%, rgba(var(--card-rgb), 0.1) 100%);
+        }
+
+        .dashboard-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .dashboard-card:hover .card-title {
+            color: var(--card-color);
+        }
+
+        .dashboard-card:hover .card-hover-text {
+            opacity: 1;
+            bottom: 0;
+        }
+
+        /* Animation */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animated {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+        .delay-9 { animation-delay: 0.9s; }
+        .delay-10 { animation-delay: 1.0s; }
+
+        /* Floating animation for header */
+        .dashboard-header:hover .dashboard-title {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive design */
+        @@media (max-width: 1200px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 2rem;
+            }
+            
+            .dashboard-subtitle {
+                font-size: 1rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .dashboard-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Add some decorative elements */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary-color);
+            top: -150px;
+            right: -150px;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--danger-color);
+            bottom: -100px;
+            left: -100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header animated">
+            <div class="decorative-circle circle-1"></div>
+            <div class="decorative-circle circle-2"></div>
+            <h1 class="dashboard-title">لوحة التحكم</h1>
+            <p class="dashboard-subtitle">مرحبًا بك في نظام إدارة المتجر الشامل. اختر القسم الذي تريد إدارته من البطاقات أدناه</p>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Card 1 - العملاء -->
+            <a href="@Url.Action("Create", "Customers")" class="dashboard-card card-1 animated delay-1">
+                <div class="card-icon-container">
+                    <i class="fas fa-users card-icon"></i>
+                </div>
+                <h3 class="card-title">العملاء</h3>
+                <p class="card-description">إدارة بيانات العملاء وعمليات البيع والعلاقات مع العملاء</p>
+                <span class="card-hover-text">إدارة العملاء <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 2 - الموردين -->
+            <a href="@Url.Action("Create", "Vendors")" class="dashboard-card card-2 animated delay-2">
+                <div class="card-icon-container">
+                    <i class="fas fa-truck card-icon"></i>
+                </div>
+                <h3 class="card-title">الموردين</h3>
+                <p class="card-description">إدارة علاقات الموردين وعمليات الشراء والتوريد للمتجر</p>
+                <span class="card-hover-text">إدارة الموردين <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 3 - الخزينة -->
+            <a href="@Url.Action("createstore", "cashandbankaccounts")" class="dashboard-card card-3 animated delay-3">
+                <div class="card-icon-container">
+                    <i class="fas fa-cash-register card-icon"></i>
+                </div>
+                <h3 class="card-title">الخزينة</h3>
+                <p class="card-description">إدارة حركات الخزينة والسندات النقدية اليومية والمعاملات المالية</p>
+                <span class="card-hover-text">إدارة الخزينة <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 4 - الحساب البنكي -->
+            <a href="@Url.Action("create", "cashandbankaccounts")" class="dashboard-card card-4 animated delay-4">
+                <div class="card-icon-container">
+                    <i class="fas fa-university card-icon"></i>
+                </div>
+                <h3 class="card-title">الحساب البنكي</h3>
+                <p class="card-description">إدارة الحسابات البنكية والتحويلات المالية والعمليات المصرفية</p>
+                <span class="card-hover-text">إدارة البنوك <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 5 - نقطة البيع -->
+            <a href="@Url.Action("create", "poes")" class="dashboard-card card-5 animated delay-5">
+                <div class="card-icon-container">
+                    <i class="fas fa-shopping-cart card-icon"></i>
+                </div>
+                <h3 class="card-title">نقطة البيع</h3>
+                <p class="card-description">إدارة نقاط البيع والفواتير وعمليات البيع اليومية للعملاء</p>
+                <span class="card-hover-text">نقطة البيع <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 6 - الشيفت -->
+            <a href="@Url.Action("create", "Shifts")" class="dashboard-card card-6 animated delay-6">
+                <div class="card-icon-container">
+                    <i class="fas fa-calendar-alt card-icon"></i>
+                </div>
+                <h3 class="card-title">الشيفت</h3>
+                <p class="card-description">إدارة شيفتات العمل والتقارير اليومية ومواعيد الدوام</p>
+                <span class="card-hover-text">إدارة الشيفتات <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 7 - الفروع -->
+            <a href="@Url.Action("create", "branches")" class="dashboard-card card-7 animated delay-7">
+                <div class="card-icon-container">
+                    <i class="fas fa-store card-icon"></i>
+                </div>
+                <h3 class="card-title">الفروع</h3>
+                <p class="card-description">إدارة فروع المتجر وعملياتها اليومية والإعدادات الخاصة بكل فرع</p>
+                <span class="card-hover-text">إدارة الفروع <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 8 - المنتجات -->
+            <a href="@Url.Action("create", "products")" class="dashboard-card card-8 animated delay-8">
+                <div class="card-icon-container">
+                    <i class="fas fa-box card-icon"></i>
+                </div>
+                <h3 class="card-title">المنتجات</h3>
+                <p class="card-description">إدارة المنتجات والمخزون والتسعير والتصنيفات والعروض</p>
+                <span class="card-hover-text">إدارة المنتجات <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 9 - الموظف -->
+            <a href="@Url.Action("create", "employees")" class="dashboard-card card-9 animated delay-9">
+                <div class="card-icon-container">
+                    <i class="fas fa-user-tie card-icon"></i>
+                </div>
+                <h3 class="card-title">الموظف</h3>
+                <p class="card-description">إدارة بيانات الموظفين والرواتب والحضور والانصراف والصلاحيات</p>
+                <span class="card-hover-text">إدارة الموظفين <i class="fas fa-arrow-left"></i></span>
+            </a>
+
+            <!-- Card 10 - المستودع -->
+            <a href="@Url.Action("create", "storehouses")" class="dashboard-card card-10 animated delay-10">
+                <div class="card-icon-container">
+                    <i class="fas fa-warehouse card-icon"></i>
+                </div>
+                <h3 class="card-title">المستودع</h3>
+                <p class="card-description">إدارة المستودعات وحركات المخزون والجرد والتوزيع بين الفروع</p>
+                <span class="card-hover-text">إدارة المستودعات <i class="fas fa-arrow-left"></i></span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

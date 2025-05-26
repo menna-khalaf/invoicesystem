@@ -1,0 +1,76 @@
+﻿@model WebApplication4.Models.PosSession
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PosSession</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SessionId" />
+            <div class="form-group">
+                <label asp-for="Posid" class="control-label"></label>
+                <select asp-for="Posid" class="form-control" asp-items="ViewBag.Posid"></select>
+                <span asp-validation-for="Posid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeeId" class="control-label"></label>
+                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"></select>
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StorehouseId" class="control-label"></label>
+                <select asp-for="StorehouseId" class="form-control" asp-items="ViewBag.StorehouseId"></select>
+                <span asp-validation-for="StorehouseId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BranchId" class="control-label"></label>
+                <select asp-for="BranchId" class="form-control" asp-items="ViewBag.BranchId"></select>
+                <span asp-validation-for="BranchId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartTime" class="control-label"></label>
+                <input asp-for="StartTime" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartingCash" class="control-label"></label>
+                <input asp-for="StartingCash" class="form-control" />
+                <span asp-validation-for="StartingCash" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndingCash" class="control-label"></label>
+                <input asp-for="EndingCash" class="form-control" />
+                <span asp-validation-for="EndingCash" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,455 @@
+﻿@model WebApplication4.Models.Shift
+
+@{
+    ViewData["Title"] = "تعديل وردية";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3c94bd;
+            --primary-light: #eef2ff;
+            --primary-dark: #3c94bd;
+            --secondary-color: #1c7bd4;
+            --background-color: #f8f9fa;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--background-color);
+            direction: rtl;
+            color: #2b2d42;
+            margin: 0;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container-fluid {
+            max-width: 1400px;
+            padding: 0 2rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            background: white;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .card-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: #3c94bd;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            background-color: white;
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a5568' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, var(--secondary-color), #05b38b);
+            color: white;
+            box-shadow: 0 4px 6px rgba(5, 179, 139, 0.2);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(to right, #05b38b, var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(5, 179, 139, 0.3);
+        }
+
+        .btn-light {
+            background: white;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-light:hover {
+            background: #f7fafc;
+            color: var(--primary-color);
+            border-color: #cbd5e0;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--primary-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .checkbox-container:hover {
+            background: #e0e7ff;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-left: 10px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+
+        .days-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 0.75rem;
+            background: var(--primary-light);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .day-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid #edf2f7;
+        }
+
+        .day-checkbox-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-checkbox {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .day-label {
+            cursor: pointer;
+            flex-grow: 1;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .text-danger {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .day-checkbox:checked + .day-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .day-checkbox:checked ~ .day-checkbox-item {
+            background: var(--primary-light);
+        }
+
+        @@keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @@media (max-width: 1200px) {
+            .container-fluid {
+                padding: 0 1.5rem;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            .days-checkbox-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .container-fluid {
+                padding: 0 1rem;
+            }
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+            .days-checkbox-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            body {
+                padding: 1rem 0;
+            }
+            .card-header {
+                padding: 1.25rem 1.5rem;
+            }
+            .days-checkbox-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="m-0">تعديل وردية</h1>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="ShiftId" />
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                    <div class="row g-4">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="StartDateTime" class="control-label">تاريخ ووقت البداية</label>
+                                <input asp-for="StartDateTime" class="form-control" type="datetime-local" value="@Model.StartDateTime.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span asp-validation-for="StartDateTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ShiftHours" class="control-label">عدد الساعات</label>
+                                <input asp-for="ShiftHours" class="form-control" type="number" min="1" max="24" value="@Model.ShiftHours" />
+                                <span asp-validation-for="ShiftHours" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="EmployeeId" class="control-label">الموظف</label>
+                                <select asp-for="EmployeeId" class="form-select" asp-items="ViewBag.EmployeeId">
+                                    <option value="">-- اختر الموظف --</option>
+                                </select>
+                                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Posid" class="control-label">نقطة البيع</label>
+                                <select asp-for="Posid" class="form-select" asp-items="ViewBag.Posid">
+                                    <option value="">-- اختر نقطة البيع --</option>
+                                </select>
+                                <span asp-validation-for="Posid" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 mt-2">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Notes" class="control-label">ملاحظات</label>
+                                <textarea asp-for="Notes" class="form-control">@Model.Notes</textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" name="RepeatWeekly" id="RepeatWeekly" value="true" @(Model.RepeatWeekly == true ? "checked" : "") />
+                                    <input type="hidden" name="RepeatWeekly" value="false" />
+                                    <label for="RepeatWeekly">حالة التكرار</label>
+                                </div>
+                                <label class="control-label">أيام التكرار</label>
+                                <div class="days-checkbox-container">
+                                    @{
+                                        var days = new List<string> { "السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة" };
+                                        var selectedDays = Model.RepeatDays?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
+                                        foreach (var day in days)
+                                        {
+                                            <div class="day-checkbox-item">
+                                                <input type="checkbox" class="day-checkbox" name="SelectedDays" value="@day" id="@day" @(selectedDays.Contains(day) ? "checked" : "") />
+                                                <label class="day-label" for="@day">@day</label>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
+                        <a asp-action="Index" class="btn btn-light">
+                            <i class="fas fa-arrow-left"></i> العودة للقائمة
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Enhance checkbox interaction
+            $('.day-checkbox').change(function () {
+                const $item = $(this).closest('.day-checkbox-item');
+                if ($(this).is(':checked')) {
+                    $item.css({
+                        'background': 'var(--primary-light)',
+                        'border-color': 'rgba(67, 97, 238, 0.2)',
+                        'transform': 'translateY(-2px)'
+                    });
+                } else {
+                    $item.css({
+                        'background': 'white',
+                        'border-color': '#edf2f7',
+                        'transform': 'translateY(0)'
+                    });
+                }
+            }).trigger('change');
+            
+            // Smooth scroll to form on submit if there are errors
+            $('form').on('submit', function() {
+                if ($('.text-danger:visible').length > 0) {
+                    $('html, body').animate({
+                        scrollTop: $(this).offset().top - 20
+                    }, 300);
+                }
+            });
+            
+            // Add focus styles dynamically
+            $('.form-control, .form-select').focus(function() {
+                $(this).parent().find('.control-label').css('color', 'var(--primary-color)');
+            }).blur(function() {
+                $(this).parent().find('.control-label').css('color', '#4a5568');
+            });
+        });
+    </script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

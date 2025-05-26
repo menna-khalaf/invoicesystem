@@ -1,0 +1,1241 @@
+﻿@model WebApplication4.Models.PaymentViewModel
+
+@{
+    ViewData["Title"] = "الدفع - تفاصيل الطلب";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5e72e4;
+            --secondary-color: #2d3748;
+            --success-color: #48bb78;
+            --danger-color: #f56565;
+            --warning-color: #ed8936;
+            --light-gray: #f8f9fa;
+            --dark-gray: #2d3748;
+            --lighter-gray: #edf2f7;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 1.35rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 25px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .products-table th, .products-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .products-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+
+        .products-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .products-table tr:hover td {
+            background-color: rgba(94, 114, 228, 0.05);
+        }
+
+        .summary-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 16px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .summary-row:last-child {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 0;
+            color: var(--secondary-color);
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .btn-action {
+            padding: 12px 24px;
+            font-size: 16px;
+            min-width: 140px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-method-row {
+            position: relative;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .payment-method-row:hover {
+            border-color: var(--primary-color);
+        }
+
+        .remove-payment-method {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 16px;
+            background: white;
+            padding: 5px 8px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .remove-payment-method:hover {
+            background-color: var(--danger-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .keypad button {
+            padding: 18px;
+            font-size: 20px;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            border: none;
+            background-color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .keypad button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .keypad button:active {
+            transform: scale(0.95);
+        }
+
+        .customer-search-results {
+            position: absolute;
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            z-index: 100;
+            display: none;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .customer-search-results div {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #edf2f7;
+            transition: background-color 0.2s;
+        }
+
+        .customer-search-results div:hover {
+            background-color: var(--lighter-gray);
+        }
+
+        .active-input {
+            box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25);
+            border-color: var(--primary-color);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25);
+        }
+
+        .input-group-text {
+            border-radius: 0 var(--border-radius) var(--border-radius) 0 !important;
+            background-color: var(--lighter-gray);
+            border-color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #4a5acf;
+            border-color: #4a5acf;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #3aa76d;
+            border-color: #3aa76d;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #e53e3e;
+            border-color: #e53e3e;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #dd6b20;
+            border-color: #dd6b20;
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .text-success {
+            color: var(--success-color) !important;
+        }
+
+        .remaining-amount-container {
+            background-color: var(--lighter-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .remaining-amount-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+
+        .remaining-amount-value {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .payment-method-icon {
+            margin-left: 8px;
+            font-size: 18px;
+        }
+
+        .invoice-date-container {
+            position: relative;
+        }
+
+        .invoice-date-container:after {
+            content: '\f073';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            pointer-events: none;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .row {
+                flex-direction: column-reverse;
+            }
+            
+            .col-md-6 {
+                width: 100%;
+                padding: 0 15px;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            .products-table th,
+            .products-table td {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .keypad button {
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .btn-action {
+                padding: 10px 20px;
+                font-size: 15px;
+                min-width: 120px;
+            }
+            
+            .summary-row {
+                font-size: 15px;
+            }
+            
+            .summary-row:last-child {
+                font-size: 17px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .payment-method-row .row > div {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .remove-payment-method {
+                position: relative;
+                top: auto;
+                left: auto;
+                display: inline-block;
+                margin-top: 10px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .btn-action {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Animation classes */
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="alert-container" id="alertContainer"></div>
+
+    <div class="container py-4">
+        <form id="paymentForm" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Hidden fields for required properties -->
+            <input type="hidden" name="SessionId" value="@Model.SessionId" />
+            <input type="hidden" name="CustomerId" id="customerIdField" />
+            <input type="hidden" name="CustomerName" id="customerNameField" />
+            <input type="hidden" name="Total" id="totalAmount" value="@Model.Total" />
+            <input type="hidden" name="Subtotal" value="@Model.Subtotal" />
+            <input type="hidden" name="Tax" value="@Model.Tax" />
+            <input type="hidden" name="CashAccountId" value="@Model.CashAccountId" />
+            <input type="hidden" name="BankAccountId" value="@Model.BankAccountId" />
+            
+            <!-- Serialize CartItems -->
+            <input type="hidden" name="CartItems" value="@Html.Raw(Json.Serialize(Model.CartItems))" />
+            
+            <!-- Dummy PaymentMethods to satisfy validation -->
+            <input type="hidden" name="PaymentMethods[0].Id" value="0" />
+            <input type="hidden" name="PaymentMethods[0].Name" value="Default" />
+
+            <div class="row g-4">
+                <!-- Order Details Section -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="section-title">تفاصيل الطلب</h5>
+
+                            <!-- Customer Search Section -->
+                            <div class="customer-search-container mb-4">
+                                <label class="form-label fw-bold mb-2">اختر العميل</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-primary" type="button" id="showCustomersBtn" onclick="loadAllCustomers()">
+                                        <i class="fas fa-users me-2"></i> عرض العملاء
+                                    </button>
+                                    <input type="text" class="form-control" id="customerSearch"
+                                           placeholder="ابحث عن عميل..." aria-label="ابحث عن عميل">
+                                </div>
+                                <div class="customer-search-results" id="customerResults"></div>
+                            </div>
+
+                            <!-- Products Table -->
+                            <div class="table-responsive mb-4">
+                                <table class="products-table">
+                                    <thead>
+                                        <tr>
+                                            <th>المنتج</th>
+                                            <th>السعر</th>
+                                            <th>الكمية</th>
+                                            <th>الضريبة</th>
+                                            <th>الإجمالي</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.CartItems != null && Model.CartItems.Any())
+                                        {
+                                            foreach (var item in Model.CartItems)
+                                            {
+                                                <tr class="fade-in">
+                                                    <td>@item.ProductName</td>
+                                                    <td>@item.Price.ToString("0.00") ر.س</td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@item.VatAmount.ToString("0.00") ر.س</td>
+                                                    <td>@((item.Price * item.Quantity + item.VatAmount).ToString("0.00")) ر.س</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="5" class="text-center">لا توجد منتجات في السلة</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div class="summary-card">
+                                <div class="summary-row">
+                                    <span>المجموع الفرعي:</span>
+                                    <span>@Model.Subtotal.ToString("0.00") ر.س</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>الضرائب:</span>
+                                    <span>@Model.Tax.ToString("0.00") ر.س</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>الإجمالي:</span>
+                                    <span class="fw-bold">@Model.Total.ToString("0.00") ر.س</span>
+                                </div>
+                            </div>
+
+                            <!-- Invoice Date -->
+                            <div class="mb-4 invoice-date-container">
+                                <label class="form-label fw-bold">تاريخ الفاتورة</label>
+                                <input type="date" class="form-control ps-4" id="invoiceDate" name="InvoiceDate"
+                                       value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="@Url.Action("Create")" class="btn btn-danger btn-action">
+                                    <i class="fas fa-times me-2"></i> إلغاء
+                                </a>
+                                <button type="submit" id="submitBtn" class="btn btn-success btn-action pulse-animation">
+                                    <i class="fas fa-save me-2"></i> حفظ الفاتورة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="section-title">الدفع</h5>
+
+                            <!-- Payment Methods Section -->
+                            <div id="paymentMethodsContainer">
+                                <!-- Initial payment method -->
+                                <div class="payment-method-row fade-in">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">طريقة الدفع</label>
+                                            <select class="form-select payment-type" name="PaymentTypes[0].Type"
+                                                    onchange="handlePaymentTypeChange(this)" required>
+                                                <option value="">اختر طريقة الدفع</option>
+                                                <option value="كاش">كاش <i class="fas fa-money-bill-wave payment-method-icon"></i></option>
+                                                <option value="تحويل بنكي">تحويل بنكي <i class="fas fa-university payment-method-icon"></i></option>
+                                                <option value="بطاقة ائتمانية">بطاقة ائتمانية <i class="fas fa-credit-card payment-method-icon"></i></option>
+                                                <option value="محفظة إلكترونية">محفظة إلكترونية <i class="fas fa-wallet payment-method-icon"></i></option>
+                                                <option value="آجل">آجل <i class="fas fa-calendar-alt payment-method-icon"></i></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">المبلغ</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control payment-amount"
+                                                       name="PaymentTypes[0].Amount"
+                                                       oninput="calculateRemaining()" required min="0.01" step="0.01">
+                                                <span class="input-group-text">ر.س</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 due-date-container mt-3" style="display:none;">
+                                        <label class="form-label">تاريخ الاستحقاق</label>
+                                        <input type="date" class="form-control due-date" name="PaymentTypes[0].DueDate">
+                                    </div>
+                                    <div class="remove-payment-method" onclick="removePaymentMethod(this)" style="display:none;">
+                                        <i class="fas fa-trash-alt"></i> إلغاء
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary w-100 mb-4" onclick="addPaymentMethod()">
+                                <i class="fas fa-plus me-2"></i> إضافة طريقة دفع أخرى
+                            </button>
+
+                            <!-- Remaining Amount -->
+                            <div class="remaining-amount-container">
+                                <div class="remaining-amount-label">الباقي</div>
+                                <div class="remaining-amount-value text-end" id="remainingAmount">
+                                    @Model.Total.ToString("0.00") ر.س
+                                </div>
+                            </div>
+
+                            <!-- Keypad -->
+                            <div class="keypad-container">
+                                <div class="keypad">
+                                    <button type="button" class="btn" onclick="addNumber(7)">7</button>
+                                    <button type="button" class="btn" onclick="addNumber(8)">8</button>
+                                    <button type="button" class="btn" onclick="addNumber(9)">9</button>
+                                    <button type="button" class="btn" onclick="addNumber(4)">4</button>
+                                    <button type="button" class="btn" onclick="addNumber(5)">5</button>
+                                    <button type="button" class="btn" onclick="addNumber(6)">6</button>
+                                    <button type="button" class="btn" onclick="addNumber(1)">1</button>
+                                    <button type="button" class="btn" onclick="addNumber(2)">2</button>
+                                    <button type="button" class="btn" onclick="addNumber(3)">3</button>
+                                    <button type="button" class="btn" onclick="addNumber(0)">0</button>
+                                    <button type="button" class="btn btn-warning" onclick="clearInput()">C</button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteNumber()">
+                                        <i class="fas fa-backspace"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary w-100 mt-3 py-3" onclick="setFullAmount()">
+                                <i class="fas fa-money-bill-wave me-2"></i> إدخال المبلغ كاملاً
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // ======================
+        // UTILITY FUNCTIONS
+        // ======================
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            alertContainer.appendChild(alertDiv);
+            
+            // Add animation
+            alertDiv.style.animation = 'fadeIn 0.3s ease-out forwards';
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        }
+
+        // ======================
+        // CUSTOMER MANAGEMENT
+        // ======================
+
+        function selectCustomer(id, name) {
+            document.getElementById('customerSearch').value = name;
+            document.getElementById('customerIdField').value = id;
+            document.getElementById('customerNameField').value = name;
+            document.getElementById('customerResults').style.display = 'none';
+            document.getElementById('customerSearch').classList.remove('is-invalid');
+            
+            // Add visual feedback
+            const customerSearch = document.getElementById('customerSearch');
+            customerSearch.classList.add('is-valid');
+            setTimeout(() => customerSearch.classList.remove('is-valid'), 2000);
+            
+            showAlert(`تم اختيار العميل: ${name}`, 'success');
+        }
+
+        async function loadAllCustomers() {
+            const resultsContainer = document.getElementById('customerResults');
+            try {
+                const response = await fetch(`@Url.Action("SearchCustomers", "PosSessions")`);
+                const customers = await response.json();
+                displayCustomerResults(customers, resultsContainer);
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                showAlert('حدث خطأ أثناء تحميل العملاء', 'danger');
+            }
+        }
+
+        function displayCustomerResults(customers, container) {
+            if (customers?.length > 0) {
+                container.innerHTML = customers.map(c =>
+                    `<div onclick="selectCustomer(${c.customerId}, '${c.customerName.replace("'", "\\'")}')" class="fade-in">
+                        <strong>${c.customerName}</strong>
+                        ${c.phoneNumber ? `<br><small>${c.phoneNumber}</small>` : ''}
+                    </div>`
+                ).join('');
+                container.style.display = 'block';
+            } else {
+                container.innerHTML = '<div class="p-3 text-center">لا يوجد عملاء</div>';
+                container.style.display = 'block';
+            }
+        }
+
+        // ======================
+        // PAYMENT CALCULATIONS
+        // ======================
+
+        function calculateRemaining() {
+            const totalInput = document.getElementById('totalAmount');
+            if (!totalInput) return 0;
+            
+            const total = parseFloat(totalInput.value) || 0;
+            let paid = 0;
+
+            document.querySelectorAll('.payment-amount').forEach(input => {
+                const amount = parseFloat(input.value) || 0;
+                paid += amount;
+            });
+
+            const remainingInput = document.getElementById('remainingAmount');
+            const remaining = total - paid;
+
+            if (remainingInput) {
+                remainingInput.innerHTML = remaining.toFixed(2) + ' ر.س';
+                
+                // Visual feedback
+                if (remaining > 0) {
+                    remainingInput.classList.remove('text-success');
+                    remainingInput.classList.add('text-danger');
+                } else {
+                    remainingInput.classList.remove('text-danger');
+                    remainingInput.classList.add('text-success');
+                }
+                
+                // Pulse animation if remaining changes significantly
+                if (Math.abs(remaining - parseFloat(remainingInput.dataset.lastValue || 0)) > 0.01) {
+                    remainingInput.classList.add('pulse-animation');
+                    setTimeout(() => remainingInput.classList.remove('pulse-animation'), 1000);
+                    remainingInput.dataset.lastValue = remaining;
+                }
+            }
+
+            return remaining;
+        }
+
+        function setFullAmount() {
+            const remaining = calculateRemaining();
+            
+            if (remaining <= 0) {
+                showAlert('لا يوجد مبلغ متبقي لإدخاله', 'info');
+                return;
+            }
+
+            let amountSet = false;
+            const paymentInputs = document.querySelectorAll('.payment-amount');
+            
+            paymentInputs.forEach(input => {
+                if (!amountSet && (!input.value || parseFloat(input.value) === 0)) {
+                    input.value = remaining.toFixed(2);
+                    amountSet = true;
+                    input.focus();
+                    
+                    // Add visual feedback
+                    input.classList.add('active-input');
+                    setTimeout(() => input.classList.remove('active-input'), 1000);
+                    
+                    const event = new Event('input');
+                    input.dispatchEvent(event);
+                }
+            });
+
+            if (!amountSet) {
+                const newRow = addPaymentMethod();
+                setTimeout(() => {
+                    const newInput = newRow.querySelector('.payment-amount');
+                    if (newInput) {
+                        newInput.value = remaining.toFixed(2);
+                        newInput.focus();
+                        
+                        // Add visual feedback
+                        newInput.classList.add('active-input');
+                        setTimeout(() => newInput.classList.remove('active-input'), 1000);
+                        
+                        const event = new Event('input');
+                        newInput.dispatchEvent(event);
+                    }
+                }, 50);
+            }
+        }
+
+        // ======================
+        // PAYMENT METHOD MANAGEMENT
+        // ======================
+
+        let paymentMethodCount = 1; // Start at 1 since 0 is pre-rendered
+
+        function handlePaymentTypeChange(selectElement) {
+            const row = selectElement.closest('.payment-method-row');
+            const dueDateContainer = row.querySelector('.due-date-container');
+            const dueDateInput = row.querySelector('.due-date');
+            
+            dueDateContainer.style.display = selectElement.value === 'آجل' ? 'block' : 'none';
+            if (selectElement.value !== 'آجل') {
+                dueDateInput.value = '';
+            }
+            
+            // Add visual feedback
+            selectElement.classList.add('active-input');
+            setTimeout(() => selectElement.classList.remove('active-input'), 500);
+            
+            calculateRemaining();
+        }
+
+        function addPaymentMethod() {
+            const container = document.getElementById('paymentMethodsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'payment-method-row mb-3 fade-in';
+            newRow.innerHTML = `
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">طريقة الدفع</label>
+                        <select class="form-select payment-type" name="PaymentTypes[${paymentMethodCount}].Type"
+                                onchange="handlePaymentTypeChange(this)" required>
+                            <option value="">اختر طريقة الدفع</option>
+                            <option value="كاش">كاش <i class="fas fa-money-bill-wave payment-method-icon"></i></option>
+                            <option value="تحويل بنكي">تحويل بنكي <i class="fas fa-university payment-method-icon"></i></option>
+                            <option value="بطاقة ائتمانية">بطاقة ائتمانية <i class="fas fa-credit-card payment-method-icon"></i></option>
+                            <option value="محفظة إلكترونية">محفظة إلكترونية <i class="fas fa-wallet payment-method-icon"></i></option>
+                            <option value="آجل">آجل <i class="fas fa-calendar-alt payment-method-icon"></i></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">المبلغ</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control payment-amount"
+                                   name="PaymentTypes[${paymentMethodCount}].Amount"
+                                   oninput="calculateRemaining()" required min="0.01" step="0.01">
+                            <span class="input-group-text">ر.س</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 due-date-container mt-3" style="display:none;">
+                    <label class="form-label">تاريخ الاستحقاق</label>
+                    <input type="date" class="form-control due-date" name="PaymentTypes[${paymentMethodCount}].DueDate">
+                </div>
+                <div class="remove-payment-method" onclick="removePaymentMethod(this)">
+                    <i class="fas fa-trash-alt"></i> إلغاء
+                </div>
+            `;
+            
+            container.appendChild(newRow);
+            paymentMethodCount++;
+            updateRemoveButtonsVisibility();
+            
+            // Scroll to the new row with smooth animation
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Focus on the amount input
+            setTimeout(() => {
+                const amountInput = newRow.querySelector('.payment-amount');
+                if (amountInput) amountInput.focus();
+            }, 100);
+            
+            return newRow;
+        }
+
+        function removePaymentMethod(button) {
+            const row = button.closest('.payment-method-row');
+            if (row) {
+                // Add fade out animation before removing
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    row.remove();
+                    calculateRemaining();
+                    updateRemoveButtonsVisibility();
+                }, 300);
+            }
+        }
+
+        function updateRemoveButtonsVisibility() {
+            const paymentMethods = document.querySelectorAll('.payment-method-row');
+            const removeButtons = document.querySelectorAll('.remove-payment-method');
+            
+            removeButtons.forEach(button => {
+                button.style.display = paymentMethods.length > 1 ? 'block' : 'none';
+            });
+        }
+
+        // ======================
+        // KEYPAD FUNCTIONS
+        // ======================
+
+        function addNumber(num) {
+            const activeInput = document.querySelector('.payment-amount:focus');
+            if (activeInput) {
+                const currentValue = activeInput.value || '';
+                activeInput.value = currentValue + num;
+
+                // Add visual feedback
+                activeInput.classList.add('active-input');
+                setTimeout(() => activeInput.classList.remove('active-input'), 200);
+
+                const event = new Event('input');
+                activeInput.dispatchEvent(event);
+            } else {
+                // If no input is focused, append to the first available payment amount
+                const firstPaymentInput = document.querySelector('.payment-amount');
+                if (firstPaymentInput) {
+                    const currentValue = firstPaymentInput.value || '';
+                    firstPaymentInput.value = currentValue + num;
+                    firstPaymentInput.focus();
+
+                    // Add visual feedback
+                    firstPaymentInput.classList.add('active-input');
+                    setTimeout(() => firstPaymentInput.classList.remove('active-input'), 200);
+
+                    const event = new Event('input');
+                    firstPaymentInput.dispatchEvent(event);
+                }
+            }
+        }
+
+        function deleteNumber() {
+            const activeInput = document.querySelector('.payment-amount:focus');
+            if (activeInput) {
+                activeInput.value = activeInput.value.toString().slice(0, -1);
+                
+                // Add visual feedback
+                activeInput.classList.add('active-input');
+                setTimeout(() => activeInput.classList.remove('active-input'), 200);
+                
+                const event = new Event('input');
+                activeInput.dispatchEvent(event);
+            }
+        }
+
+        function clearInput() {
+            const activeInput = document.querySelector('.payment-amount:focus');
+            if (activeInput) {
+                activeInput.value = '';
+                
+                // Add visual feedback
+                activeInput.classList.add('active-input');
+                setTimeout(() => activeInput.classList.remove('active-input'), 200);
+                
+                const event = new Event('input');
+                activeInput.dispatchEvent(event);
+            }
+        }
+
+        // ======================
+        // FORM VALIDATION & SUBMISSION
+        // ======================
+
+        function validateForm() {
+            let isValid = true;
+
+            // Validate customer
+            const customerId = document.getElementById('customerIdField').value;
+            const customerSearch = document.getElementById('customerSearch');
+            
+            if (!customerId) {
+                customerSearch.classList.add('is-invalid');
+                isValid = false;
+                showAlert('الرجاء اختيار عميل', 'danger');
+            } else {
+                customerSearch.classList.remove('is-invalid');
+            }
+
+            // Validate invoice date
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            if (!invoiceDate) {
+                document.getElementById('invoiceDate').classList.add('is-invalid');
+                isValid = false;
+                showAlert('الرجاء إدخال تاريخ الفاتورة', 'danger');
+            } else {
+                document.getElementById('invoiceDate').classList.remove('is-invalid');
+            }
+
+            // Validate payment methods
+            const paymentRows = document.querySelectorAll('.payment-method-row');
+            if (paymentRows.length === 0) {
+                showAlert('يجب إضافة طريقة دفع واحدة على الأقل', 'danger');
+                isValid = false;
+            }
+
+            // Check for duplicate payment types
+            const paymentTypes = Array.from(document.querySelectorAll('.payment-type')).map(select => select.value);
+            const uniqueTypes = new Set(paymentTypes.filter(type => type));
+            
+            if (uniqueTypes.size < paymentTypes.filter(type => type).length) {
+                showAlert('لا يمكن اختيار نفس طريقة الدفع أكثر من مرة', 'danger');
+                isValid = false;
+            }
+
+            paymentRows.forEach((row, index) => {
+                const paymentType = row.querySelector('.payment-type');
+                const paymentAmount = row.querySelector('.payment-amount');
+                const dueDateInput = row.querySelector('.due-date');
+
+                // Validate payment type
+                if (!paymentType.value) {
+                    paymentType.classList.add('is-invalid');
+                    isValid = false;
+                    showAlert(`الرجاء اختيار طريقة دفع للمدفوعات ${index + 1}`, 'danger');
+                } else {
+                    paymentType.classList.remove('is-invalid');
+                }
+
+                // Validate payment amount
+                const amount = parseFloat(paymentAmount.value) || 0;
+                if (amount <= 0) {
+                    paymentAmount.classList.add('is-invalid');
+                    isValid = false;
+                    showAlert(`الرجاء إدخال مبلغ صحيح للمدفوعات ${index + 1}`, 'danger');
+                } else {
+                    paymentAmount.classList.remove('is-invalid');
+                }
+
+                // Validate due date for credit payments
+                if (paymentType.value === 'آجل' && !dueDateInput.value) {
+                    dueDateInput.classList.add('is-invalid');
+                    isValid = false;
+                    showAlert(`الرجاء إدخال تاريخ استحقاق للدفع الآجل في المدفوعات ${index + 1}`, 'danger');
+                } else {
+                    dueDateInput.classList.remove('is-invalid');
+                }
+            });
+
+            // Validate total amount
+            const totalInput = document.getElementById('totalAmount');
+            if (!totalInput) {
+                showAlert('المبلغ الإجمالي غير موجود', 'danger');
+                return false;
+            }
+
+            const total = parseFloat(totalInput.value) || 0;
+            if (total <= 0) {
+                showAlert('المبلغ الإجمالي يجب أن يكون موجبًا', 'danger');
+                isValid = false;
+            }
+
+            let paid = 0;
+            document.querySelectorAll('.payment-amount').forEach(input => {
+                paid += parseFloat(input.value) || 0;
+            });
+
+            if (Math.abs(paid - total) > 0.01) {
+                document.getElementById('remainingAmount').classList.add('is-invalid');
+                showAlert(`المبلغ المدفوع (${paid.toFixed(2)}) لا يساوي الإجمالي (${total.toFixed(2)})`, 'danger');
+                isValid = false;
+            } else {
+                document.getElementById('remainingAmount').classList.remove('is-invalid');
+            }
+
+            return isValid;
+        }
+
+        async function submitPaymentForm() {
+            const submitBtn = document.getElementById('submitBtn');
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الحفظ...';
+
+                if (!validateForm()) {
+                    throw new Error('الرجاء تصحيح الأخطاء في النموذج');
+                }
+
+                // Reindex PaymentTypes to ensure consecutive indices
+                const paymentRows = document.querySelectorAll('.payment-method-row');
+                paymentRows.forEach((row, index) => {
+                    const typeSelect = row.querySelector('.payment-type');
+                    const amountInput = row.querySelector('.payment-amount');
+                    const dueDateInput = row.querySelector('.due-date');
+                    
+                    if (typeSelect) typeSelect.name = `PaymentTypes[${index}].Type`;
+                    if (amountInput) amountInput.name = `PaymentTypes[${index}].Amount`;
+                    if (dueDateInput) dueDateInput.name = `PaymentTypes[${index}].DueDate`;
+                });
+
+                const form = document.getElementById('paymentForm');
+                const formData = new FormData(form);
+
+                // Debug: Log form data
+                console.log('FormData contents:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+
+                // Ensure SessionId is included
+                const sessionId = document.querySelector('input[name="SessionId"]')?.value;
+                if (!sessionId) {
+                    throw new Error('معرف الجلسة غير موجود');
+                }
+
+                // Check for PaymentTypes
+                let hasPaymentTypes = false;
+                for (let key of formData.keys()) {
+                    if (key.startsWith('PaymentTypes[')) {
+                        hasPaymentTypes = true;
+                        break;
+                    }
+                }
+
+                if (!hasPaymentTypes) {
+                    throw new Error('لم يتم إرسال طرق الدفع');
+                }
+
+                const response = await fetch('@Url.Action("Payment", "PosSessions")', {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    let errorMessage = result.message;
+                    if (result.errors) {
+                        errorMessage += `<br><ul>${result.errors.map(e => `<li>${e}</li>`).join('')}</ul>`;
+                    }
+                    if (result.detailedError) {
+                        errorMessage += `<br><small>${result.detailedError}</small>`;
+                    }
+                    showAlert(errorMessage, 'danger');
+                    console.error('Payment failed:', result);
+                    throw new Error(result.message);
+                }
+
+                // Success - redirect to confirmation page
+                window.location.href = `@Url.Action("PaymentConfirmation", "PosSessions")?invoiceId=${result.invoiceId}&sessionId=${result.sessionId}`;
+
+            } catch (error) {
+                showAlert(error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i> حفظ الفاتورة';
+            }
+        }
+
+        // ======================
+        // INITIALIZATION
+        // ======================
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Customer search functionality
+            document.getElementById('customerSearch')?.addEventListener('input', async function (e) {
+                const searchTerm = e.target.value.trim();
+                const resultsContainer = document.getElementById('customerResults');
+                
+                if (searchTerm.length < 2) {
+                    resultsContainer.style.display = 'none';
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`@Url.Action("SearchCustomers", "PosSessions")?term=${encodeURIComponent(searchTerm)}`);
+                    const customers = await response.json();
+                    displayCustomerResults(customers, resultsContainer);
+                } catch (error) {
+                    console.error('Error searching customers:', error);
+                    resultsContainer.style.display = 'none';
+                }
+            });
+
+            // Close customer results when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.customer-search-container')) {
+                    document.getElementById('customerResults').style.display = 'none';
+                }
+            });
+
+            // Form submission handling
+            const paymentForm = document.getElementById('paymentForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (paymentForm && submitBtn) {
+                paymentForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    submitPaymentForm();
+                });
+                
+                submitBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    submitPaymentForm();
+                });
+            }
+
+            // Initial calculations
+            calculateRemaining();
+            updateRemoveButtonsVisibility();
+            
+            // Focus on customer search by default
+            document.getElementById('customerSearch')?.focus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+﻿@{
+    ViewData["Title"] = "إنشاء نقطة بيع";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - تقارير الأعمال</title>
+    <!-- Google Fonts (Roboto) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            background-color: #2c3e50;
+            padding-top: 20px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            color: #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 10px 20px;
+            margin: 5px 10px;
+            border-radius: 5px;
+            text-align: right;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #3498db;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #3498db;
+        }
+
+        .sidebar .nav-link i {
+            margin-left: 10px;
+        }
+
+        .content {
+            margin-right: 270px;
+            padding: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .report-section h3 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: right;
+        }
+
+        td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .report-table, .chart-row {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            display: none;
+        }
+
+        .report-table.show, .chart-row.show {
+            opacity: 1;
+            visibility: visible;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .content {
+                margin-right: 0;
+            }
+            .card {
+                margin-bottom: 15px;
+            }
+            .metric-value {
+                font-size: 1.5rem;
+            }
+            .chart-container {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h3><i class="fas fa-tachometer-alt"></i> التقارير</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetMonthlySales', 'monthlySalesTable', 'monthlySalesCharts', 'تحليل المبيعات الشهري', this)"><i class="fas fa-chart-bar"></i> تحليل المبيعات الشهري</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetSalesByBranch', 'salesByBranchTable', 'salesByBranchCharts', 'مبيعات حسب الفروع', this)"><i class="fas fa-store"></i> مبيعات حسب الفروع</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetLeastActiveCustomers', 'leastActiveCustomersTable', 'leastActiveCustomersCharts', 'العملاء الأقل نشاطًا', this)"><i class="fas fa-users"></i> العملاء الأقل نشاطًا</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetPurchasesByVendor', 'purchasesByVendorTable', 'purchasesByVendorCharts', 'تحليل المشتريات حسب المورد', this)"><i class="fas fa-truck"></i> تحليل المشتريات حسب المورد</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetProductsBelowReorder', 'productsBelowReorderTable', 'productsBelowReorderCharts', 'المنتجات التي تجاوزت حد إعادة الطلب', this)"><i class="fas fa-exclamation-triangle"></i> المنتجات التي تجاوزت حد إعادة الطلب</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetPurchasesByBranch', 'purchasesByBranchTable', 'purchasesByBranchCharts', 'المشتريات حسب الفروع', this)"><i class="fas fa-store-alt"></i> المشتريات حسب الفروع</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetStagnantProducts', 'stagnantProductsTable', 'stagnantProductsCharts', 'المنتجات الراكدة', this)"><i class="fas fa-boxes"></i> المنتجات الراكدة</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetCurrentInventory', 'currentInventoryTable', 'currentInventoryCharts', 'تقرير المخزون الحالي', this)"><i class="fas fa-warehouse"></i> تقرير المخزون الحالي</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetInventoryDiscrepancies', 'inventoryDiscrepanciesTable', 'inventoryDiscrepanciesCharts', 'فرق الكمية الفعلية والمخزنية', this)"><i class="fas fa-balance-scale"></i> فرق الكمية الفعلية والمخزنية</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetAgingReport', 'agingReportTable', 'agingReportCharts', 'تحليل أعمار الديون', this)"><i class="fas fa-clock"></i> تحليل أعمار الديون</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetCustomerBehavior', 'customerBehaviorTable', 'customerBehaviorCharts', 'سلوك العميل', this)"><i class="fas fa-user-check"></i> سلوك العميل</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetInactiveVendors', 'inactiveVendorsTable', 'inactiveVendorsCharts', 'الموردون غير النشطين', this)"><i class="fas fa-user-slash"></i> الموردون غير النشطين</a>
+                </li>
+               @*  <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetBalanceSheet', 'balanceSheetTable', 'balanceSheetCharts', 'قائمة المركز المالي', this)"><i class="fas fa-file-invoice-dollar"></i> قائمة المركز المالي</a>
+                </li> *@
+              @*   <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetIncomeStatement', 'incomeStatementTable', 'incomeStatementCharts', 'قائمة الدخل', this)"><i class="fas fa-money-check-alt"></i> قائمة الدخل</a>
+                </li> *@
+               @*  <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetJournalEntries', 'journalEntriesTable', 'journalEntriesCharts', 'دفتر اليومية', this)"><i class="fas fa-book"></i> دفتر اليومية</a>
+                </li> *@
+               @*  <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetSubledgerTransactions', 'subledgerTransactionsTable', 'subledgerTransactionsCharts', 'كشف حساب فرعي', this)"><i class="fas fa-list-alt"></i> كشف حساب فرعي</a>
+                </li> *@
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetTopSellingEmployee', 'topSellingEmployeeTable', 'topSellingEmployeeCharts', 'الموظف الأعلى مبيعًا', this)"><i class="fas fa-user-tie"></i> الموظف الأعلى مبيعًا</a>
+                </li>
+               @*  <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetUnpaidInvoices', 'unpaidInvoicesTable', 'unpaidInvoicesCharts', 'فواتير غير مدفوعة', this)"><i class="fas fa-file-invoice"></i> فواتير غير مدفوعة</a>
+                </li> *@
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetCashVsBank', 'cashVsBankTable', 'cashVsBankCharts', 'مقارنة الصندوق والبنك', this)"><i class="fas fa-piggy-bank"></i> مقارنة الصندوق والبنك</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetPaymentMethodsAnalysis', 'paymentMethodsAnalysisTable', 'paymentMethodsAnalysisCharts', 'تحليل طرق الدفع', this)"><i class="fas fa-credit-card"></i> تحليل طرق الدفع</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetTopPurchasingCustomer', 'topPurchasingCustomerTable', 'topPurchasingCustomerCharts', 'أكثر عميل يشتري', this)"><i class="fas fa-user-plus"></i> أكثر عميل يشتري</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetMostFrequentVendor', 'mostFrequentVendorTable', 'mostFrequentVendorCharts', 'أكثر مورد يتم التعامل معه', this)"><i class="fas fa-handshake"></i> أكثر مورد يتم التعامل معه</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetMostSoldProduct', 'mostSoldProductTable', 'mostSoldProductCharts', 'أكثر منتج مباع', this)"><i class="fas fa-shopping-cart"></i> أكثر منتج مباع</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showReport('GetMostPurchasedProduct', 'mostPurchasedProductTable', 'mostPurchasedProductCharts', 'أكثر منتج تم شراؤه', this)"><i class="fas fa-box-open"></i> أكثر منتج تم شراؤه</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="mb-4 text-center" style="color: #2c3e50;">لوحة التحكم - تقارير الأعمال</h1>
+
+            <!-- Key Metrics Cards -->
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">إجمالي الإيرادات</div>
+                        <div class="card-body text-center">
+                            <p class="metric-value" id="totalRevenue">جارٍ التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">إجمالي المشتريات</div>
+                        <div class="card-body text-center">
+                            <p class="metric-value" id="totalPurchases">جارٍ التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">إجمالي مرتجع المبيعات</div>
+                        <div class="card-body text-center">
+                            <p class="metric-value" id="totalSalesReturns">جارٍ التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">إجمالي مرتجع الشراء</div>
+                        <div class="card-body text-center">
+                            <p class="metric-value" id="totalPurchaseReturns">جارٍ التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Sections -->
+            <div class="report-section">
+                <div id="monthlySalesTable" class="report-table"></div>
+                <div id="monthlySalesCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="monthlySalesBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="monthlySalesPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="monthlySalesLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="salesByBranchTable" class="report-table"></div>
+                <div id="salesByBranchCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="salesByBranchBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="salesByBranchPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="salesByBranchLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="leastActiveCustomersTable" class="report-table"></div>
+                <div id="leastActiveCustomersCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="leastActiveCustomersBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="leastActiveCustomersPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="leastActiveCustomersLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="purchasesByVendorTable" class="report-table"></div>
+                <div id="purchasesByVendorCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="purchasesByVendorBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="purchasesByVendorPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="purchasesByVendorLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="productsBelowReorderTable" class="report-table"></div>
+                <div id="productsBelowReorderCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="productsBelowReorderBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="productsBelowReorderPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="productsBelowReorderLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="purchasesByBranchTable" class="report-table"></div>
+                <div id="purchasesByBranchCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="purchasesByBranchBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="purchasesByBranchPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="purchasesByBranchLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="stagnantProductsTable" class="report-table"></div>
+                <div id="stagnantProductsCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="stagnantProductsBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="stagnantProductsPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="stagnantProductsLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="currentInventoryTable" class="report-table"></div>
+                <div id="currentInventoryCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="currentInventoryBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="currentInventoryPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="currentInventoryLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="inventoryDiscrepanciesTable" class="report-table"></div>
+                <div id="inventoryDiscrepanciesCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="inventoryDiscrepanciesBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="inventoryDiscrepanciesPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="inventoryDiscrepanciesLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="agingReportTable" class="report-table"></div>
+                <div id="agingReportCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="agingReportBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="agingReportPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="agingReportLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="customerBehaviorTable" class="report-table"></div>
+                <div id="customerBehaviorCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="customerBehaviorBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="customerBehaviorPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="customerBehaviorLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="inactiveVendorsTable" class="report-table"></div>
+                <div id="inactiveVendorsCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="inactiveVendorsBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="inactiveVendorsPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="inactiveVendorsLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="balanceSheetTable" class="report-table"></div>
+                <div id="balanceSheetCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="balanceSheetBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="balanceSheetPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="balanceSheetLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="incomeStatementTable" class="report-table"></div>
+                <div id="incomeStatementCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="incomeStatementBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="incomeStatementPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="incomeStatementLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="journalEntriesTable" class="report-table"></div>
+                <div id="journalEntriesCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="journalEntriesBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="journalEntriesPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="journalEntriesLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="subledgerTransactionsTable" class="report-table"></div>
+                <div id="subledgerTransactionsCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="subledgerTransactionsBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="subledgerTransactionsPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="subledgerTransactionsLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="topSellingEmployeeTable" class="report-table"></div>
+                <div id="topSellingEmployeeCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="topSellingEmployeeBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="topSellingEmployeePieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="topSellingEmployeeLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="unpaidInvoicesTable" class="report-table"></div>
+                <div id="unpaidInvoicesCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="unpaidInvoicesBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="unpaidInvoicesPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="unpaidInvoicesLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="cashVsBankTable" class="report-table"></div>
+                <div id="cashVsBankCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="cashVsBankBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="cashVsBankPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="cashVsBankLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="paymentMethodsAnalysisTable" class="report-table"></div>
+                <div id="paymentMethodsAnalysisCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="paymentMethodsAnalysisBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="paymentMethodsAnalysisPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="paymentMethodsAnalysisLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="topPurchasingCustomerTable" class="report-table"></div>
+                <div id="topPurchasingCustomerCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="topPurchasingCustomerBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="topPurchasingCustomerPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="topPurchasingCustomerLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="mostFrequentVendorTable" class="report-table"></div>
+                <div id="mostFrequentVendorCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="mostFrequentVendorBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostFrequentVendorPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostFrequentVendorLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="mostSoldProductTable" class="report-table"></div>
+                <div id="mostSoldProductCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="mostSoldProductBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostSoldProductPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostSoldProductLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="mostPurchasedProductTable" class="report-table"></div>
+                <div id="mostPurchasedProductCharts" class="chart-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <canvas id="mostPurchasedProductBarChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostPurchasedProductPieChart" class="chart-container"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="mostPurchasedProductLineChart" class="chart-container"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load key metrics on page load
+        $(document).ready(function () {
+            loadInvoiceTotals();
+        });
+
+        // Load invoice totals
+        function loadInvoiceTotals() {
+            $.ajax({
+                url: '/ReportingFull/GetInvoiceTotals',
+                method: 'GET',
+                success: function (data) {
+                    $('#totalRevenue').text(data.إجمالي_البيع || 'غير متوفر');
+                    $('#totalPurchases').text(data.إجمالي_الشراء || 'غير متوفر');
+                    $('#totalSalesReturns').text(data.إجمالي_مرتجع_البيع || 'غير متوفر');
+                    $('#totalPurchaseReturns').text(data.إجمالي_مرتجع_الشراء || 'غير متوفر');
+                },
+                error: function () {
+                    $('#totalRevenue').text('خطأ في التحميل');
+                    $('#totalPurchases').text('خطأ في التحميل');
+                    $('#totalSalesReturns').text('خطأ في التحميل');
+                    $('#totalPurchaseReturns').text('خطأ في التحميل');
+                }
+            });
+        }
+
+        // Show report table and charts
+        function showReport(action, tableId, chartsId, title, element) {
+            // Hide all tables and charts
+            $('.report-table, .chart-row').removeClass('show').hide();
+            $('.nav-link').removeClass('active');
+
+            // Mark the clicked link as active
+            $(element).addClass('active');
+
+            const $table = $('#' + tableId);
+            const $charts = $('#' + chartsId);
+
+            $.ajax({
+                url: '/ReportingFull/' + action,
+                method: 'GET',
+                success: function (data) {
+                    // Generate table
+                    let tableHtml = `<h3>${title}</h3>`;
+                    if (Array.isArray(data) && data.length > 0) {
+                        tableHtml += '<table><thead><tr>';
+                        Object.keys(data[0]).forEach(key => {
+                            tableHtml += `<th>${key}</th>`;
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        data.forEach(row => {
+                            tableHtml += '<tr>';
+                            Object.values(row).forEach(value => {
+                                tableHtml += `<td>${value}</td>`;
+                            });
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table>';
+                    } else if (data && !Array.isArray(data)) {
+                        tableHtml += '<table><thead><tr>';
+                        Object.keys(data).forEach(key => {
+                            tableHtml += `<th>${key}</th>`;
+                        });
+                        tableHtml += '</tr></thead><tbody><tr>';
+                        Object.values(data).forEach(value => {
+                            tableHtml += `<td>${value}</td>`;
+                        });
+                        tableHtml += '</tr></tbody></table>';
+                    } else {
+                        tableHtml += '<p>لا توجد بيانات متاحة</p>';
+                    }
+                    $table.html(tableHtml).show().addClass('show');
+
+                    // Generate charts
+                    if (Array.isArray(data) && data.length > 0) {
+                        // Determine labels and values
+                        let labelKey = Object.keys(data[0])[0];
+                        let valueKey = Object.keys(data[0]).find(key => !isNaN(parseFloat(data[0][key]))) || Object.keys(data[0])[1];
+                        const labels = data.map(item => item[labelKey]);
+                        const values = data.map(item => parseFloat(item[valueKey]) || 0);
+
+                        // Bar Chart
+                        new Chart(document.getElementById(tableId.replace('Table', 'BarChart')), {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: title,
+                                    data: values,
+                                    backgroundColor: '#3498db',
+                                    borderColor: '#2980b9',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        // Pie Chart
+                        new Chart(document.getElementById(tableId.replace('Table', 'PieChart')), {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: title,
+                                    data: values,
+                                    backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#1abc9c']
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        // Line Chart
+                        new Chart(document.getElementById(tableId.replace('Table', 'LineChart')), {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: title,
+                                    data: values,
+                                    borderColor: '#3498db',
+                                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                                    fill: true,
+                                    tension: 0.4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            font: {
+                                                family: 'Roboto'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        $charts.show().addClass('show');
+                    } else {
+                        $charts.html('<p>لا توجد بيانات كافية لعرض الرسوم البيانية</p>').show().addClass('show');
+                    }
+                },
+                error: function (xhr) {
+                    $table.html(`<h3>${title}</h3><p>حدث خطأ أثناء تحميل البيانات: ${xhr.responseText}</p>`).show().addClass('show');
+                    $charts.html(`<p>حدث خطأ أثناء تحميل الرسوم البيانية</p>`).show().addClass('show');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

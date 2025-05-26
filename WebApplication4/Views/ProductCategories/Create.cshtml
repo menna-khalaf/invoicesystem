@@ -1,0 +1,548 @@
+﻿@model WebApplication4.Models.ProductCategory
+
+@{
+    ViewData["Title"] = "إنشاء فئة جديدة";
+}
+
+<style>
+    /* Arabic font and RTL base styling */
+    @@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+    
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4cc9f0;
+        --dark-color: #2b2d42;
+        --light-color: #f8f9fa;
+        --success-color: #4ad66d;
+        --warning-color: #f8961e;
+        --danger-color: #ef233c;
+    }
+    
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        direction: rtl;
+        color: var(--dark-color);
+    }
+
+    /* Main form container with elegant shadow and border */
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(67, 97, 238, 0.15);
+        width: 100%;
+        max-width: 650px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .form-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(67, 97, 238, 0.2);
+    }
+
+    /* Decorative elements */
+    .form-decoration {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, rgba(76, 201, 240, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
+    }
+    
+    .decoration-1 {
+        top: -50px;
+        left: -50px;
+    }
+    
+    .decoration-2 {
+        bottom: -80px;
+        right: -30px;
+        width: 300px;
+        height: 300px;
+        opacity: 0.7;
+    }
+
+    /* Form header with gradient background */
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' opacity='0.2'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .form-header h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        position: relative;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 300;
+    }
+
+    /* Form body styling */
+    .form-body {
+        padding: 40px;
+        position: relative;
+    }
+    
+    /* Form group styling */
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: var(--dark-color);
+        font-size: 1.05rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        background-color: white;
+        outline: none;
+    }
+    
+    /* File input custom styling */
+    .file-input-container {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input-button {
+        border: 2px dashed #ced4da;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .file-input-button:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .file-input-button i {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+    
+    .file-input-button span {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    
+    .file-input-container input[type="file"] {
+        position: absolute;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    /* Validation messages */
+    .text-danger {
+        color: var(--danger-color);
+        font-size: 0.9rem;
+        margin-top: 8px;
+        display: block;
+    }
+    
+    /* Button styling */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        gap: 15px;
+    }
+    
+    .btn {
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-family: 'Tajawal', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        flex: 1;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        background: transparent;
+        border: 2px solid #ced4da;
+        color: #6c757d;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #f8f9fa;
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+    
+    .btn i {
+        margin-left: 8px;
+    }
+    
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .form-container {
+            max-width: 80%; /* Slightly wider on tablets */
+            margin: 0 auto;
+        }
+
+        .form-header {
+            padding: 25px;
+        }
+
+        .form-header h1 {
+            font-size: 1.8rem; /* Slightly smaller heading */
+        }
+
+        .form-header p {
+            font-size: 1rem;
+        }
+
+        .form-body {
+            padding: 30px;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .form-control {
+            padding: 12px 18px;
+            font-size: 0.95rem;
+        }
+
+        .file-input-button {
+            padding: 25px;
+        }
+
+        .file-input-button i {
+            font-size: 1.8rem;
+        }
+
+        .file-input-button span {
+            font-size: 0.9rem;
+        }
+
+        .form-actions {
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .form-container {
+            max-width: 90%; /* More width usage on smaller screens */
+            border-radius: 15px;
+        }
+
+        .form-header {
+            padding: 20px;
+        }
+
+        .form-header h1 {
+            font-size: 1.6rem; /* Further reduce heading size */
+        }
+
+        .form-header p {
+            font-size: 0.9rem;
+        }
+
+        .form-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        .file-input-button {
+            padding: 20px;
+        }
+
+        .file-input-button i {
+            font-size: 1.5rem;
+        }
+
+        .file-input-button span {
+            font-size: 0.85rem;
+        }
+
+        .form-actions {
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%; /* Full-width buttons */
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .decoration-1, .decoration-2 {
+            display: none; /* Hide decorative elements on smaller screens */
+        }
+    }
+
+    @@media (max-width: 576px) {
+        body {
+            padding: 15px; /* Reduce body padding */
+        }
+
+        .form-container {
+            max-width: 100%; /* Use full width on very small screens */
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1); /* Softer shadow */
+        }
+
+        .form-header {
+            padding: 15px;
+        }
+
+        .form-header h1 {
+            font-size: 1.4rem; /* Even smaller heading */
+        }
+
+        .form-header p {
+            font-size: 0.85rem;
+        }
+
+        .form-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 10px;
+        }
+
+        .file-input-button {
+            padding: 15px;
+        }
+
+        .file-input-button i {
+            font-size: 1.2rem;
+        }
+
+        .file-input-button span {
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            padding: 10px;
+            font-size: 0.85rem;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .form-header h1 {
+            font-size: 1.2rem; /* Smallest heading for tiny screens */
+        }
+
+        .form-header p {
+            font-size: 0.8rem;
+        }
+
+        .form-control {
+            padding: 7px 10px;
+            font-size: 0.8rem;
+        }
+
+        .file-input-button {
+            padding: 12px;
+        }
+
+        .file-input-button i {
+            font-size: 1rem;
+        }
+
+        .file-input-button span {
+            font-size: 0.75rem;
+        }
+
+        .btn {
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .form-container {
+            max-width: 700px; /* Slightly larger on wide screens */
+        }
+
+        .form-header h1 {
+            font-size: 2.5rem;
+        }
+
+        .form-header p {
+            font-size: 1.2rem;
+        }
+
+        .form-control {
+            padding: 18px 25px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-decoration decoration-1"></div>
+    <div class="form-decoration decoration-2"></div>
+    
+    <div class="form-header">
+        <h1>إنشاء فئة جديدة</h1>
+        <p>أضف فئة منتجات جديدة إلى متجرك</p>
+    </div>
+    
+    <div class="form-body">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+            
+            <div class="form-group">
+                <label asp-for="CategoryName">اسم الفئة</label>
+                <input asp-for="CategoryName" class="form-control" placeholder="أدخل اسم الفئة هنا" />
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Icon">أيقونة الفئة</label>
+                <div class="file-input-container">
+                    <div class="file-input-button">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <span>انقر لرفع صورة الأيقونة</span>
+                        <span id="file-name" style="display:none; margin-top:10px;"></span>
+                    </div>
+                    <input type="file" name="Icon" accept="image/*" onchange="document.getElementById('file-name').textContent = this.files[0]?.name || ''; document.getElementById('file-name').style.display = 'block'" />
+                </div>
+                <span asp-validation-for="Icon" class="text-danger"></span>
+            </div>
+            
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-right"></i> رجوع
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> إنشاء الفئة
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <script>
+        // Animation for file input
+        document.querySelector('input[type="file"]').addEventListener('change', function() {
+            const fileNameElement = document.getElementById('file-name');
+            if (this.files.length > 0) {
+                fileNameElement.textContent = this.files[0].name;
+                fileNameElement.style.display = 'block';
+                fileNameElement.style.color = '#4361ee';
+                fileNameElement.style.fontWeight = '500';
+            } else {
+                fileNameElement.style.display = 'none';
+            }
+        });
+    </script>
+}

@@ -1,0 +1,233 @@
+﻿@model WebApplication4.Models.Adjustment
+
+@{
+    ViewData["Title"] = "إنشاء تسوية";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .form-image-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            height: 600px;
+        }
+        
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .image-section {
+            flex: 1;
+            background: url('https://img.freepik.com/free-vector/business-team-putting-together-jigsaw-puzzle-isolated-flat-vector-illustration-cartoon-partners-working-connection-teamwork-partnership-cooperation-concept_74855-9814.jpg') center/cover no-repeat;
+            background-color: #2c3e50;
+            background-blend-mode: overlay;
+        }
+        
+        h1 {
+            font-family: 'El Messiri', sans-serif;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #3498db;
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background-color: #fff;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 1em;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(127, 140, 141, 0.3);
+        }
+        
+        .text-danger {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+      
+        
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="form-image-container">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h1>إنشاء جرد جديدة</h1>
+                
+                <form asp-action="Create" class="animated-form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="EmployeeId">الموظف</label>
+                        <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId">
+                            <option value="">اختر الموظف</option>
+                        </select>
+                        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Notes">ملاحظات</label>
+                        <input asp-for="Notes" class="form-control" placeholder="أدخل الملاحظات هنا..." />
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="AdjustmentDate">تاريخ التسوية</label>
+                        <input type="date" id="AdjustmentDate" name="AdjustmentDate" class="form-control">
+                    </div>
+
+                    <div class="action-buttons">
+                        <input type="submit" value="إنشاء" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary">العودة إلى القائمة</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Image Section -->
+            <div class="image-section"></div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script>
+            // Set today's date as default for the date picker
+            document.getElementById('AdjustmentDate').valueAsDate = new Date();
+        </script>
+    }
+</body>
+</html>

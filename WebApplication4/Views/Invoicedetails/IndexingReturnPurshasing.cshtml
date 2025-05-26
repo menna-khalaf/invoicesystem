@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاتورة ضريبية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .invoice-container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+        }
+
+        .qr-code {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <h2>فاتورة ضريبية</h2>
+        <div class="qr-code">📷 QR Code</div>
+        <table>
+            <tr>
+                <th>رقم الفاتورة</th>
+                <td><input type="text" value="@ViewBag.Invoice.InvoiceId" readonly></td>
+                <th>تاريخ الإصدار</th>
+                <td><input type="text" value="@ViewBag.Invoice.InvoiceDate.ToString("yyyy-MM-dd")" readonly></td>
+            </tr>
+            <tr>
+                <th>المورد</th>
+                <td><input type="text" value="@ViewBag.Invoice.Employee.Username" readonly></td>
+                @* <th>الهاتف</th>
+                <td><input type="text" value="@ViewBag.Invoice.SupplierPhone" readonly></td> *@
+            </tr>
+
+            <tr>
+                <th>المشتري</th>
+                <td><input type="text" value="@ViewBag.Invoice.Customer.CustomerName" readonly></td>
+                @* <th>الهاتف</th>
+                <td><input type="text" value="@ViewBag.Invoice.Customer.CustomerPhone" readonly></td> *@
+            </tr>
+        </table>
+        <h3>تفاصيل المنتجات</h3>
+        <table>
+            <tr>
+                <th>م</th>
+                <th>الوصف</th>
+                <th>الكمية</th>
+                <th>سعر الوحدة</th>
+                <th>الخصم</th>
+                <th>الضريبة</th>
+                <th>الإجمالي</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DetailId</td>
+                    <td>@item.Product.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice</td>
+                    <td>0.00</td>
+                    <td><input type="text" value="@item.Product?.VATRate" readonly></td>
+                    <td>@(item.Quantity * item.UnitPrice + (item.Quantity * item.UnitPrice * item.Product?.VATRate / 100 ?? 0))</td>
+
+                </tr>
+            }
+        </table>
+        @* <h3>الإجمالي النهائي: <strong>@Model.Sum(i => i.LineTotal)</strong></h3> *@
+    </div>
+</body>
+</html>

@@ -1,0 +1,614 @@
+﻿@model WebApplication4.Models.Transfer
+
+@{
+    ViewData["Title"] = "إنشاء تحويل جديد";
+}
+
+<div class="transfer-app" dir="rtl">
+    <div class="transfer-header">
+        <div class="header-content">
+            <h1>
+                <span class="icon-circle">
+                    <i class="fas fa-exchange-alt"></i>
+                </span>
+                @ViewData["Title"]
+            </h1>
+            <p class="subtitle">تحويل الأموال بشكل آمن بين الحسابات</p>
+        </div>
+    </div>
+
+    <div class="transfer-body">
+        <div class="transfer-form-container">
+            <form asp-action="Create" class="transfer-form">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-wallet"></i>
+                        <h3>معلومات الحساب</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="FromAccountId" class="form-label">الحساب المرسل</label>
+                            <div class="select-wrapper">
+                                <select asp-for="FromAccountId" class="form-control" asp-items="ViewBag.FromAccountId">
+                                    <option value="">اختر الحساب المرسل</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <span asp-validation-for="FromAccountId" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">تصفية حسب نوع الحساب</label>
+                            <div class="select-wrapper">
+                                <select id="AccountTypeFilter" class="form-control">
+                                    <option value="">جميع أنواع الحسابات</option>
+                                    <option value="خزينة">خزينة</option>
+                                    <option value="حساب بنكي">حساب بنكي</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ToAccountId" class="form-label">الحساب المستلم</label>
+                            <div class="select-wrapper">
+                                <select asp-for="ToAccountId" class="form-control" asp-items="ViewBag.ToAccountId">
+                                    <option value="">اختر الحساب المستلم</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <span asp-validation-for="ToAccountId" class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h3>تفاصيل التحويل</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Amount" class="form-label">المبلغ</label>
+                            <div class="input-group">
+                                <input asp-for="Amount" class="form-control" placeholder="0.00" />
+                                <span class="input-group-text">ر.س</span>
+                            </div>
+                            <span asp-validation-for="Amount" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="InvoiceId" class="form-label">رقم الفاتورة</label>
+                            <input asp-for="InvoiceId" class="form-control" value="@ViewBag.DefaultInvoiceId" readonly />
+                            <span asp-validation-for="InvoiceId" class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="card-header">
+                        <i class="fas fa-cog"></i>
+                        <h3>إعدادات إضافية</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Type" class="form-label">نوع العملية</label>
+                            <div class="select-wrapper">
+                                <select asp-for="Type" class="form-control">
+                                    <option value="">اختر نوع العملية</option>
+                                    <option value="اضافة">إيداع</option>
+                                    <option value="صرف">سحب</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <span asp-validation-for="Type" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="EmployeeId" class="form-label">الموظف</label>
+                            <div class="select-wrapper">
+                                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId">
+                                    <option value="">اختر الموظف</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <span asp-validation-for="EmployeeId" class="validation-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="UserId" class="form-label">المستخدم</label>
+                            <input asp-for="UserId" class="form-control" value="@ViewBag.DefaultUserId" readonly />
+                            <span asp-validation-for="UserId" class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> تنفيذ التحويل
+                    </button>
+                    <a asp-action="Index" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i> العودة للقائمة
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="transfer-visualization">
+            <div class="visual-card">
+                <div class="transfer-flow">
+                    <div class="account source-account">
+                        <div class="account-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="account-info">
+                            <span class="account-label">الحساب المرسل</span>
+                            <span class="account-name">غير محدد</span>
+                        </div>
+                    </div>
+
+                    <div class="transfer-animation">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-head"></div>
+                        <div class="transfer-amount">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="account destination-account">
+                        <div class="account-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="account-info">
+                            <span class="account-label">الحساب المستلم</span>
+                            <span class="account-name">غير محدد</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #207cd4;
+        --primary-light: #e8f3fd;
+        --primary-dark: #1a6cbb;
+        --text-color: #2d3748;
+        --light-gray: #f7fafc;
+        --border-color: #e2e8f0;
+        --success-color: #38a169;
+        --error-color: #e53e3e;
+        --border-radius: 12px;
+        --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+    }
+
+    body {
+        background-color: #f8fafc;
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    [dir="rtl"] {
+        text-align: right;
+    }
+
+    .transfer-app {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .transfer-header {
+        background: linear-gradient(135deg, var(--primary-color), #3a9efd);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .transfer-header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .subtitle {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .transfer-body {
+        display: flex;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .transfer-form-container {
+        flex: 1;
+    }
+
+    .transfer-visualization {
+        flex: 1;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: var(--primary-light);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-header h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .card-header i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    [dir="rtl"] .select-wrapper i {
+        left: 1rem;
+        right: auto;
+    }
+
+    .select-wrapper i {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        pointer-events: none;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: white;
+        appearance: none;
+    }
+
+    select.form-control {
+        padding-left: 2.5rem;
+        padding-right: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(32, 124, 212, 0.2);
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    [dir="rtl"] .input-group-text {
+        border-left: none;
+        border-right: 1px solid var(--border-color);
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    [dir="rtl"] .input-group .form-control {
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+
+    .input-group-text {
+        padding: 0.75rem 1rem;
+        background-color: var(--primary-light);
+        border: 1px solid var(--border-color);
+        border-right: none;
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        color: var(--primary-color);
+    }
+
+    .input-group .form-control {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .validation-message {
+        display: block;
+        margin-top: 0.5rem;
+        color: var(--error-color);
+        font-size: 0.875rem;
+    }
+
+    .validation-summary {
+        background-color: #fff5f5;
+        border: 1px solid #fed7d7;
+        color: var(--error-color);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: var(--box-shadow);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--primary-light);
+    }
+
+    /* Transfer Visualization */
+    .visual-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 2rem;
+        height: 100%;
+    }
+
+    .transfer-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .account {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background-color: var(--light-gray);
+        border-radius: var(--border-radius);
+    }
+
+    .account-icon {
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .account-info {
+        flex: 1;
+    }
+
+    .account-label {
+        display: block;
+        font-size: 0.875rem;
+        color: #718096;
+    }
+
+    .account-name {
+        display: block;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+
+    .transfer-animation {
+        position: relative;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .arrow-line {
+        position: absolute;
+        width: 80%;
+        height: 2px;
+        background-color: var(--primary-color);
+    }
+
+    [dir="rtl"] .arrow-head {
+        right: 10%;
+        left: auto;
+        transform: rotate(-135deg);
+    }
+
+    .arrow-head {
+        position: absolute;
+        left: 10%;
+        width: 12px;
+        height: 12px;
+        border-top: 2px solid var(--primary-color);
+        border-right: 2px solid var(--primary-color);
+        transform: rotate(45deg);
+    }
+
+    .transfer-amount {
+        position: absolute;
+        background-color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--border-color);
+        z-index: 1;
+    }
+
+    .transfer-amount i {
+        color: var(--success-color);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1024px) {
+        .transfer-body {
+            flex-direction: column;
+        }
+        
+        .transfer-visualization {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn-primary, .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<script>
+    // Update visualization when form changes
+    document.getElementById('FromAccountId').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const accountName = selectedOption.text || 'غير محدد';
+        document.querySelector('.source-account .account-name').textContent = accountName;
+    });
+
+    document.getElementById('ToAccountId').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const accountName = selectedOption.text || 'غير محدد';
+        document.querySelector('.destination-account .account-name').textContent = accountName;
+    });
+
+    document.getElementById('Amount').addEventListener('input', function() {
+        const amount = this.value || '0.00';
+        document.querySelector('.transfer-amount span').textContent = amount + ' ر.س';
+    });
+
+    // Original filter functionality
+    document.getElementById('AccountTypeFilter').addEventListener('change', function() {
+        const selectedType = this.value;
+        const userId = '@ViewBag.DefaultUserId';
+
+        if (selectedType) {
+            fetch(`/Transfers/GetAccountsByType?type=${selectedType}&userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const toAccountSelect = document.getElementById('ToAccountId');
+                    toAccountSelect.innerHTML = '<option value="">اختر الحساب المستلم</option>';
+
+                    data.forEach(account => {
+                        const option = document.createElement('option');
+                        option.value = account.accountId;
+                        option.text = account.accountName;
+                        toAccountSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching accounts:', error);
+                });
+        }
+    });
+</script>

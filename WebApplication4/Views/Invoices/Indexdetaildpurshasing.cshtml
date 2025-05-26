@@ -1,0 +1,374 @@
+﻿@model List<WebApplication4.Models.InvoiceViewModel>
+@{
+    ViewData["Title"] = "قائمة الفواتير";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #207cd4;
+            --primary-light: #3a86ff;
+            --secondary: #ecf0f1;
+            --accent: #3498db;
+            --success: #2ecc71;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --gray: #adb5bd;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Amiri', serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            direction: rtl;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .invoice-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            border: 1px solid var(--gray);
+        }
+
+        .invoice-header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+            .invoice-header h2 {
+                font-weight: 700;
+                font-size: 26px;
+                margin: 0;
+            }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-export-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+            .btn-export-success:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+        .invoice-body {
+            padding: 0;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+            .invoice-table thead th {
+                background-color: var(--primary);
+                color: var(--white);
+                padding: 14px 16px;
+                font-weight: 600;
+                text-align: right;
+                position: sticky;
+                top: 0;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .invoice-table th:last-child {
+                border-right: none;
+            }
+
+            .invoice-table tbody tr {
+                border-bottom: 1px solid var(--gray);
+            }
+
+                .invoice-table tbody tr:nth-child(even) {
+                    background-color: var(--light);
+                }
+
+                .invoice-table tbody tr:hover {
+                    background-color: rgba(32, 124, 212, 0.05);
+                }
+
+            .invoice-table td {
+                padding: 12px 16px;
+                text-align: right;
+                vertical-align: middle;
+                min-width: 100px;
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            min-width: 220px;
+        }
+
+        .btn-view {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .btn-payment {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        .btn-report {
+            background-color: var(--warning);
+            color: var(--white);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Column width distribution */
+        .invoice-table th:nth-child(1),
+        .invoice-table td:nth-child(1) {
+            width: 15%;
+        }
+
+        .invoice-table th:nth-child(2),
+        .invoice-table td:nth-child(2) {
+            width: 25%;
+        }
+
+        .invoice-table th:nth-child(3),
+        .invoice-table td:nth-child(3) {
+            width: 25%;
+        }
+
+        .invoice-table th:nth-child(4),
+        .invoice-table td:nth-child(4) {
+            width: 15%;
+        }
+
+        .invoice-table th:nth-child(5),
+        .invoice-table td:nth-child(5) {
+            width: 20%;
+        }
+
+        @@media (max-width: 1200px) {
+            .container {
+                padding: 10px;
+            }
+
+            .invoice-table {
+                font-size: 13px;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .invoice-table {
+                table-layout: auto;
+            }
+
+                .invoice-table th,
+                .invoice-table td {
+                    padding: 10px 12px;
+                }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .action-buttons {
+                min-width: 180px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .invoice-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+
+                .invoice-header h2 {
+                    font-size: 22px;
+                }
+
+            .export-buttons {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 8px;
+                min-width: auto;
+            }
+
+            .btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .invoice-table th,
+            .invoice-table td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice-card">
+            <div class="invoice-header">
+                <h2>قائمة الفواتير</h2>
+                <div class="export-buttons">
+                    <button class="btn btn-export-success" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </div>
+            <div class="invoice-body">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الفاتورة</th>
+                            <th>اسم المورد</th>
+                            <th>اسم الموظف</th>
+                            <th>تاريخ الفاتورة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var invoice in Model)
+                        {
+                            <tr>
+                                <td>#@invoice.InvoiceId</td>
+                                <td>@invoice.VendorName</td>
+                                <td>@invoice.EmployeeName</td>
+                                <td>@invoice.InvoiceDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("InvoiceDetails", "Invoices", new { invoiceId = invoice.InvoiceId })"
+                                           class="btn btn-view"
+                                           title="عرض الفاتورة">
+                                            <i class="fas fa-eye"></i> عرض
+                                        </a>
+                                        <a href="@Url.Action("PaymentDetails", "Invoices", new { invoiceId = invoice.InvoiceId })"
+                                           class="btn btn-payment"
+                                           title="تفاصيل الدفع">
+                                            <i class="fas fa-money-bill-wave"></i> الدفع
+                                        </a>
+                                        <a href="@Url.Action("JournalEntries", "Invoices", new { invoiceId = invoice.InvoiceId })"
+                                           class="btn btn-report"
+                                           title="تقارير اليومية">
+                                            <i class="fas fa-file-alt"></i> التقارير
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.table_to_sheet(document.querySelector('.invoice-table'), {
+                raw: true
+            });
+
+            // Add header information
+            XLSX.utils.sheet_add_aoa(ws, [
+                ["قائمة الفواتير"],
+                [`تاريخ التقرير: ${new Date().toLocaleDateString('ar-EG')}`],
+                [""]
+            ], { origin: "A1" });
+
+            // Remove the Actions column from the exported data
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cellAddress = XLSX.utils.encode_cell({ c: 4, r: R });
+                delete ws[cellAddress]; // Remove the Actions column (index 4)
+            }
+            range.e.c = 3; // Update the range to exclude the Actions column
+            ws['!ref'] = XLSX.utils.encode_range(range);
+
+            XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+            XLSX.writeFile(wb, `Invoices_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        }
+    </script>
+</body>
+</html>

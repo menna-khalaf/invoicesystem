@@ -1,0 +1,251 @@
+﻿@model IEnumerable<WebApplication4.Models.PurchaseReturnsReportViewModel>
+
+@{
+    ViewData["Title"] = "فواتير مرتجعه من الشراء";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .page-title {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #eaf4ff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-light {
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+        }
+
+        .dropdown-menu {
+            text-align: right;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .dropdown-item i {
+                width: 18px;
+            }
+
+        .badge.bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .bg-light {
+            background-color: #eaf4ff !important;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute !important;
+            z-index: 1050 !important;
+            text-align: right;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            min-width: 180px;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            transition: background 0.3s;
+        }
+
+            .dropdown-item:hover {
+                background-color: #f8f9fa;
+            }
+
+        .dropdown button {
+            background: #f8f9fa;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a800;
+                border-color: #e0a800;
+                color: #000;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="page-title">فواتير مرتجعه من الشراء</h2>
+            <div>
+                <button class="btn btn-primary" id="exportExcel"><i class="fas fa-file-excel"></i> تصدير إلى Excel</button>
+            </div>
+        </div>
+
+        <!-- Search and Date Range Filter Section -->
+        <div class="d-flex justify-content-between mt-3">
+            <!-- Search Input -->
+            <input type="text" id="searchInput" class="form-control w-50" placeholder="ابحث هنا">
+
+            <!-- Date Range Filter -->
+            <div class="d-flex gap-2">
+                <input type="date" id="startDate" class="form-control" placeholder="تاريخ من">
+                <input type="date" id="endDate" class="form-control" placeholder="تاريخ إلى">
+                <button class="btn btn-success" id="filterByDate"><i class="fas fa-search"></i> بحث</button>
+            </div>
+        </div>
+
+        <!-- Invoice Table -->
+        <div class="table-responsive mt-3">
+            <table class="table table-hover text-center" id="invoiceTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>اسم الزبون</th>
+                        <th>اسم المنتج</th>
+                        <th>تاريخ الفاتورة</th>
+                        <th>الكمية المرتجعة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.InvoiceID</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.InvoiceDate.ToShortDateString()</td>
+                            <td>@item.TotalReturned</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="d-flex justify-content-between bg-light p-3 rounded">
+            <span>عدد الفواتير: <strong>@Model.Count()</strong></span>
+            <span>إجمالي الكمية المرتجعة: <strong>@Model.Sum(i => i.TotalReturned)</strong></span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Excel Export Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Excel Export Functionality
+            document.getElementById("exportExcel").addEventListener("click", function () {
+                let table = document.getElementById("invoiceTable"); // تحديد الجدول
+                let wb = XLSX.utils.book_new(); // إنشاء ملف Excel جديد
+                let ws = XLSX.utils.table_to_sheet(table); // تحويل الجدول إلى ورقة Excel
+                XLSX.utils.book_append_sheet(wb, ws, "Invoices"); // إضافة الورقة إلى الملف
+
+                let currentYear = new Date().getFullYear(); // الحصول على السنة الحالية
+                let fileName = "Invoices_" + currentYear + ".xlsx"; // إنشاء اسم الملف مع السنة
+
+                XLSX.writeFile(wb, fileName); // حفظ الملف
+            });
+
+            // Date Range Filter Functionality
+            document.getElementById("filterByDate").addEventListener("click", function () {
+                let startDate = document.getElementById("startDate").value;
+                let endDate = document.getElementById("endDate").value;
+
+                let tableRows = document.querySelectorAll("#invoiceTable tbody tr");
+                let hasMatch = false;
+
+                tableRows.forEach(row => {
+                    let invoiceDate = row.cells[3].textContent.trim(); // تاريخ الفاتورة
+                    let invoiceDateObj = new Date(invoiceDate);
+
+                    let startDateObj = new Date(startDate);
+                    let endDateObj = new Date(endDate);
+
+                    if (invoiceDateObj >= startDateObj && invoiceDateObj <= endDateObj) {
+                        row.style.display = "";
+                        hasMatch = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                // If no match is found, hide the entire tbody
+                let tbody = document.querySelector("#invoiceTable tbody");
+                tbody.style.display = hasMatch ? "" : "none";
+            });
+
+            // Search Functionality
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("keyup", function () {
+                let filter = searchInput.value.toLowerCase().trim();
+                let tableRows = document.querySelectorAll("#invoiceTable tbody tr");
+                let hasMatch = false;
+
+                tableRows.forEach(row => {
+                    let invoiceNumber = row.cells[0].textContent.toLowerCase(); // رقم الفاتورة
+                    let customerName = row.cells[1].textContent.toLowerCase(); // اسم الزبون
+                    let productName = row.cells[2].textContent.toLowerCase(); // اسم المنتج
+
+                    if (invoiceNumber.includes(filter) || customerName.includes(filter) || productName.includes(filter)) {
+                        row.style.display = "";
+                        hasMatch = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                // If no match is found, hide the entire tbody
+                let tbody = document.querySelector("#invoiceTable tbody");
+                tbody.style.display = hasMatch ? "" : "none";
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "تقرير صافي الدخل";
+}
+
+<h2 class="text-center mt-3">تقرير صافي الدخل للسنة @ViewBag.Year</h2>
+
+<table class="table table-bordered text-center mt-4">
+    <thead class="table-dark">
+        <tr>
+            <th>السنة</th>
+            <th>إجمالي المبيعات (بيع)</th>
+            <th>إجمالي المشتريات (شراء)</th>
+            <th>صافي الدخل</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@ViewBag.Year</td>
+            <td>@ViewBag.TotalSales.ToString("N2")</td>
+            <td>@ViewBag.TotalPurchases.ToString("N2")</td>
+            <td>@ViewBag.NetIncome.ToString("N2")</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="text-center mt-3">
+    <a href="@Url.Action("ExportNetIncomeToExcel", "invoices", new { year = ViewBag.Year })"
+       class="btn btn-success">
+        📥 تصدير إلى إكسل
+    </a>
+</div>
+

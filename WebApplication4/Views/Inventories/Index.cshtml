@@ -1,0 +1,161 @@
+﻿@model IEnumerable<WebApplication4.Models.Inventory>
+
+@{
+    ViewData["Title"] = "Inventory Report";
+}
+
+<style>
+    /* Summary Cards */
+    .summary-card {
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    /* Inventory Cards */
+    .inventory-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        border-radius: 15px;
+    }
+
+        .inventory-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Button Hover Effects */
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+</style>
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary fw-bold">📦 تقرير المخزون</h2>
+
+    <!-- Summary Section -->
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card summary-card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5 class="card-title">📥 إجمالي الوارد</h5>
+                    <h3 id="totalIncoming">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card summary-card text-white bg-danger shadow">
+                <div class="card-body">
+                    <h5 class="card-title">📤 إجمالي الصادر</h5>
+                    <h3 id="totalOutgoing">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card summary-card text-white bg-warning shadow">
+                <div class="card-body">
+                    <h5 class="card-title">🔄 إجمالي الرصيد</h5>
+                    <h3 id="totalBalance">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="input-group mb-4">
+        <input type="text" id="searchBox" class="form-control" placeholder="🔍 ابحث عن منتج..." aria-label="Search">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="searchInventory()">بحث</button>
+        </div>
+    </div>
+
+
+
+    <button class="btn btn-outline-primary shadow-sm" onclick="generateReport()">
+        <i class="fas fa-file-alt"></i> تقرير
+    </button>
+    <!-- Inventory Cards -->
+    <div class="row" id="inventoryContainer">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 inventory-item" data-product="@item.Product.ProductName">
+                <div class="card inventory-card shadow-lg p-3 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-center text-info fw-bold">@item.Product.ProductName</h5>
+                        <p class="card-text">
+                            <strong class="text-success">📥 الوارد:</strong> <span class="incoming">@item.IncomingQuantity</span><br>
+                            <strong class="text-danger">📤 الصادر:</strong> <span class="outgoing">@item.OutgoingQuantity</span><br>
+                            <strong class="text-warning">🔄 الرصيد الحالي:</strong> <span class="balance">@item.Balance</span>
+                        </p>
+                        <p class="text-muted small">
+                            🕒 آخر تحديث: @(item.LastUpdated != null ? item.LastUpdated.Value.ToString("yyyy-MM-dd HH:mm") : "غير متوفر")
+                        </p>
+
+
+                        <div class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.InventoryId" class="btn btn-outline-primary btn-sm">✏ تعديل</a>
+                            <a asp-action="Details" asp-route-id="@item.InventoryId" class="btn btn-outline-secondary btn-sm">🔍 تفاصيل</a>
+                            <a asp-action="Delete" asp-route-id="@item.InventoryId" class="btn btn-outline-danger btn-sm">🗑 حذف</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+                            <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        calculateSummary();
+    });
+
+    // Function to calculate total incoming, outgoing, and balance
+    function calculateSummary() {
+        let totalIncoming = 0, totalOutgoing = 0, totalBalance = 0;
+
+        document.querySelectorAll(".inventory-item").forEach(item => {
+            totalIncoming += parseInt(item.querySelector(".incoming").innerText);
+            totalOutgoing += parseInt(item.querySelector(".outgoing").innerText);
+            totalBalance += parseInt(item.querySelector(".balance").innerText);
+        });
+
+        document.getElementById("totalIncoming").innerText = totalIncoming;
+        document.getElementById("totalOutgoing").innerText = totalOutgoing;
+        document.getElementById("totalBalance").innerText = totalBalance;
+    }
+
+    // Function for search filter
+    function searchInventory() {
+        let input = document.getElementById("searchBox").value.toLowerCase();
+        let items = document.querySelectorAll(".inventory-item");
+
+        items.forEach(item => {
+            let productName = item.getAttribute("data-product").toLowerCase();
+            if (productName.includes(input)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+
+
+
+    function generateReport() {
+        alert("🔍 ميزة إنشاء التقارير قيد التطوير!");
+    }
+                            </script>

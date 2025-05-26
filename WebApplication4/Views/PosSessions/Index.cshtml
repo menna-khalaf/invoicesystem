@@ -1,0 +1,90 @@
+﻿@* @model IEnumerable<WebApplication4.Models.PosSession>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartingCash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndingCash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Branch)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PosNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Storehouse)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartingCash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndingCash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch.BranchName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PosNavigation.Posname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Storehouse.StorehouseName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SessionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.SessionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.SessionId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+ *@

@@ -1,0 +1,306 @@
+﻿@model WebApplication4.Models.Storehouse
+
+@{
+    ViewData["Title"] = "تعديل المستودع";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #207cd4;
+            --primary-light: #e8f2fc;
+            --secondary: #2d3e50;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: #2d3e50;
+        }
+
+        .edit-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 2rem auto;
+            max-width: 800px;
+            overflow: hidden;
+            border: none;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), #1a6bb7);
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-subtitle {
+            opacity: 0.9;
+            font-weight: 400;
+            margin-right: 40px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(32, 124, 212, 0.25);
+        }
+
+        .input-group-text {
+            background-color: var(--primary-light);
+            border-color: var(--border);
+            color: var(--primary);
+        }
+
+        .status-toggle {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--danger);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .status-text {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .btn-save {
+            background-color: var(--primary);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            background-color: #1a6bb7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            color: var(--gray);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+            transform: translateX(-5px);
+            text-decoration: none;
+        }
+
+        .text-danger {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        @@media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-control {
+                padding: 0.65rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="edit-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-edit"></i> تعديل المستودع
+                </h2>
+                <p class="card-subtitle">تحديث بيانات المستودع في النظام</p>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" id="storehouseForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" asp-for="StorehouseId" />
+                    <input type="hidden" id="actualStatus" name="Status" value="@(Model.Status.HasValue && Model.Status.Value ? "true" : "false")" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="StorehouseName" class="form-label">اسم المستودع</label>
+                            <input asp-for="StorehouseName" class="form-control" placeholder="أدخل اسم المستودع" />
+                            <span asp-validation-for="StorehouseName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label">الموقع الرئيسي</label>
+                            <input asp-for="Location" class="form-control" placeholder="أدخل الموقع الرئيسي" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SubLocation" class="form-label">الموقع الفرعي</label>
+                            <input asp-for="SubLocation" class="form-control" placeholder="أدخل الموقع الفرعي" />
+                            <span asp-validation-for="SubLocation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CreatedAt" class="form-label">تاريخ الإنشاء</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <input asp-for="CreatedAt" type="date" class="form-control" />
+                            </div>
+                            <span asp-validation-for="CreatedAt" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DetailedLocation" class="form-label">الموقع التفصيلي</label>
+                            <input asp-for="DetailedLocation" class="form-control" placeholder="أدخل الموقع التفصيلي" />
+                            <span asp-validation-for="DetailedLocation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">حالة المستودع</label>
+                            <div class="status-toggle">
+                                <span class="status-text" id="statusText">
+                                    @(Model.Status.HasValue ? (Model.Status.Value ? "نشط" : "غير نشط") : "غير محدد")
+                                </span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="statusToggle" 
+                                        @(Model.Status.HasValue && Model.Status.Value ? "checked" : "") />
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a asp-action="Index" class="btn-back">
+                            <i class="fas fa-arrow-right"></i> العودة للقائمة
+                        </a>
+                        <button type="button" id="saveButton" class="btn btn-save text-white">
+                            <i class="fas fa-save me-2"></i> حفظ التعديلات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Update status text on toggle
+            $('#statusToggle').change(function() {
+                const statusText = $(this).is(':checked') ? 'نشط' : 'غير نشط';
+                $('#statusText').text(statusText);
+            });
+
+            // Handle form submission
+            $('#saveButton').click(function() {
+                // Update the hidden status field
+                $('#actualStatus').val($('#statusToggle').is(':checked').toString());
+                
+                // Submit the form
+                $('#storehouseForm').submit();
+            });
+
+            // Format date input if it has a value
+            const dateInput = $('input[type="date"]');
+            if (dateInput.val()) {
+                const date = new Date(dateInput.val());
+                const formattedDate = date.toISOString().split('T')[0];
+                dateInput.val(formattedDate);
+            }
+        });
+    </script>
+</body>
+</html>

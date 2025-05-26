@@ -1,0 +1,31 @@
+﻿\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{arabtex}
+\usepackage{utf8}
+\setcode{utf8}
+\usepackage[arabic]{babel}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{fontspec}
+\setmainfont{Amiri}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\textbf{تقرير القيود اليومية - AccountName}}
+\fancyfoot[C]{\thepage}
+\begin{document}
+\begin{landscape}
+\begin{longtable}{p{2cm}|p{6cm}|p{3cm}|p{3cm}|p{4cm}}
+\hline
+\textbf{التاريخ} & \textbf{الوصف} & \textbf{المدين} & \textbf{الدائن} & \textbf{نوع القيد} \\ \hline
+\endhead
+% Journal entries will be inserted here
+\end{longtable}
+\end{landscape}
+\end{document}

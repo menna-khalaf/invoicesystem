@@ -1,0 +1,216 @@
+﻿@model WebApplication4.Models.Storehouse
+
+@{
+    ViewData["Title"] = "حذف المستودع";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #3498db;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #95a5a6;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            text-align: right;
+        }
+
+        .delete-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            margin: 0 auto;
+            max-width: 700px;
+            overflow: hidden;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #f53b57, #e74c3c);
+            color: white;
+            padding: 25px;
+            text-align: right;
+        }
+
+        h1 {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            font-weight: 500;
+            opacity: 0.9;
+            font-size: 1.2rem;
+        }
+
+        .content-section {
+            padding: 30px;
+        }
+
+        .data-display {
+            border-bottom: 1px solid var(--border);
+            padding: 25px 0;
+        }
+
+        .data-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .data-label {
+            flex: 0 0 180px;
+            font-weight: 600;
+            color: var(--dark);
+            padding-left: 15px;
+        }
+
+        .data-value {
+            flex: 1;
+            color: var(--dark);
+            background: var(--light);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .status-value {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-inactive {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .btn-delete {
+            background-color: var(--danger);
+            border: none;
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+            .btn-delete:hover {
+                background-color: #c0392b;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+            }
+
+        .btn-back {
+            color: var(--dark);
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+            .btn-back:hover {
+                color: var(--primary);
+                background-color: var(--light);
+                text-decoration: none;
+                border-color: var(--primary);
+            }
+
+        .text-muted {
+            color: var(--gray) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="delete-container">
+            <div class="header-section">
+                <h1><i class="fas fa-trash-alt"></i> @ViewData["Title"]</h1>
+                <h3>هل أنت متأكد من رغبتك في حذف هذا المستودع؟</h3>
+            </div>
+
+            <div class="content-section">
+                <div class="data-display">
+                    <div class="data-row">
+                        <div class="data-label">اسم المستودع</div>
+                        <div class="data-value">@Html.DisplayFor(model => model.StorehouseName)</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">الموقع الرئيسي</div>
+                        <div class="data-value">@Html.DisplayFor(model => model.Location)</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">الموقع الفرعي</div>
+                        <div class="data-value">@Html.DisplayFor(model => model.SubLocation)</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">تاريخ الإنشاء</div>
+                        <div class="data-value">@Html.DisplayFor(model => model.CreatedAt)</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">الموقع التفصيلي</div>
+                        <div class="data-value">@Html.DisplayFor(model => model.DetailedLocation)</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">الحالة</div>
+                        <div class="data-value">
+                            <span class="status-value @(Model.Status.HasValue && Model.Status.Value ? "status-active" : "status-inactive")">
+                                @(Model.Status.HasValue ? (Model.Status.Value ? "نشط" : "غير نشط") : "غير محدد")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="StorehouseId" />
+                        <a asp-action="Index" class="btn-back">
+                            <i class="fas fa-arrow-right"></i> العودة للقائمة
+                        </a>
+                        <button type="submit" class="btn btn-delete text-white">
+                            <i class="fas fa-trash-alt"></i> تأكيد الحذف
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

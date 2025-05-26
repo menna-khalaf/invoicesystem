@@ -1,0 +1,524 @@
+﻿@model WebApplication4.Models.ProcessPaymentViewModel
+
+@{
+    ViewData["Title"] = "معالجة دفع المورد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --primary-light: #e6f0fa;
+            --primary-dark: #1a68b5;
+            --accent-color: #ffc107;
+            --text-dark: #2c3e50;
+            --text-light: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-dark);
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .payment-header::after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .payment-header h3 {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        .payment-header i {
+            margin-left: 10px;
+            font-size: 1.5rem;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-table label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-table input,
+        .form-table select {
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-table input:focus,
+        .form-table select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(32, 124, 212, 0.25);
+        }
+
+        .payment-method-row {
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(32, 124, 212, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border-radius: var(--border-radius);
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            border-radius: var(--border-radius);
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+        #errorMessages {
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .amount-display {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #f8f9fa;
+            opacity: 1;
+        }
+
+        @@media (max-width: 768px) {
+            .payment-method-row .col-md-3, 
+            .payment-method-row .col-md-2 {
+                margin-bottom: 15px;
+            }
+            
+            .remove-payment-method {
+                margin-top: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="payment-header">
+            <h3 class="m-0">
+                <i class="bi bi-credit-card"></i> @ViewData["Title"]
+            </h3>
+        </div>
+
+        <div class="form-container">
+            <form asp-action="ProcessVendorPayment" asp-controller="Vendors" method="post">
+                <input type="hidden" asp-for="PayId" />
+                <input type="hidden" asp-for="PayDetailId" />
+                
+                <div class="amount-display">
+                    <i class="bi bi-currency-exchange"></i> المبلغ الإجمالي: @Model.Amount ر.س
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <tr>
+                            <td>
+                                <label asp-for="PaymentDate">التاريخ</label>
+                                <input type="date" asp-for="PaymentDate" class="form-control" required />
+                                <span asp-validation-for="PaymentDate" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <label asp-for="CustomerName">اسم المورد</label>
+                                <input type="text" asp-for="CustomerName" class="form-control" readonly />
+                            </td>
+                            <td>
+                                <label asp-for="Amount">المبلغ</label>
+                                <input type="number" asp-for="Amount" class="form-control" readonly step="0.01" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="paymentMethodsContainer">
+                    <h5 class="section-title">
+                        <i class="bi bi-wallet2"></i> طرق الدفع
+                    </h5>
+                    <div class="payment-method-row">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>طريقة الدفع</label>
+                                <select name="PaymentMethods[0].PaymentMethod" class="form-control payment-method-select" required>
+                                    <option value="">اختر طريقة الدفع</option>
+                                    <option value="كاش">كاش</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                    <option value="اجل (مدفوع)">اجل (مدفوع)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 account-select-container" style="display: none;">
+                                <label>الحساب</label>
+                                <select name="PaymentMethods[0].AccountId" class="form-control account-select">
+                                    <option value="">اختر الحساب</option>
+                                    @foreach (var account in Model.Accounts)
+                                    {
+                                        <option value="@account.AccountID">@account.AccountName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-2 due-date-container" style="display: none;">
+                                <label>تاريخ الاستحقاق</label>
+                                <input type="date" name="PaymentMethods[0].DueDate" class="form-control due-date-input" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>المبلغ</label>
+                                <input type="number" name="PaymentMethods[0].PaymentAmount" class="form-control payment-amount" step="0.01" required />
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="btn btn-danger remove-payment-method" style="display: none;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" id="addPaymentMethod" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> إضافة طريقة دفع
+                    </button>
+                    
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> حفظ
+                        </button>
+                        <a asp-action="VendorDeferredPayments" asp-controller="Vendors" asp-route-vendorId="@ViewBag.VendorId" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> إلغاء
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let paymentMethodIndex = 1;
+
+            // Add error display area
+            $('#paymentMethodsContainer').before('<div id="errorMessages" class="alert alert-danger" style="display: none;"></div>');
+
+            // Handle payment method selection
+            $(document).on('change', '.payment-method-select', function () {
+                var $row = $(this).closest('.payment-method-row');
+                var method = $(this).val();
+                var $accountContainer = $row.find('.account-select-container');
+                var $accountSelect = $row.find('.account-select');
+                var $dueDateContainer = $row.find('.due-date-container');
+                var $dueDateInput = $row.find('.due-date-input');
+                var $removeBtn = $row.find('.remove-payment-method');
+
+                // Show remove button for all rows except first
+                if ($row.index() > 0) {
+                    $removeBtn.show();
+                }
+
+                // Show/hide account dropdown
+                if (method === 'كاش' || method === 'تحويل بنكي') {
+                    $accountContainer.show();
+                    $dueDateContainer.hide();
+                    $dueDateInput.val('');
+
+                    // Determine account type
+                    var accountType = method === 'كاش' ? 'خزينة' : 'حساب بنكي';
+
+                    // AJAX call to get accounts
+                    $.ajax({
+                        url: '@Url.Action("GetAccounts", "Vendors")',
+                        type: 'GET',
+                        data: { accountType: accountType },
+                        success: function (data) {
+                            $accountSelect.empty();
+                            $accountSelect.append($('<option>', {
+                                value: '',
+                                text: 'اختر الحساب'
+                            }));
+                            if (data.length === 0) {
+                                $('#errorMessages').text('لا توجد حسابات متاحة لـ ' + accountType + '. يرجى إضافة حساب مناسب.').show();
+                            }
+                            $.each(data, function (i, account) {
+                                $accountSelect.append($('<option>', {
+                                    value: account.accountID,
+                                    text: account.accountName
+                                }));
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            $('#errorMessages').text('خطأ في تحميل الحسابات').show();
+                            $accountSelect.empty();
+                            $accountSelect.append($('<option>', {
+                                value: '',
+                                text: 'اختر الحساب'
+                            }));
+                        }
+                    });
+                } else if (method === 'اجل (مدفوع)') {
+                    $accountContainer.hide();
+                    $accountSelect.val('');
+                    $dueDateContainer.show();
+                    
+                    // Set default due date (today + 30 days)
+                    var today = new Date();
+                    today.setDate(today.getDate() + 30);
+                    var dueDate = today.toISOString().split('T')[0];
+                    $dueDateInput.val(dueDate);
+                } else {
+                    $accountContainer.hide();
+                    $accountSelect.val('');
+                    $dueDateContainer.hide();
+                    $dueDateInput.val('');
+                }
+            });
+
+            // Add new payment method
+            $('#addPaymentMethod').click(function () {
+                var newRow = `
+                    <div class="payment-method-row">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>طريقة الدفع</label>
+                                <select name="PaymentMethods[${paymentMethodIndex}].PaymentMethod" class="form-control payment-method-select" required>
+                                    <option value="">اختر طريقة الدفع</option>
+                                    <option value="كاش">كاش</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                    <option value="اجل (مدفوع)">اجل (مدفوع)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 account-select-container" style="display: none;">
+                                <label>الحساب</label>
+                                <select name="PaymentMethods[${paymentMethodIndex}].AccountId" class="form-control account-select">
+                                    <option value="">اختر الحساب</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 due-date-container" style="display: none;">
+                                <label>تاريخ الاستحقاق</label>
+                                <input type="date" name="PaymentMethods[${paymentMethodIndex}].DueDate" class="form-control due-date-input" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>المبلغ</label>
+                                <input type="number" name="PaymentMethods[${paymentMethodIndex}].PaymentAmount" class="form-control payment-amount" step="0.01" required />
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button type="button" class="btn btn-danger remove-payment-method">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                $('#paymentMethodsContainer').append(newRow);
+                paymentMethodIndex++;
+            });
+
+            // Remove payment method
+            $(document).on('click', '.remove-payment-method', function () {
+                $(this).closest('.payment-method-row').remove();
+                calculateTotal();
+            });
+
+            // Calculate payment amounts
+            $(document).on('input', '.payment-amount', function() {
+                calculateTotal();
+            });
+
+            function calculateTotal() {
+                let total = 0;
+                $('.payment-amount').each(function() {
+                    const amount = parseFloat($(this).val()) || 0;
+                    total += amount;
+                });
+                
+                // Update UI to show remaining amount
+                const originalAmount = parseFloat($('#Amount').val()) || 0;
+                const remaining = originalAmount - total;
+                
+                if (remaining < 0) {
+                    $('#errorMessages').text('المبلغ المدخل يتجاوز المبلغ الإجمالي').show();
+                } else {
+                    $('#errorMessages').hide();
+                }
+            }
+
+            // Handle form submission via AJAX
+            $('form').submit(function (e) {
+                e.preventDefault();
+
+                var totalAmount = 0;
+                var hasError = false;
+                $('#errorMessages').hide().text('');
+
+                $('.payment-method-row').each(function (index) {
+                    var $row = $(this);
+                    var paymentMethod = $row.find('.payment-method-select').val();
+                    var accountId = $row.find('.account-select').val();
+                    var amount = parseFloat($row.find('.payment-amount').val()) || 0;
+
+                    totalAmount += amount;
+
+                    // Validate account selection for cash or bank transfer
+                    if ((paymentMethod === 'كاش' || paymentMethod === 'تحويل بنكي')) {
+                        if (!accountId || accountId === '' || isNaN(accountId)) {
+                            hasError = true;
+                            $('#errorMessages').text('يجب اختيار حساب صالح لطريقة الدفع: ' + paymentMethod).show();
+                        }
+                    }
+                });
+
+                var originalAmount = parseFloat($('#Amount').val()) || 0;
+                if (Math.abs(totalAmount - originalAmount) > 0.01) {
+                    $('#errorMessages').text('مجموع مبالغ طرق الدفع يجب أن يساوي المبلغ الأصلي: ' + originalAmount).show();
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    return false;
+                }
+
+                // Submit form via AJAX
+                $.ajax({
+                    url: '@Url.Action("ProcessVendorPayment", "Vendors")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            // Redirect to success page
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            $('#errorMessages').text(response.message || 'خطأ غير معروف أثناء معالجة الدفع').show();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#errorMessages').text('خطأ في الاتصال بالخادم: ' + (xhr.responseText || error)).show();
+                    }
+                });
+            });
+        });
+    </script>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

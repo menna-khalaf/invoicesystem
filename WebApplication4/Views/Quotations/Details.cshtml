@@ -1,0 +1,387 @@
+﻿@model WebApplication4.Models.QuotationViewModel
+
+@{
+    ViewData["Title"] = "تفاصيل عرض السعر";
+}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #3f37c9;
+        --accent: #4cc9f0;
+        --dark: #2b2d42;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --info: #4cc9f0;
+        --border-radius: 10px;
+        --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #dfe7f0 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--secondary);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: none;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+        .form-section h4 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-weight: 600;
+        }
+
+    label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: var(--border-radius);
+        border: 1px solid #ddd;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        transition: var(--transition);
+        height: auto;
+        background-color: #f8f9fa;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 20px 0;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px #eee;
+    }
+
+        table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px 15px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover td {
+            background-color: rgba(72, 149, 239, 0.05);
+        }
+
+    .btn {
+        border-radius: var(--border-radius);
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn i {
+            margin-left: 8px;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .totals-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: var(--border-radius);
+        margin-top: 30px;
+    }
+
+        .totals-section .form-group {
+            margin-bottom: 15px;
+        }
+
+        .totals-section label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .totals-section .form-control {
+            background-color: white;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+        .back-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+    @@media (max-width: 768px) {
+        .card {
+            padding: 20px;
+        }
+
+        table {
+            display: block;
+            overflow-x: auto;
+        }
+
+            table th, table td {
+                white-space: nowrap;
+            }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeIn 0.5s ease forwards;
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-file-invoice-dollar"></i> تفاصيل عرض السعر</h1>
+
+    <div class="card">
+        <div class="form-section">
+            <h4><i class="fas fa-info-circle"></i> معلومات أساسية</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>رقم العرض</label>
+                        <input class="form-control" value="@Model.Quotation.QuotationId" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>اسم العميل</label>
+                        <input class="form-control" value="@Model.Quotation.Customer?.CustomerName" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>اسم الموظف</label>
+                        <input class="form-control" value="@Model.Quotation.Employee?.FullName" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>تاريخ العرض</label>
+                        <input class="form-control" value="@Model.Quotation.QuotationDate.ToString("yyyy-MM-dd")" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>تاريخ الانتهاء</label>
+                        <input class="form-control" value="@Model.Quotation.ExpiryDate.ToString("yyyy-MM-dd")" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>الحالة</label>
+                        <input class="form-control" value="@Model.Quotation.Status" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>اسم الفرع</label>
+                        <input class="form-control" value="@Model.Quotation.Branch?.BranchName" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>اسم المستودع</label>
+                        <input class="form-control" value="@Model.Quotation.Storehouse?.StorehouseName" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h4><i class="fas fa-boxes"></i> المنتجات</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>الوصف</th>
+                        <th>الكمية</th>
+                        <th>سعر الوحدة</th>
+                        <th>نسبة الضريبة (%)</th>
+                        <th>نوع الخصم</th>
+                        <th>قيمة الخصم</th>
+                        <th>قيمة الضريبة</th>
+                        <th>الإجمالي</th>
+                        <th>الإجمالي مع الضريبة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.QuotationDetails.Any())
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted">لا توجد منتجات مرتبطة بهذا العرض.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var detail in Model.QuotationDetails)
+                        {
+                            <tr>
+                                <td>@detail.Product?.ProductName</td>
+                                <td>@detail.ProductDescription</td>
+                                <td>@detail.Quantity</td>
+                                <td>@detail.UnitPrice.ToString("F2")</td>
+                                <td>@(detail.Product?.Vatrate?.ToString("F2") ?? "0.00")</td>
+                                <td>@detail.DiscountType</td>
+                                <td>@detail.Discount.ToString("F2")</td>
+                                <td>@detail.VatAmount</td>
+                                <td>@detail.LineTotal</td>
+                                <td>@detail.TotalWithVat</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="totals-section">
+            <h4><i class="fas fa-calculator"></i> الحسابات النهائية</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>المجموع الفرعي</label>
+                        <input class="form-control" value="@Model.Quotation.Subtotal.ToString("F2")" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>قيمة الضريبة</label>
+                        <input class="form-control" value="@Model.Quotation.Vatamount" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>المجموع الكلي</label>
+                        <input class="form-control" value="@Model.Quotation.TotalAmount" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group text-center mt-4">
+            <a asp-action="Index" class="back-link">
+                <i class="fas fa-arrow-right"></i> العودة إلى القائمة
+            </a>
+        </div>
+    </div>
+</div>

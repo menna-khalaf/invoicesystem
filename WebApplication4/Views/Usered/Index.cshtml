@@ -1,0 +1,318 @@
+﻿@model IEnumerable<WebApplication4.Models.User>
+
+@{
+    ViewData["Title"] = "قائمة المستخدمين";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --primary-dark: #1a6ab7;
+            --primary-light: #e6f0fa;
+            --text-color: #3a3a3a;
+            --light-border: #e0e6ed;
+            --transition-speed: 0.3s;
+            --card-shadow: 0 5px 15px rgba(32, 124, 212, 0.1);
+            --border-radius: 8px;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+
+        .page-header {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .page-title {
+            color: var(--primary-dark);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .page-title i {
+                margin-left: 10px;
+                color: var(--primary-color);
+            }
+
+        .user-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            background: white;
+            transition: all var(--transition-speed);
+            margin-bottom: 1.5rem;
+        }
+
+            .user-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(32, 124, 212, 0.15);
+            }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0;
+        }
+
+        .user-email {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .badge-role {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all var(--transition-speed);
+        }
+
+            .action-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all var(--transition-speed);
+        }
+
+            .btn-add:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                color: white;
+            }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-input {
+            padding-right: 40px;
+            border-radius: 50px;
+            border: 1px solid var(--light-border);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Responsive styles */
+        @@media (max-width: 768px) {
+            .user-card {
+                padding: 1rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-avatar {
+                margin-left: 0;
+                margin-bottom: 10px;
+            }
+
+            .action-btns {
+                margin-top: 15px;
+                justify-content: flex-start !important;
+            }
+
+            .search-box {
+                max-width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Animation */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-card {
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+            .user-card:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .user-card:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .user-card:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .user-card:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+            .user-card:nth-child(5) {
+                animation-delay: 0.5s;
+            }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-users"></i> @ViewData["Title"]
+            </h1>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+            <div class="search-box">
+                <input type="text" class="form-control search-input" placeholder="ابحث عن مستخدم..." id="searchInput">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <a asp-action="Create" class="btn btn-add">
+                <i class="fas fa-plus"></i> إضافة مستخدم
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="no-users">
+                <i class="fas fa-user-slash fa-2x mb-3"></i>
+                <h5>لا يوجد مستخدمين مسجلين</h5>
+                <p>يمكنك إضافة مستخدم جديد بالضغط على زر "إضافة مستخدم"</p>
+            </div>
+        }
+        else
+        {
+            <div class="row" id="userList">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-lg-4 user-item">
+                        <div class="user-card p-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        @item.Username.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <h6 class="user-name">@item.Username</h6>
+                                        <div class="user-email">@item.Email</div>
+                                    </div>
+                                </div>
+                                <span class="badge badge-role">@item.Role</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="far fa-calendar-alt"></i> @item.CreatedAt?.ToString("yyyy/MM/dd")
+                                    </small>
+                                </div>
+                                <div class="d-flex action-btns">
+                                 @*    <a asp-action="Edit" asp-route-id="@item.UserId" class="action-btn text-primary me-2" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a> *@
+                                    <a asp-action="Details" asp-route-id="@item.UserId" class="action-btn text-info me-2" title="تفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                   @*  <a asp-action="Delete" asp-route-id="@item.UserId" class="action-btn text-danger" title="حذف">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple search functionality
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            const userItems = document.querySelectorAll('.user-item');
+
+            userItems.forEach(item => {
+                const userText = item.textContent.toLowerCase();
+                item.style.display = userText.includes(searchValue) ? 'block' : 'none';
+            });
+        });
+
+        // Add confirmation for delete action
+        document.querySelectorAll('[title="حذف"]').forEach(button => {
+            button.addEventListener('click', function (e) {
+                if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

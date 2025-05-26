@@ -1,0 +1,251 @@
+﻿@model WebApplication4.Models.Employee
+
+@{
+    ViewData["Title"] = "تفاصيل الموظف";
+}
+
+<style>
+    :root {
+        --primary-color: #207cd4;
+        --primary-dark: #1a6ab7;
+        --secondary-color: #f8f9fa;
+        --text-color: #3a3a3a;
+        --light-border: #e0e6ed;
+        --transition-speed: 0.3s;
+        --card-shadow: 0 10px 30px rgba(32, 124, 212, 0.15);
+        --border-radius: 12px;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e6f0fa 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+    }
+
+    .employee-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        background: white;
+        transition: transform var(--transition-speed);
+    }
+
+        .employee-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+    .card-title {
+        font-weight: 600;
+        margin: 0;
+        position: relative;
+        font-size: 1.8rem;
+    }
+
+        .card-title i {
+            margin-left: 10px;
+        }
+
+    .detail-item {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--light-border);
+        transition: background-color var(--transition-speed);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .detail-item:hover {
+            background-color: rgba(32, 124, 212, 0.05);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+    }
+
+        .detail-label i {
+            margin-left: 8px;
+            font-size: 1.1rem;
+        }
+
+    .detail-value {
+        text-align: left;
+        font-weight: 500;
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 500;
+        transition: all var(--transition-speed);
+        box-shadow: 0 4px 8px rgba(32, 124, 212, 0.3);
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(32, 124, 212, 0.4);
+            color: white;
+        }
+
+    .btn-outline-secondary {
+        border-radius: 50px;
+        padding: 10px 25px;
+        transition: all var(--transition-speed);
+    }
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+        }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    @@media (max-width: 768px) {
+        .card-title {
+            font-size: 1.5rem;
+        }
+
+        .detail-item {
+            padding: 12px 15px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-label, .detail-value {
+            width: 100%;
+        }
+
+        .detail-label {
+            margin-bottom: 5px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-primary-custom, .btn-outline-secondary {
+            width: 100%;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .card-title {
+            font-size: 1.3rem;
+        }
+
+        .detail-label, .detail-value {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Animation for the card entry */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .employee-card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+</style>
+
+<div class="container py-5" style="max-width: 700px;">
+    <div class="employee-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-person-badge"></i> تفاصيل الموظف
+            </h3>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="detail-item">
+                <span class="detail-label">
+                    <i class="bi bi-person"></i> الاسم الكامل
+                </span>
+                <span class="detail-value">@Html.DisplayFor(model => model.FullName)</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    <i class="bi bi-briefcase"></i> الوظيفة
+                </span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Position)</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    <i class="bi bi-cash-coin"></i> الراتب
+                </span>
+                <span class="detail-value">@Html.DisplayFor(model => model.Salary) جنيه</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    <i class="bi bi-calendar-check"></i> تاريخ التعيين
+                </span>
+                <span class="detail-value">@Html.DisplayFor(model => model.HireDate)</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    <i class="bi bi-envelope"></i> البريد الإلكتروني
+                </span>
+                <span class="detail-value">@Html.DisplayFor(model => model.User.Email)</span>
+            </div>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 py-4 px-4">
+            <div class="action-buttons">
+                <a asp-action="Edit" asp-route-id="@Model?.EmployeeId" class="btn btn-primary-custom">
+                    <i class="bi bi-pencil-square"></i> تعديل البيانات
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> العودة للقائمة
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

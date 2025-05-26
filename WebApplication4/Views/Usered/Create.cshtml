@@ -1,0 +1,396 @@
+﻿@model WebApplication4.Models.User
+
+@{
+    ViewData["Title"] = "إنشاء مستخدم";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-color: #207cd4;
+        --primary-light: #e6f2ff;
+        --primary-dark: #1a6ab8;
+        --text-color: #333;
+        --light-gray: #f8f9fa;
+        --border-color: #e0e6ed;
+        --error-color: #e74c3c;
+        --success-color: #2ecc71;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Tajawal', sans-serif;
+    }
+
+    body {
+        background-color: #f5f7fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        direction: rtl;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .form-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 25px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .form-header::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .form-header::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+    .form-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-subtitle {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.95rem;
+    }
+
+    .input-container {
+        position: relative;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 16px 14px 45px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--light-gray);
+    }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(32, 124, 212, 0.2);
+            outline: none;
+            background-color: white;
+        }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        font-size: 1rem;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 14px 16px 14px 45px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--light-gray);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23207cd4' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 15px center;
+        background-size: 12px;
+    }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(32, 124, 212, 0.2);
+            outline: none;
+            background-color: white;
+        }
+
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(32, 124, 212, 0.2);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        padding: 8px 12px;
+        border-radius: 6px;
+    }
+
+        .back-link:hover {
+            background-color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .back-link i {
+            margin-left: 8px;
+        }
+
+    .text-danger {
+        color: var(--error-color);
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .validation-summary-errors {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--error-color);
+        padding: 12px 16px;
+        border_RADIUS: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--error-color);
+        font-size: 0.9rem;
+    }
+
+        .validation-summary-errors ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+    .password-requirements {
+        font-size: 0.85rem;
+        color: var(--text-color);
+        margin-top: 5px;
+        padding-right: 10px;
+    }
+
+        .password-requirements li {
+            margin-bottom: 5px;
+        }
+
+        .password-requirements .valid {
+            color: var(--success-color);
+        }
+
+        .password-requirements .invalid {
+            color: var(--error-color);
+        }
+
+    @@media (max-width: 576px) {
+        .form-container {
+            padding: 15px;
+        }
+
+        .form-header {
+            padding: 20px 15px;
+        }
+
+        .form-body {
+            padding: 25px 20px;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">إنشاء مستخدم جديد</h1>
+            <p class="form-subtitle">أدخل بيانات المستخدم الأساسية</p>
+        </div>
+
+        <div class="form-body">
+            <form asp-action="Create" method="post" id="userForm">
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+                <div class="form-group">
+                    <label asp-for="Username" class="form-label">اسم المستخدم</label>
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input asp-for="Username" class="form-input" placeholder="أدخل اسم المستخدم" required />
+                    </div>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PasswordHash" class="form-label">كلمة المرور</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input asp-for="PasswordHash" type="password" class="form-input" id="password" placeholder="أدخل كلمة المرور" required />
+                    </div>
+                    <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    <ul class="password-requirements">
+                        <li id="length" class="invalid">يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل</li>
+                        <li id="uppercase" class="invalid">يجب أن تحتوي على حرف كبير واحد على الأقل</li>
+                        <li id="lowercase" class="invalid">يجب أن تحتوي على حرف صغير واحد على الأقل</li>
+                        <li id="number" class="invalid">يجب أن تحتوي على رقم واحد على الأقل</li>
+                        <li id="special" class="invalid">يجب أن تحتوي على رمز خاص واحد على الأقل</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
+                    <div class="input-container">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input asp-for="Email" type="email" class="form-input" placeholder="example@domain.com" required />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Role" class="form-label">الدور الوظيفي</label>
+                    <div class="input-container">
+                        <select asp-for="Role" class="form-select" required>
+                            <option value="">اختر الدور الوظيفي</option>
+                            <option value="Admin">مسؤول</option>
+                            <option value="User">مستخدم</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    <i class="fas fa-user-plus me-2"></i> إنشاء مستخدم
+                </button>
+            </form>
+
+            <a asp-action="Index" class="back-link">
+                <i class="fas fa-arrow-right"></i> العودة للقائمة
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submitBtn');
+            const lengthReq = document.getElementById('length');
+            const uppercaseReq = document.getElementById('uppercase');
+            const lowercaseReq = document.getElementById('lowercase');
+            const numberReq = document.getElementById('number');
+            const specialReq = document.getElementById('special');
+
+            function validatePassword() {
+                const password = passwordInput.value;
+
+                const lengthValid = password.length >= 8;
+                const uppercaseValid = /[A-Z]/.test(password);
+                const lowercaseValid = /[a-z]/.test(password);
+                const numberValid = /[0-9]/.test(password);
+                const specialValid = /[!@@#$%^&*(),.?":{}|<>]/.test(password);
+
+                lengthReq.className = lengthValid ? 'valid' : 'invalid';
+                uppercaseReq.className = uppercaseValid ? 'valid' : 'invalid';
+                lowercaseReq.className = lowercaseValid ? 'valid' : 'invalid';
+                numberReq.className = numberValid ? 'valid' : 'invalid';
+                specialReq.className = specialValid ? 'valid' : 'invalid';
+
+                submitBtn.disabled = !(lengthValid && uppercaseValid && lowercaseValid && numberValid && specialValid);
+            }
+
+            passwordInput.addEventListener('input', validatePassword);
+            validatePassword(); // Initial validation
+        });
+    </script>
+}

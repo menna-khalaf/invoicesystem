@@ -1,0 +1,133 @@
+﻿@model IEnumerable<WebApplication4.Models.ProductSummary>
+
+@{
+    ViewData["Title"] = "تقرير المبيعات";
+}
+<link  href="../styling/print.css"/>
+<h2 class="text-center">تقرير المبيعات</h2>
+
+<!-- زر تصدير إلى Excel -->
+<button id="printReport" class="btn btn-primary mb-3">طباعة التقرير</button>
+
+<button id="exportExcel" class="btn btn-success mb-3">تصدير إلى Excel</button>
+@* 
+<table id="purchasesTable" class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>اسم المنتج</th>
+            <th>الكمية المباعة</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.OutgoingQuantity</td>
+            </tr>
+        }
+    </tbody>
+</table> *@
+
+<!-- إضافة مكتبات JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+ 
+<!-- التفاف الصفحة بمحتوى يمكن طباعته -->
+<div id="reportContent">
+     
+
+    <table id="purchasesTable" class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>اسم المنتج</th>
+                <th>الكمية المباعة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TotalPurchasedQuantity</td>
+                    <td>@item.TotalReturnedQuantity</td>
+                    <td>@((item.TotalReturnedQuantity > 0) ? "نعم" : "لا")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="row text-center">
+        <div class="col-md-6 mb-3">
+            <canvas id="pieChart" style="max-width: 250px; max-height: 250px;"></canvas>
+        </div>
+        <div class="col-md-6 mb-3">
+            <canvas id="barChart" style="max-width: 250px; max-height: 250px;"></canvas>
+        </div>
+        <div class="col-md-6 mb-3">
+            <canvas id="lineChart" style="max-width: 250px; max-height: 250px;"></canvas>
+        </div>
+        <div class="col-md-6 mb-3">
+            <canvas id="doughnutChart" style="max-width: 250px; max-height: 250px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("printReport").addEventListener("click", function () {
+        var reportContent = document.getElementById("reportContent");
+
+        if (!reportContent) {
+            console.error("Element #reportContent not found.");
+            return;
+        }
+
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = reportContent.innerHTML;
+
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload(); // Reload to restore the original content
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var table = document.getElementById("purchasesTable");
+        var productNames = [];
+        var OutgoingQuantity = [];
+
+        for (var i = 1; i < table.rows.length; i++) {
+            productNames.push(table.rows[i].cells[0].innerText);
+            OutgoingQuantity.push(parseInt(table.rows[i].cells[1].innerText) || 0);
+        }
+
+        var chartData = {
+            labels: productNames,
+            datasets: [{
+                label: "الكمية المباعة",
+                data: OutgoingQuantity,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#9C27B0'],
+                borderWidth: 1
+            }]
+        };
+
+        var chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false
+        };
+
+        new Chart(document.getElementById("pieChart"), { type: "pie", data: chartData, options: chartOptions });
+        new Chart(document.getElementById("barChart"), { type: "bar", data: chartData, options: chartOptions });
+        new Chart(document.getElementById("lineChart"), { type: "line", data: chartData, options: chartOptions });
+        new Chart(document.getElementById("doughnutChart"), { type: "doughnut", data: chartData, options: chartOptions });
+
+        // تصدير الجدول إلى Excel
+        document.getElementById("exportExcel").addEventListener("click", function () {
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.table_to_sheet(document.getElementById("purchasesTable"));
+            XLSX.utils.book_append_sheet(wb, ws, "تقرير المبيعات");
+            XLSX.writeFile(wb, "تقرير_المبيعات.xlsx");
+        });
+    });
+</script>

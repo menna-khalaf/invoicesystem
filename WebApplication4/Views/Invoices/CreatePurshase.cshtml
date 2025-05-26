@@ -1,0 +1,848 @@
+﻿@model WebApplication4.Models.Invoice
+
+@{
+    ViewData["Title"] = "إنشاء فاتورة شراء";
+}
+
+<style>
+    :root {
+        --primary-color: #3c94bd;
+        --secondary-color: #003366;
+        --accent-color: #650101;
+        --card-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        --card-hover-bg: linear-gradient(135deg, #3c94bd 0%, #f9fcfc 100%);
+        --white: #ffffff;
+        --light-gray: #f5f7fa;
+        --text-color: #252422;
+        --border-color: #e0e0e0;
+        --table-header-color: #1c7bd4;
+    }
+
+    body {
+        background-color: var(--light-gray);
+        font-family: 'Noto Kufi Arabic', sans-serif;
+        direction: rtl;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background: var(--secondary-color);
+        color: white;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+        .header h1 {
+            font-family: 'Lalezar', cursive;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        background: var(--white);
+        color: var(--text-color);
+        border: none;
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+        padding: 20px;
+        width: 100%;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header {
+        background: var(--secondary-color);
+        color: white;
+        padding: 15px 20px;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .card-title {
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        padding: 10px 15px;
+        height: auto;
+        transition: all 0.3s;
+        background-color: var(--white);
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(60, 148, 189, 0.25);
+        }
+
+    .btn-save {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-save:hover {
+            background: #002b57;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-save:disabled {
+            background: #a9a9a9;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    .btn-secondary {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background: #317a9b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    #messageArea {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+        font-weight: 600;
+    }
+
+    .payment-date-field, .account-select {
+        display: none;
+    }
+
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        width: 100%;
+    }
+
+        .table thead th {
+            background: var(--table-header-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 12px;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tr:hover td {
+            background-color: #f0f8ff;
+        }
+
+    .btn-outline-primary {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+    .btn-outline-danger {
+        border-color: #e53935;
+        color: #e53935;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #e53935;
+            color: white;
+        }
+
+    h2, h4 {
+        color: var(--secondary-color);
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 8px;
+    }
+
+    .text-end {
+        text-align: right !important;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .alert-danger {
+        background-color: #ffebee;
+        border-color: #ef9a9a;
+        color: #c62828;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        border-color: #a5d6a7;
+        color: #2e7d32;
+    }
+
+    #totalAmountDisplay,
+    #paidAmountDisplay,
+    #differenceAmountDisplay {
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-top: 10px;
+        font-size: 1.2rem;
+    }
+
+    #differenceAmountDisplay {
+        color: var(--accent-color);
+    }
+
+    .text-primary {
+        color: var(--primary-color) !important;
+    }
+
+    @@media (max-width: 768px) {
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .btn-save, .btn-secondary {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+
+    .card {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s forwards;
+    }
+
+    @@keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<h2 class="text-primary text-center">إنشاء فاتورة شراء</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div id="messageArea" class="alert alert-danger"></div>
+                <form asp-action="CreatePurchase" id="invoiceForm" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 text-end">
+                                <label asp-for="BranchId" class="form-label">اختار الفرع</label>
+                                <select asp-for="BranchId" class="form-select text-end" asp-items="ViewBag.BranchId">
+                                    <option value="">-- اختر الفرع --</option>
+                                </select>
+                                <span asp-validation-for="BranchId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 text-end">
+                                <label asp-for="VendorId" class="form-label">المورد</label>
+                                <select asp-for="VendorId" class="form-select text-end" asp-items="ViewBag.VendorId">
+                                    <option value="">-- اختر المورد --</option>
+                                </select>
+                                <span asp-validation-for="VendorId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 text-end">
+                                <label asp-for="EmployeeId" class="form-label">الموظف</label>
+                                <select asp-for="EmployeeId" class="form-select text-end" asp-items="ViewBag.EmployeeId">
+                                    <option value="">-- اختر الموظف --</option>
+                                </select>
+                                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 text-end">
+                                <label asp-for="StorehouseId" class="form-label">المستودع</label>
+                                <select asp-for="StorehouseId" class="form-select text-end" asp-items="ViewBag.StorehouseId">
+                                    <option value="">-- اختر المستودع --</option>
+                                </select>
+                                <span asp-validation-for="StorehouseId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 text-end">
+                                <label asp-for="InvoiceDate" class="form-label">تاريخ الفاتورة</label>
+                                <input asp-for="InvoiceDate" class="form-control text-end" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <h4 class="text-center mb-3">تفاصيل الفاتورة</h4>
+                        <table class="table table-bordered">
+                            <thead class="bg-info text-white">
+                                <tr>
+                                    <th>إضافة/حذف</th>
+                                    <th>اسم المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>سعر الشراء</th>
+                                    <th>مبلغ الضريبة</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceDetailsTable">
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary add-row">+</button>
+                                    </td>
+                                    <td>
+                                        <select name="invoicedetails[0].ProductId" class="form-control product-select">
+                                            <option value="">-- اختر المنتج --</option>
+                                            @foreach (var item in (SelectList)ViewBag.ProductId)
+                                            {
+                                                <option value="@item.Value"
+                                                        data-purchase-price="@ViewBag.ProductPurchasePrices[Convert.ToInt32(item.Value)]"
+                                                        data-vatrate="@ViewBag.ProductVatrates[Convert.ToInt32(item.Value)]"
+                                                        data-balance="@ViewBag.ProductBalances[Convert.ToInt32(item.Value)]">
+                                                    @item.Text
+                                                </option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="invoicedetails[0].Quantity" class="form-control quantity" placeholder="الكمية" min="1" />
+                                        <input type="hidden" name="invoicedetails[0].InvoiceTyping" value="شراء" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="invoicedetails[0].UnitPrice" class="form-control unit-price" placeholder="سعر الشراء" readonly />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="invoicedetails[0].VatAmount" class="form-control vat-amount" placeholder="الضريبة" readonly />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="invoicedetails[0].LineTotal" class="form-control total" placeholder="الإجمالي" readonly />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive">
+                        <h4 class="text-center mb-3">طرق الدفع</h4>
+                        <table class="table table-bordered">
+                            <thead class="bg-info text-white">
+                                <tr>
+                                    <th>إضافة/حذف</th>
+                                    <th>طريقة الدفع</th>
+                                    <th>أختر الحساب</th>
+                                    <th>المبلغ</th>
+                                    <th>تاريخ الاستحقاق/الدفع</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentEntriesTable">
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary add-payment-row">+</button>
+                                    </td>
+                                    <td>
+                                        <select name="paymentEntries[0].PaymentMethod" class="form-control payment-method">
+                                            <option value="">-- اختر طريقة الدفع --</option>
+                                            <option value="كاش">كاش</option>
+                                            <option value="آجل">آجل</option>
+                                            <option value="تحويل بنكي">تحويل بنكي</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="paymentEntries[0].AccountId" class="form-control account-select">
+                                            <option value="">-- اختر الحساب --</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="paymentEntries[0].Amount" class="form-control payment-amount" placeholder="المبلغ" min="0" step="0.01" />
+                                    </td>
+                                    <td>
+                                        <input type="date" name="paymentEntries[0].DueDate" class="form-control payment-date-field due-date" style="display: none;" />
+                                        <input type="date" name="paymentEntries[0].PaidDate" class="form-control payment-date-field paid-date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <div id="totalAmountDisplay">الإجمالي: 0.00</div>
+                        <div id="paidAmountDisplay">المدفوع: 0.00</div>
+                        <div id="differenceAmountDisplay">الفرق: 0.00</div>
+                        <button type="submit" class="btn btn-save me-2" id="submitButton">حفظ</button>
+                        <a asp-action="Index" class="btn btn-secondary">إلغاء</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let detailRowIndex = 1;
+            let paymentRowIndex = 1;
+            let isSubmitting = false;
+            const cashAccounts = @Html.Raw(Json.Serialize(ViewBag.CashAccounts ?? new List<object>()));
+            const bankAccounts = @Html.Raw(Json.Serialize(ViewBag.BankAccounts ?? new List<object>()));
+
+            // Reset form to clear stale data
+            $("#invoiceForm")[0].reset();
+            $("#invoiceDetailsTable").find("tr:gt(0)").remove();
+            $("#paymentEntriesTable").find("tr:gt(0)").remove();
+            console.log("Form reset on page load");
+
+            function showMessage(message, isError = true) {
+                var messageArea = $("#messageArea");
+                messageArea.text(message);
+                messageArea.removeClass("alert-success alert-danger");
+                messageArea.addClass(isError ? "alert-danger" : "alert-success");
+                messageArea.show();
+                setTimeout(() => messageArea.hide(), 5000);
+            }
+
+            function updateTotals() {
+                let totalAmount = 0;
+                let paidAmount = 0;
+
+                $("#invoiceDetailsTable tr").each(function () {
+                    var total = parseFloat($(this).find(".total").val()) || 0;
+                    totalAmount += total;
+                });
+
+                $("#paymentEntriesTable tr").each(function () {
+                    var amount = parseFloat($(this).find(".payment-amount").val()) || 0;
+                    paidAmount += amount;
+                });
+
+                let difference = totalAmount - paidAmount;
+
+                $("#totalAmountDisplay").text(`الإجمالي: ${totalAmount.toFixed(2)}`);
+                $("#paidAmountDisplay").text(`المدفوع: ${totalAmount.toFixed(2)}`);
+                $("#differenceAmountDisplay").text(`الفرق: ${difference.toFixed(2)}`);
+            }
+
+            function updateRowCalculations(row) {
+                var selectElement = row.find(".product-select");
+                var quantityInput = row.find(".quantity");
+                var priceInput = row.find(".unit-price");
+                var vatInput = row.find(".vat-amount");
+                var totalInput = row.find(".total");
+                var selectedOption = selectElement.find("option:selected");
+                var purchasePrice = parseFloat(selectedOption.data("purchase-price")) || 0;
+                var vatRate = parseFloat(selectedOption.data("vatrate")) || 0;
+                var quantity = parseInt(quantityInput.val()) || 0;
+
+                priceInput.val(purchasePrice.toFixed(2));
+                priceInput.attr("placeholder", purchasePrice.toFixed(2));
+                var subtotal = purchasePrice * quantity;
+                var vatAmount = subtotal * (vatRate / 100);
+                var total = subtotal + vatAmount;
+
+                vatInput.val(vatAmount.toFixed(2));
+                totalInput.val(total.toFixed(2));
+                console.log(`Row Calculation: ProductId=${selectedOption.val()}, Quantity=${quantity}, PurchasePrice=${purchasePrice}, VatRate=${vatRate}, VatAmount=${vatAmount}, LineTotal=${total}`);
+                updateTotals();
+            }
+
+            function updateAccountDropdown(row, method) {
+                var accountSelect = row.find(".account-select");
+                accountSelect.empty().append('<option value="">-- اختر الحساب --</option>');
+                if (method === "كاش") {
+                    if (!cashAccounts || cashAccounts.length === 0) {
+                        showMessage("لا توجد حسابات خزينة نشطة متاحة.", true);
+                        accountSelect.hide();
+                    } else {
+                        cashAccounts.forEach(function (account) {
+                            var accountId = account.AccountId || account.accountId;
+                            var accountName = account.AccountName || account.accountName || `حساب بدون اسم (ID: ${accountId})`;
+                            accountSelect.append(`<option value="${accountId}">${accountName}</option>`);
+                        });
+                        accountSelect.show();
+                    }
+                } else if (method === "تحويل بنكي") {
+                    if (!bankAccounts || bankAccounts.length === 0) {
+                        showMessage("لا توجد حسابات بنكية نشطة متاحة.", true);
+                        accountSelect.hide();
+                    } else {
+                        bankAccounts.forEach(function (account) {
+                            var accountId = account.AccountId || account.accountId;
+                            var accountName = account.AccountName || account.accountName || `حساب بدون اسم (ID: ${accountId})`;
+                            accountSelect.append(`<option value="${accountId}">${accountName}</option>`);
+                        });
+                        accountSelect.show();
+                    }
+                } else {
+                    accountSelect.hide();
+                    accountSelect.val("");
+                }
+            }
+
+            $(document).on("change", ".product-select", function () {
+                var row = $(this).closest("tr");
+                var selectedProductId = $(this).val();
+                var selectedProductIds = [];
+                $("#invoiceDetailsTable .product-select").each(function () {
+                    var productId = $(this).val();
+                    if (productId) {
+                        selectedProductIds.push(productId);
+                    }
+                });
+
+                if (selectedProductIds.filter(id => id === selectedProductId).length > 1) {
+                    showMessage("لا يمكن اختيار نفس المنتج أكثر من مرة.");
+                    $(this).val("");
+                    updateRowCalculations(row);
+                    return;
+                }
+                updateRowCalculations(row);
+            });
+
+            $(document).on("input", ".quantity", function () {
+                updateRowCalculations($(this).closest("tr"));
+            });
+
+            $(document).on("input", ".payment-amount", function () {
+                updateTotals();
+            });
+
+            $(document).on("click", ".add-row", function () {
+                var selectedProductIds = [];
+                $("#invoiceDetailsTable .product-select").each(function () {
+                    var productId = $(this).val();
+                    if (productId) {
+                        selectedProductIds.push(productId);
+                    }
+                });
+
+                var newRow = `
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger remove-row">-</button>
+                        </td>
+                        <td>
+                            <select name="invoicedetails[${detailRowIndex}].ProductId" class="form-control product-select">
+                                <option value="">-- اختر المنتج --</option>
+                                @foreach (var item in (SelectList)ViewBag.ProductId)
+                                {
+                                    <option value="@item.Value"
+                                            data-purchase-price="@ViewBag.ProductPurchasePrices[Convert.ToInt32(item.Value)]"
+                                            data-vatrate="@ViewBag.ProductVatrates[Convert.ToInt32(item.Value)]"
+                                            data-balance="@ViewBag.ProductBalances[Convert.ToInt32(item.Value)]">
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="invoicedetails[${detailRowIndex}].Quantity" class="form-control quantity" placeholder="الكمية" min="1" />
+                            <input type="hidden" name="invoicedetails[${detailRowIndex}].InvoiceTyping" value="شراء" />
+                        </td>
+                        <td>
+                            <input type="number" name="invoicedetails[${detailRowIndex}].UnitPrice" class="form-control unit-price" placeholder="سعر الشراء" readonly />
+                        </td>
+                        <td>
+                            <input type="number" name="invoicedetails[${detailRowIndex}].VatAmount" class="form-control vat-amount" placeholder="الضريبة" readonly />
+                        </td>
+                        <td>
+                            <input type="number" name="invoicedetails[${detailRowIndex}].LineTotal" class="form-control total" placeholder="الإجمالي" readonly />
+                        </td>
+                    </tr>`;
+
+                $("#invoiceDetailsTable").append(newRow);
+                var newSelect = $("#invoiceDetailsTable tr:last .product-select");
+                newSelect.find("option").each(function () {
+                    var optionValue = $(this).val();
+                    if (optionValue && selectedProductIds.includes(optionValue)) {
+                        $(this).remove();
+                    }
+                });
+                detailRowIndex++;
+                updateTotals();
+            });
+
+            $(document).on("click", ".remove-row", function () {
+                if ($("#invoiceDetailsTable tr").length > 1) {
+                    $(this).closest("tr").remove();
+                    updateTotals();
+                } else {
+                    showMessage("يجب أن تحتوي الفاتورة على تفاصيل واحدة على الأقل.");
+                }
+            });
+
+            $(document).on("click", ".add-payment-row", function () {
+                var newRow = `
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger remove-payment-row">-</button>
+                        </td>
+                        <td>
+                            <select name="paymentEntries[${paymentRowIndex}].PaymentMethod" class="form-control payment-method">
+                                <option value="">-- اختر طريقة الدفع --</option>
+                                <option value="كاش">كاش</option>
+                                <option value="آجل">آجل</option>
+                                <option value="تحويل بنكي">تحويل بنكي</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="paymentEntries[${paymentRowIndex}].AccountId" class="form-control account-select">
+                                <option value="">-- اختر الحساب --</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="paymentEntries[${paymentRowIndex}].Amount" class="form-control payment-amount" placeholder="المبلغ" min="0" step="0.01" />
+                        </td>
+                        <td>
+                            <input type="date" name="paymentEntries[${paymentRowIndex}].DueDate" class="form-control payment-date-field due-date" style="display: none;" />
+                            <input type="date" name="paymentEntries[${paymentRowIndex}].PaidDate" class="form-control payment-date-field paid-date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </td>
+                    </tr>`;
+                $("#paymentEntriesTable").append(newRow);
+                paymentRowIndex++;
+                updateTotals();
+            });
+
+            $(document).on("click", ".remove-payment-row", function () {
+                if ($("#paymentEntriesTable tr").length > 1) {
+                    $(this).closest("tr").remove();
+                    updateTotals();
+                } else {
+                    showMessage("يجب إدخال طريقة دفع واحدة على الأقل.");
+                }
+            });
+
+            $(document).on("change", ".payment-method", function () {
+                var row = $(this).closest("tr");
+                var method = $(this).val();
+                var dueDateField = row.find(".due-date");
+                var paidDateField = row.find(".paid-date");
+                var today = new Date().toISOString().split('T')[0]; // Get today's date in yyyy-MM-dd format
+
+                if (method === "كاش" || method === "تحويل بنكي") {
+                    paidDateField.show();
+                    paidDateField.val(today);
+                    paidDateField.prop("readonly", true);
+                    dueDateField.hide();
+                    dueDateField.val("");
+                } else if (method === "آجل") {
+                    dueDateField.show();
+                    dueDateField.val("");
+                    dueDateField.prop("readonly", false);
+                    paidDateField.hide();
+                    paidDateField.val("");
+                } else {
+                    paidDateField.show();
+                    paidDateField.val(today);
+                    paidDateField.prop("readonly", false);
+                    dueDateField.hide();
+                    dueDateField.val("");
+                }
+                updateAccountDropdown(row, method);
+                updateTotals();
+            });
+
+            $("#invoiceForm").on("submit", function (event) {
+                event.preventDefault();
+                if (isSubmitting) {
+                    console.log("Form submission blocked: Already submitting");
+                    return;
+                }
+
+                isSubmitting = true;
+                $("#submitButton").prop("disabled", true).text("جاري الحفظ...");
+
+                // Build FormData manually
+                var formData = new FormData();
+                formData.append("__RequestVerificationToken", $('input[name="__RequestVerificationToken"]').val());
+                formData.append("BranchId", $("#BranchId").val());
+                formData.append("VendorId", $("#VendorId").val());
+                formData.append("EmployeeId", $("#EmployeeId").val());
+                formData.append("StorehouseId", $("#StorehouseId").val());
+                formData.append("InvoiceDate", $("#InvoiceDate").val());
+
+                // Log all form inputs to detect sales data
+                let allInputs = {};
+                $("#invoiceForm :input").each(function () {
+                    allInputs[$(this).attr("name")] = $(this).val();
+                });
+                console.log("All Form Inputs:", allInputs);
+
+                // Collect valid invoicedetails
+                let detailIndex = 0;
+                let selectedProductIds = [];
+                let hasValidDetails = false;
+
+                $("#invoiceDetailsTable tr").each(function () {
+                    var row = $(this);
+                    var productId = row.find(".product-select").val();
+                    var quantity = parseInt(row.find(".quantity").val()) || 0;
+                    var unitPrice = parseFloat(row.find(".unit-price").val()) || 0;
+                    var vatAmount = parseFloat(row.find(".vat-amount").val()) || 0;
+                    var lineTotal = parseFloat(row.find(".total").val()) || 0;
+
+                    if (productId && quantity > 0 && unitPrice > 0 && vatAmount >= 0 && lineTotal > 0) {
+                        updateRowCalculations(row);
+                        formData.append(`invoicedetails[${detailIndex}].ProductId`, productId);
+                        formData.append(`invoicedetails[${detailIndex}].Quantity`, quantity);
+                        formData.append(`invoicedetails[${detailIndex}].UnitPrice`, unitPrice.toFixed(2));
+                        formData.append(`invoicedetails[${detailIndex}].VatAmount`, vatAmount.toFixed(2));
+                        formData.append(`invoicedetails[${detailIndex}].LineTotal`, lineTotal.toFixed(2));
+                        formData.append(`invoicedetails[${detailIndex}].InvoiceTyping`, "شراء");
+                        selectedProductIds.push(productId);
+                        hasValidDetails = true;
+                        console.log(`Row Validation: ProductId=${productId}, Quantity=${quantity}, UnitPrice=${unitPrice}, VatAmount=${vatAmount}, LineTotal=${lineTotal}, InvoiceTyping=شراء`);
+                        detailIndex++;
+                    }
+                });
+
+                if (!hasValidDetails) {
+                    showMessage("يجب إدخال تفاصيل فاتورة صالحة واحدة على الأقل (المنتج والكمية مطلوبان).");
+                    isSubmitting = false;
+                    $("#submitButton").prop("disabled", false).text("حفظ");
+                    return;
+                }
+
+                if (new Set(selectedProductIds).size !== selectedProductIds.length) {
+                    showMessage("لا يمكن اختيار نفس المنتج أكثر من مرة.");
+                    isSubmitting = false;
+                    $("#submitButton").prop("disabled", false).text("حفظ");
+                    return;
+                }
+
+                // Collect payment entries
+                let paymentIndex = 0;
+                let hasValidPayments = false;
+                let totalPaymentAmount = 0;
+
+                $("#paymentEntriesTable tr").each(function () {
+                    var method = $(this).find(".payment-method").val();
+                    var accountId = $(this).find(".account-select").val();
+                    var amount = parseFloat($(this).find(".payment-amount").val()) || 0;
+                    var dueDate = $(this).find(".due-date").val();
+                    var paidDate = $(this).find(".paid-date").val();
+
+                    if (method && amount > 0) {
+                        formData.append(`paymentEntries[${paymentIndex}].PaymentMethod`, method);
+                        formData.append(`paymentEntries[${paymentIndex}].Amount`, amount.toFixed(2));
+                        if (accountId) formData.append(`paymentEntries[${paymentIndex}].AccountId`, accountId);
+                        if (dueDate) formData.append(`paymentEntries[${paymentIndex}].DueDate`, dueDate);
+                        if (paidDate) formData.append(`paymentEntries[${paymentIndex}].PaidDate`, paidDate);
+                        totalPaymentAmount += amount;
+                        hasValidPayments = true;
+                        paymentIndex++;
+                    }
+                });
+
+                if (!hasValidPayments) {
+                    showMessage("يجب إدخال طريقة دفع صالحة واحدة على الأقل.");
+                    isSubmitting = false;
+                    $("#submitButton").prop("disabled", false).text("حفظ");
+                    return;
+                }
+
+                let formDataLog = {};
+                for (let [key, value] of formData.entries()) {
+                    formDataLog[key] = value;
+                }
+                console.log("FormData Payload:", formDataLog);
+
+                $.ajax({
+                    url: this.action,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showMessage(response.message, false);
+                            setTimeout(() => window.location.href = "@Url.Action("IndexPurshasing", "Invoices")", 2000);
+                        } else {
+                            showMessage(response.message || "حدث خطأ أثناء الحفظ.");
+                            console.error("تفاصيل الخطأ:", response.errorDetails);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        showMessage("حدث خطأ أثناء الحفظ!");
+                        console.error("خطأ AJAX:", xhr.responseText);
+                    },
+                    complete: function () {
+                        isSubmitting = false;
+                        $("#submitButton").prop("disabled", false).text("حفظ");
+                    }
+                });
+            });
+        });
+    </script>
+}

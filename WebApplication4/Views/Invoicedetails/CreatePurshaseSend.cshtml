@@ -1,0 +1,143 @@
+﻿@model WebApplication4.Models.Invoicedetail
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container mt-4">
+    <!-- Display Invoice ID -->
+    <div class="mb-4 text-center">
+        <h4 class="text-primary">رقم الطلب / @ViewBag.InvoiceId</h4>
+    </div>
+
+    <!-- Table for Invoice Details -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th>إضافة صف</th>
+                    <th>اسم الأداة</th>
+                    <th>الكمية</th>
+                    <th>سعر الوحدة</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceTable">
+                <tr>
+                    <td><button type="button" class="btn btn-outline-primary add-row">+</button></td>
+                    <td>
+                        <select name="ProductId" class="form-control product-select">
+                            <option value="">-- اختر الأداة --</option>
+                            @foreach (var item in ViewBag.ProductId)
+                            {
+                                int productId = Convert.ToInt32(item.Value); // Convert string to int
+                                <option value="@productId" data-price="@ViewBag.ProductPrices[productId]">@item.Text</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input type="number" name="Quantity" class="form-control quantity" placeholder="الكمية" min="1"></td>
+                    <td><input type="number" name="UnitPrice" class="form-control unit-price" placeholder="السعر" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Save Button -->
+    <div class="text-center">
+        <button type="button" id="saveInvoice" class="btn btn-primary btn-lg">حفظ</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Function to update price based on selected product
+            function updatePrice(selectElement) {
+                var selectedOption = $(selectElement).find("option:selected");
+                var price = selectedOption.data("price"); // Get price from data attribute
+                $(selectElement).closest("tr").find(".unit-price").val(price || ""); // Update price field
+            }
+
+            // When selecting a product, update price
+            $(document).on("change", ".product-select", function () {
+                updatePrice(this);
+            });
+
+            // Add new row with product selection and auto price update
+            $(document).on("click", ".add-row", function () {
+                var newRow = `<tr>
+                                                    <td><button type="button" class="btn btn-outline-danger remove-row">-</button></td>
+                                                    <td>
+                                                        <select name="ProductId" class="form-control product-select">
+                                                            <option value="">-- اختر الأداة --</option>
+        @foreach (var item in ViewBag.ProductId)
+        {
+            int productId = Convert.ToInt32(item.Value);
+                                                                            <option value="@productId" data-price="@ViewBag.ProductPrices[productId]">@item.Text</option>
+        }
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="Quantity" class="form-control quantity" placeholder="الكمية" min="1"></td>
+                                                    <td><input type="number" name="UnitPrice" class="form-control unit-price" placeholder="السعر" readonly></td>
+                                                </tr>`;
+                $("#invoiceTable").append(newRow);
+            });
+
+            // Remove row
+            $(document).on("click", ".remove-row", function () {
+                $(this).closest("tr").remove();
+            });
+
+            $("#saveInvoice").click(function () {
+                var invoiceData = [];
+                $("#invoiceTable tr").each(function () {
+                    var product = $(this).find("select[name='ProductId']").val();
+                    var quantity = $(this).find("input[name='Quantity']").val();
+                    var unitPrice = $(this).find("input[name='UnitPrice']").val();
+                    var lineTotal = quantity * unitPrice; // حساب LineTotal
+
+                    if (product && quantity && unitPrice) {
+                        var item = {
+                            InvoiceId: @ViewBag.InvoiceId,
+                            ProductId: product,
+                            Quantity: parseInt(quantity),
+                            UnitPrice: parseFloat(unitPrice),
+                            LineTotal: parseFloat(lineTotal) // إضافة LineTotal
+                        };
+
+                        invoiceData.push(item);
+                    }
+                });
+
+                // 🛑 تأكيد القيم قبل الإرسال
+                console.log("🔹 البيانات المرسلة للخادم:", invoiceData);
+
+                if (invoiceData.length > 0) {
+                    $.ajax({
+                        url: "@Url.Action("CreatePurshaseSend", "Invoicedetails")",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(invoiceData),
+                        success: function (response) {
+                            console.log("✅ استجابة الخادم:", response);
+                            if (response.success) {
+                                alert(response.message);
+                                location.reload();
+                            } else {
+                                alert("❌ حدث خطأ أثناء الحفظ!");
+                                console.error("تفاصيل الخطأ:", response.errorDetails);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert("❌ حدث خطأ أثناء الحفظ!");
+                            console.error("خطأ AJAX:", xhr.responseText);
+                        }
+                    });
+                } else {
+                    alert("❌ يرجى إدخال البيانات بشكل صحيح.");
+                }
+            });
+
+
+        });
+    </script>
+}

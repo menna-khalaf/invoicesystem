@@ -1,0 +1,92 @@
+﻿@model InvoiceSummaryViewModel
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير الفواتير</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(to right, #5fbde1, #e0e7ef, #d3e3ee);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .invoice-table {
+            width: 60%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+            .invoice-table th, .invoice-table td {
+                border: 1px solid #ddd;
+                padding: 15px;
+                text-align: center;
+                font-size: 18px;
+                transition: background 0.3s;
+            }
+
+            .invoice-table th {
+                background: #5fbde1;
+                color: white;
+            }
+
+            .invoice-table tr:hover td {
+                background: #f5f5f5;
+            }
+
+        .highlight {
+            background: #ffcc00;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="animate__animated animate__bounceIn">📊 تقرير الفواتير 📊</h2>
+
+    <table class="invoice-table animate__animated animate__fadeIn">
+        <thead>
+            <tr>
+                <th>القيمة</th>
+                <th>المبيعات</th>
+                <th>القيمة</th>
+                <th>المشتريات</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.NetSales.ToString("N2")</td>
+                <td>إجمالي المبيعات بدون VAT</td>
+                <td>@Model.NetPurchases.ToString("N2")</td>
+                <td>إجمالي المشتريات بدون VAT</td>
+            </tr>
+            <tr>
+                <td>@Model.VATSales.ToString("N2")</td>
+                <td>قيمة VAT</td>
+                <td>@Model.VATPurchases.ToString("N2")</td>
+                <td>قيمة VAT</td>
+            </tr>
+            <tr>
+                <td>@((Model.NetSales + Model.VATSales).ToString("N2"))</td>
+                <td>إجمالي المبيعات + VAT</td>
+                <td>@((Model.NetPurchases + Model.VATPurchases).ToString("N2"))</td>
+                <td>إجمالي المشتريات + VAT</td>
+            </tr>
+            <tr>
+                <td class="highlight" colspan="4">الضريبة المدفوعة مقدماً: <span>@Model.NetVAT.ToString("N2")</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

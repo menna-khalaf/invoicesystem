@@ -1,0 +1,273 @@
+﻿@model WebApplication4.Models.Cashandbankaccount
+
+@{
+    ViewData["Title"] = "إنشاء حساب بنكي";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+            --border-radius: 0.35rem;
+        }
+
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Tahoma', Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        h1, h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d3e2;
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            }
+
+        label.control-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+        }
+
+            .btn-primary:hover {
+                background-color: var(--accent-color);
+                border-color: var(--accent-color);
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: var(--accent-color);
+                text-decoration: underline;
+            }
+
+        /* RTL specific adjustments */
+        .form-select {
+            padding-right: 2.25rem;
+            background-position: left 0.75rem center;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1>إنشاء حساب بنكي جديد</h1>
+                    <h4>إضافة حساب بنكي إلى النظام</h4>
+                </div>
+
+                <div class="form-container">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="AccountNumber" class="control-label">رقم الحساب</label>
+                                    <input asp-for="AccountNumber" class="form-control" placeholder="أدخل رقم الحساب" />
+                                    <span asp-validation-for="AccountNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="AccountName" class="control-label">اسم الحساب</label>
+                                    <input asp-for="AccountName" class="form-control" placeholder="أدخل اسم الحساب" />
+                                    <span asp-validation-for="AccountName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CountryCurrencyId" class="control-label">البلد والعملة</label>
+                                    <select asp-for="CountryCurrencyId" class="form-control" asp-items="ViewBag.CountryCurrencyId" id="countrySelect">
+                                        <option value="">-- اختر البلد --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">العملة</label>
+                                    <input type="text" class="form-control" id="currencyDisplay" readonly placeholder="سيتم عرض العملة تلقائياً" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label">الوصف</label>
+                            <input asp-for="Description" class="form-control" placeholder="أدخل وصفاً للحساب" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="AccountType" class="control-label">نوع الحساب</label>
+                                    <input asp-for="AccountType" class="form-control" value="حساب بنكي" readonly />
+                                    <span asp-validation-for="AccountType" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Balance" class="control-label">الرصيد الافتتاحي</label>
+                                    <input asp-for="Balance" class="form-control" placeholder="أدخل الرصيد الافتتاحي" />
+                                    <span asp-validation-for="Balance" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="EmployeeId" class="control-label">الموظف المسؤول</label>
+                                    <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId">
+                                        <option value="">-- اختر الموظف --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BranchId" class="control-label">الفرع</label>
+                                    <select asp-for="BranchId" class="form-control" asp-items="ViewBag.BranchId">
+                                        <option value="">-- اختر الفرع --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ShortName" class="control-label">الاسم المختصر</label>
+                                    <input asp-for="ShortName" class="form-control" placeholder="أدخل الاسم المختصر" />
+                                    <span asp-validation-for="ShortName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Iban" class="control-label">رقم الآيبان</label>
+                                    <input asp-for="Iban" class="form-control" placeholder="أدخل رقم الآيبان" />
+                                    <span asp-validation-for="Iban" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="SwiftCode" class="control-label">كود السويفت</label>
+                            <input asp-for="SwiftCode" class="form-control" placeholder="أدخل كود السويفت" />
+                            <span asp-validation-for="SwiftCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-2"></i> حفظ الحساب
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4 me-2">
+                                <i class="fas fa-arrow-right me-2"></i> العودة للقائمة
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // When country selection changes
+            $('#countrySelect').change(function () {
+                var countryId = $(this).val();
+                if (countryId) {
+                    // Fetch currency information via AJAX
+                    $.get('/Cashandbankaccounts/GetCurrencyByCountry', { countryId: countryId }, function (data) {
+                        if (data) {
+                            var currencyText = data.currencyName;
+                            if (data.currencySymbol) {
+                                currencyText += ' (' + data.currencySymbol + ')';
+                            }
+                            $('#currencyDisplay').val(currencyText);
+                        }
+                    }).fail(function () {
+                        $('#currencyDisplay').val('');
+                        console.error('Failed to fetch currency data');
+                    });
+                } else {
+                    $('#currencyDisplay').val('');
+                }
+            });
+
+            // Trigger change event if country is already selected
+            if ($('#countrySelect').val()) {
+                $('#countrySelect').trigger('change');
+            }
+        });
+    </script>
+</body>
+</html>

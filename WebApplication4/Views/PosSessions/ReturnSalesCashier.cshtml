@@ -1,0 +1,535 @@
+﻿@model WebApplication4.Models.ReturnInvoiceViewModel
+@{
+    ViewData["Title"] = "مرتجع فاتورة";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --primary-color: #4f46e5;
+        --primary-light: #eef2ff;
+        --danger-color: #ef4444;
+        --danger-light: #fee2e2;
+        --success-color: #10b981;
+        --dark-color: #1f2937;
+        --light-color: #f9fafb;
+        --border-color: #e5e7eb;
+        --border-radius: 12px;
+        --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: #f3f4f6;
+        color: var(--dark-color);
+        line-height: 1.6;
+    }
+
+    .container-fluid {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .invoice-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        background: white;
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+        .invoice-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color), #6366f1);
+        color: white;
+        padding: 18px 25px;
+        border-bottom: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--danger-color), #f97316);
+        }
+
+        .card-header h5 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .invoice-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .info-item {
+        background: var(--light-color);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .return-form-section {
+        background: var(--danger-light);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        margin-top: 30px;
+        border: 1px dashed var(--danger-color);
+    }
+
+    .section-title {
+        color: var(--danger-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+    }
+
+    .floating-label {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+        .floating-label label {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: white;
+            padding: 0 10px;
+            font-size: 0.85rem;
+            color: var(--danger-color);
+            font-weight: 600;
+            z-index: 1;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+    .form-control {
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 12px 15px;
+        width: 100%;
+        background: white;
+        transition: var(--transition);
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    .table-responsive {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+        .table th {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+            font-weight: 600;
+            padding: 15px;
+            text-align: right;
+            border-bottom: 2px solid var(--danger-color);
+        }
+
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tfoot td {
+            font-weight: 700;
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+            padding: 15px;
+        }
+
+    .quantity-input {
+        width: 80px;
+        text-align: center;
+        border: 1px solid var(--danger-color);
+        background: white;
+    }
+
+        .quantity-input:focus {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+        }
+
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+    }
+
+    .btn-danger {
+        background-color: var(--danger-color);
+        color: white;
+        box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-secondary {
+        background-color: #6b7280;
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .success-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 40px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        z-index: 1000;
+        display: none;
+        max-width: 400px;
+        width: 90%;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .success-icon {
+        color: var(--success-color);
+        font-size: 50px;
+        margin-bottom: 20px;
+    }
+
+    .success-alert h4 {
+        color: var(--success-color);
+        margin-bottom: 10px;
+    }
+
+    .success-alert p {
+        color: var(--dark-color);
+        opacity: 0.8;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -40%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .invoice-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            min-width: 700px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="invoice-card">
+        <div class="card-header">
+            <h5><i class="fas fa-exchange-alt"></i>مرتجع فاتورة #@Model.OriginalInvoice.InvoiceId</h5>
+        </div>
+
+        <div class="card-body">
+            <!-- Invoice Information -->
+            <div class="invoice-info-grid">
+                <div class="info-item">
+                    <div class="info-label">رقم الفاتورة</div>
+                    <div class="info-value">@Model.OriginalInvoice.InvoiceId</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">تاريخ الفاتورة</div>
+                    <div class="info-value">@Model.OriginalInvoice.InvoiceDate.ToString("yyyy/MM/dd HH:mm")</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">العميل</div>
+                    <div class="info-value">@(Model.OriginalInvoice.Customer?.CustomerName ?? "نقدي")</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">حالة المرتجع</div>
+                    <div class="info-value" style="color: var(--danger-color);">قيد المعالجة</div>
+                </div>
+            </div>
+
+            <!-- Return Form -->
+            <div class="return-form-section">
+                <div class="section-title">
+                    <i class="fas fa-undo-alt"></i>تفاصيل المرتجع
+                </div>
+
+                <form id="returnForm" asp-action="ProcessReturn" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="originalInvoiceId" value="@Model.OriginalInvoice.InvoiceId" />
+
+                    <div class="floating-label">
+                        <label for="notes">ملاحظات المرتجع</label>
+                        <textarea class="form-control" name="notes" id="notes" rows="3" placeholder="أدخل أي ملاحظات حول سبب المرتجع..."></textarea>
+                    </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>المتبقي</th>
+                                    <th>السعر</th>
+                                    <th>الضريبة %</th>
+                                    <th>المرتجع</th>
+                                    <th>الإجمالي</th>
+                                    <th>الضريبة</th>
+                                    <th>الإجمالي شامل</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.ReturnItems.Count; i++)
+                                {
+                                    var item = Model.ReturnItems[i];
+                                    <tr>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.RemainingQuantity.ToString("N2")</td>
+                                        <td>@item.Price.ToString("N2")</td>
+                                        <td>@item.VatRate.ToString("N2")</td>
+                                        <td>
+                                            <input type="number"
+                                                   name="ReturnQuantities[@item.InvoiceDetailId]"
+                                                   value="@Model.ReturnQuantities[item.InvoiceDetailId]"
+                                                   min="0"
+                                                   max="@item.RemainingQuantity"
+                                                   step="0.01"
+                                                   class="form-control quantity-input return-qty"
+                                                   data-price="@item.Price"
+                                                   data-taxrate="@(item.VatRate / 100)"
+                                                   data-id="@item.InvoiceDetailId"
+                                                   oninput="updateRowTotals(this)" />
+                                        </td>
+                                        <td class="item-subtotal">0.00</td>
+                                        <td class="item-tax">0.00</td>
+                                        <td class="item-total">0.00</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-right">الإجمالي:</td>
+                                    <td id="return-qty-total">0</td>
+                                    <td id="return-subtotal">0.00</td>
+                                    <td id="return-tax">0.00</td>
+                                    <td id="return-total">0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="@Url.Action("Details", "Invoices", new { id = Model.OriginalInvoice.InvoiceId })" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="submitReturn">
+                            <i class="fas fa-check"></i> تأكيد المرتجع
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="success-alert" id="successAlert">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h4>تم إجراء المرتجع بنجاح</h4>
+    <p>سيتم توجيهك إلى الصفحة السابقة...</p>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script>
+    function updateRowTotals(input) {
+        const row = input.closest('tr');
+        const qty = parseFloat(input.value) || 0;
+        const price = parseFloat(input.dataset.price);
+        const taxRate = parseFloat(input.dataset.taxrate);
+
+        const subtotal = qty * price;
+        const tax = subtotal * taxRate;
+        const total = subtotal + tax;
+
+        row.querySelector('.item-subtotal').textContent = subtotal.toFixed(2);
+        row.querySelector('.item-tax').textContent = tax.toFixed(2);
+        row.querySelector('.item-total').textContent = total.toFixed(2);
+
+        updateReturnTotals();
+    }
+
+    function updateReturnTotals() {
+        let grandQty = 0;
+        let grandSubtotal = 0;
+        let grandTax = 0;
+        let grandTotal = 0;
+
+        document.querySelectorAll('.return-qty').forEach(input => {
+            const qty = parseFloat(input.value) || 0;
+            const price = parseFloat(input.dataset.price);
+            const taxRate = parseFloat(input.dataset.taxrate);
+
+            grandQty += qty;
+            grandSubtotal += qty * price;
+            grandTax += qty * price * taxRate;
+            grandTotal += qty * price * (1 + taxRate);
+        });
+
+        document.getElementById('return-qty-total').textContent = grandQty;
+        document.getElementById('return-subtotal').textContent = grandSubtotal.toFixed(2);
+        document.getElementById('return-tax').textContent = grandTax.toFixed(2);
+        document.getElementById('return-total').textContent = grandTotal.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize all quantities
+        document.querySelectorAll('.return-qty').forEach(input => {
+            updateRowTotals(input);
+        });
+
+        // Form submission
+        document.getElementById('returnForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = document.getElementById('submitReturn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المعالجة...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('successAlert').style.display = 'block';
+                        setTimeout(() => {
+                            window.history.back(); // Navigate to previous page
+                        }, 1500);
+                    } else {
+                        alert(data.message || 'حدث خطأ أثناء المعالجة');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> تأكيد المرتجع';
+                    }
+                })
+                .catch(error => {
+                    alert('حدث خطأ في الاتصال: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> تأكيد المرتجع';
+                });
+        });
+    });
+</script>

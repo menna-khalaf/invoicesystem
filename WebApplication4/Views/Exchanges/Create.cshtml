@@ -1,0 +1,165 @@
+﻿@model WebApplication4.Models.Exchange
+@{
+    ViewData["Title"] = "إنشاء سند صرف";
+    var accountSelectList = ViewData["AccountId"] as SelectList ?? new SelectList(Enumerable.Empty<object>(), "AccountId", "AccountName");
+    var childAccountSelectList = ViewData["ChildAccountId"] as SelectList ?? new SelectList(Enumerable.Empty<object>(), "Id", "Name");
+}
+
+<h2>إنشاء سند صرف</h2>
+
+<form id="exchangeForm" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="ExchangeDate" class="control-label">تاريخ السند</label>
+        <input asp-for="ExchangeDate" type="date" class="form-control" value="@ViewBag.ExchangeDate" required />
+        <span asp-validation-for="ExchangeDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label">المبلغ</label>
+        <input asp-for="Amount" type="number" step="0.01" class="form-control" required />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">الوصف</label>
+        <input asp-for="Description" class="form-control" required />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PaymentMethod" class="control-label">طريقة الدفع</label>
+        <select asp-for="PaymentMethod" class="form-control" id="PaymentMethod" required>
+            <option value="">-- اختر طريقة الدفع --</option>
+            <option value="نقدي">نقدي</option>
+            <option value="تحويل بنكي">تحويل بنكي</option>
+        </select>
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AccountId" class="control-label">الحساب</label>
+        <select asp-for="AccountId" class="form-control" id="AccountId" asp-items="@accountSelectList" required>
+            <option value="">-- اختر الحساب --</option>
+        </select>
+        <span asp-validation-for="AccountId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CostCenterId" class="control-label">مركز التكلفة (اختياري)</label>
+        <select asp-for="CostCenterId" class="form-control" asp-items="@(ViewData["CostCenterId"] as SelectList ?? new SelectList(Enumerable.Empty<object>(), "CostCenterId", "CenterName"))">
+            <option value="">-- اختر مركز التكلفة --</option>
+        </select>
+        <span asp-validation-for="CostCenterId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">الحسابات الفرعية</label>
+        <div id="childAccountsContainer">
+            <div class="child-account-row">
+                <select name="ChildAccountIds" class="form-control child-account-select" required>
+                    <option value="">-- اختر الحساب الفرعي --</option>
+                    @foreach (var item in childAccountSelectList)
+                    {
+                        <optgroup label="@item.Group.Name">
+                            <option value="@item.Value">@item.Text</option>
+                        </optgroup>
+                    }
+                </select>
+                <input type="number" name="ChildAccountAmounts" class="form-control child-account-amount" placeholder="المبلغ" required step="0.01" />
+                <i class="bi bi-trash remove-row" style="cursor:pointer; display:none;"></i>
+            </div>
+        </div>
+        <button type="button" id="addChildAccount" class="btn btn-primary mt-2">+ إضافة حساب فرعي</button>
+    </div>
+
+    <div id="amountSum" class="mt-2">مجموع المبالغ: 0.00</div>
+
+    <div class="form-group">
+        <input type="submit" value="إنشاء" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Update cash/bank accounts based on PaymentMethod
+            $('#PaymentMethod').change(function () {
+                var paymentMethod = $(this).val();
+                if (paymentMethod) {
+                    $.ajax({
+                        url: '@Url.Action("GetCashBankAccounts", "Exchanges")',
+                        type: 'GET',
+                        data: { paymentMethod: paymentMethod },
+                        success: function (data) {
+                            if (data.success) {
+                                var accountSelect = $('#AccountId');
+                                accountSelect.empty();
+                                accountSelect.append('<option value="">-- اختر الحساب --</option>');
+                                $.each(data.accounts, function (index, account) {
+                                    accountSelect.append('<option value="' + account.accountId + '">' + account.accountName + '</option>');
+                                });
+                            } else {
+                                alert(data.message);
+                            }
+                        },
+                        error: function () {
+                            alert('حدث خطأ أثناء جلب الحسابات.');
+                        }
+                    });
+                } else {
+                    $('#AccountId').empty().append('<option value="">-- اختر الحساب --</option>');
+                }
+            });
+
+            // Add new child account row
+            $('#addChildAccount').click(function () {
+                var firstRow = $('.child-account-row:first');
+                var newRow = firstRow.clone();
+                newRow.find('select').val('');
+                newRow.find('input').val('');
+                newRow.find('.remove-row').show();
+                $('#childAccountsContainer').append(newRow);
+                updateAmountSum();
+            });
+
+            // Remove child account row
+            $(document).on('click', '.remove-row', function () {
+                if ($('.child-account-row').length > 1) {
+                    $(this).closest('.child-account-row').remove();
+                    updateAmountSum();
+                }
+            });
+
+            // Update running sum of ChildAccountAmounts
+            function updateAmountSum() {
+                var sum = 0;
+                $('.child-account-amount').each(function () {
+                    sum += parseFloat($(this).val()) || 0;
+                });
+                $('#amountSum').text('مجموع المبالغ: ' + sum.toFixed(2));
+            }
+
+            // Validate total ChildAccountAmounts on submit
+            $('#exchangeForm').submit(function (e) {
+                var totalAmount = parseFloat($('#Amount').val()) || 0;
+                var sumAmounts = 0;
+                $('.child-account-amount').each(function () {
+                    sumAmounts += parseFloat($(this).val()) || 0;
+                });
+                if (Math.abs(totalAmount - sumAmounts) > 0.01) {
+                    e.preventDefault();
+                    alert('يجب أن يتطابق مجموع مبالغ الحسابات الفرعية مع المبلغ الإجمالي.');
+                }
+            });
+
+            // Update sum on input
+            $(document).on('input', '.child-account-amount', updateAmountSum);
+        });
+    </script>
+}
+
+

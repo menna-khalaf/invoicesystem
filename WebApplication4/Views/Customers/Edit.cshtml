@@ -1,0 +1,79 @@
+﻿@model WebApplication4.Models.Customer
+
+@{
+    ViewData["Title"] = "تعديل بيانات العميل";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4" style="max-width: 500px; margin: auto;">
+        <h3 class="text-center" style="color: #34ccfc;"><i class="bi bi-pencil-square"></i> تعديل بيانات العميل</h3>
+        <hr />
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+            <input type="hidden" asp-for="CustomerId" />
+
+            <div class="mb-3 text-end">
+                <label asp-for="CustomerName" class="form-label fw-bold">اسم العميل</label>
+                <input asp-for="CustomerName" class="form-control text-end" placeholder="أدخل اسم العميل" required />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 text-end">
+                <label asp-for="ContactInfo" class="form-label fw-bold">رقم التواصل</label>
+                <input asp-for="ContactInfo" class="form-control text-end" placeholder="أدخل رقم التواصل" required />
+                <span asp-validation-for="ContactInfo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 text-end">
+                <label asp-for="CreatedAt" class="form-label fw-bold">تاريخ الإضافة</label>
+                <input asp-for="CreatedAt" class="form-control text-end" readonly />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn text-white fw-bold" style="background-color: #34ccfc;">
+                    <i class="bi bi-save"></i> حفظ التعديلات
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> العودة للقائمة
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let form = document.querySelector("form");
+            let requiredInputs = form.querySelectorAll("input[required]");
+            let alertBox = document.querySelector(".alert-danger");
+
+            form.addEventListener("submit", function (e) {
+                let isValid = true;
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        input.classList.add("is-invalid");
+                        isValid = false;
+                    } else {
+                        input.classList.remove("is-invalid");
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    alertBox.classList.remove("d-none");
+                    alertBox.innerHTML = "يرجى ملء جميع الحقول المطلوبة.";
+                }
+            });
+        });
+    </script>
+}

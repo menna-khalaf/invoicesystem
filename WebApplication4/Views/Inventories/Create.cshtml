@@ -1,0 +1,139 @@
+﻿@model WebApplication4.Models.Inventory
+
+@{
+    ViewData["Title"] = "إضافة عملية جديدة";
+}
+
+<!-- ✅ Bootstrap CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<!-- ✅ FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body">
+                    <h4 class="text-center text-primary fw-bold mb-3">🛒 إضافة عملية جديدة</h4>
+
+                    <!-- ✅ Form -->
+                    <form id="inventoryForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- ✅ Product Dropdown -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">📦 اختر المنتج</label>
+                            <select id="productId" name="ProductId" class="form-control shadow-sm" required>
+                                <option value="">🔍 اختر المنتج</option>
+                                @foreach (var product in ViewBag.ProductId as SelectList)
+                                {
+                                    <option value="@product.Value">@product.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- ✅ Action Buttons -->
+                        <div class="d-flex justify-content-center gap-3 mb-4">
+                            <button type="button" class="btn btn-outline-success btn-lg" id="btnPurchase">
+                                🛍️ شراء
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-lg" id="btnSupply">
+                                🚚 توريد
+                            </button>
+                        </div>
+
+                        <!-- ✅ Incoming Quantity (شراء) -->
+                        <div class="mb-3" id="incomingContainer" style="display: none;">
+                            <label class="form-label fw-bold text-success">🛍️ الكمية المشتراة</label>
+                            <input id="incomingQuantity" name="IncomingQuantity" class="form-control shadow-sm" type="number" min="0" />
+                        </div>
+
+                        <!-- ✅ Outgoing Quantity (توريد) -->
+                        <div class="mb-3" id="outgoingContainer" style="display: none;">
+                            <label class="form-label fw-bold text-danger">🚚 الكمية الموردة</label>
+                            <input id="outgoingQuantity" name="OutgoingQuantity" class="form-control shadow-sm" type="number" min="0" />
+                        </div>
+
+                        <!-- ✅ Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">✅ حفظ العملية</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ✅ Back to List -->
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="text-decoration-none text-muted">🔙 الرجوع إلى القائمة</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ jQuery (Load First) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- ✅ Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Show/hide input fields based on button clicks
+        $("#btnPurchase").click(function () {
+            $("#incomingContainer").show();
+            $("#outgoingContainer").hide();
+        });
+
+        $("#btnSupply").click(function () {
+            $("#incomingContainer").hide();
+            $("#outgoingContainer").show();
+        });
+
+        // Handle form submission via AJAX
+        $("#inventoryForm").submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            var productId = $("#productId").val();
+            var incomingQuantity = $("#incomingQuantity").val();
+            var outgoingQuantity = $("#outgoingQuantity").val();
+
+            // Validate input
+            if (!productId) {
+                alert("الرجاء اختيار المنتج.");
+                return;
+            }
+
+            if (!incomingQuantity && !outgoingQuantity) {
+                alert("الرجاء إدخال الكمية المشتراة أو الكمية الموردة.");
+                return;
+            }
+
+            // Prepare data for AJAX request
+            var data = {
+                ProductId: productId,
+                IncomingQuantity: incomingQuantity || 0,
+                OutgoingQuantity: outgoingQuantity || 0
+            };
+
+            // Send AJAX request
+            $.ajax({
+                url: "/Inventories/Create",
+                type: "POST",
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        alert("تمت العملية بنجاح!");
+                        window.location.href = "/Inventories/Index"; // Redirect to the index page
+                    } else {
+                        alert("حدث خطأ أثناء حفظ البيانات.");
+                    }
+                },
+                error: function () {
+                    alert("حدث خطأ أثناء الاتصال بالخادم.");
+                }
+            });
+        });
+    });
+</script>

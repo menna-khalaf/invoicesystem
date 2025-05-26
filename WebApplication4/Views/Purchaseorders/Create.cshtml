@@ -1,0 +1,253 @@
+﻿@model WebApplication4.Models.PurchaseOrderViewModel
+
+@{
+    ViewData["Title"] = "Create Purchase Order";
+}
+
+<h1>Create Purchase Order</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Purchase Order Details -->
+            <h4>Purchase Order Details</h4>
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.PurchaseOrderDate" class="control-label"></label>
+                    <input asp-for="Purchaseorder.PurchaseOrderDate" class="form-control" type="date" />
+                    <span asp-validation-for="Purchaseorder.PurchaseOrderDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.ExpiryDate" class="control-label"></label>
+                    <input asp-for="Purchaseorder.ExpiryDate" class="form-control" type="date" />
+                    <span asp-validation-for="Purchaseorder.ExpiryDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.VendorId" class="control-label"></label>
+                    <select asp-for="Purchaseorder.VendorId" class="form-control" asp-items="ViewBag.VendorId">
+                        <option value="">Select Vendor</option>
+                    </select>
+                    <span asp-validation-for="Purchaseorder.VendorId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.EmployeeId" class="control-label"></label>
+                    <select asp-for="Purchaseorder.EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId">
+                        <option value="">Select Employee</option>
+                    </select>
+                    <span asp-validation-for="Purchaseorder.EmployeeId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.BranchId" class="control-label"></label>
+                    <select asp-for="Purchaseorder.BranchId" class="form-control" asp-items="ViewBag.BranchId">
+                        <option value="">Select Branch</option>
+                    </select>
+                    <span asp-validation-for="Purchaseorder.BranchId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.StorehouseId" class="control-label"></label>
+                    <select asp-for="Purchaseorder.StorehouseId" class="form-control" asp-items="ViewBag.StorehouseId">
+                        <option value="">Select Storehouse</option>
+                    </select>
+                    <span asp-validation-for="Purchaseorder.StorehouseId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <h4>Products</h4>
+            <div id="products">
+                @for (int i = 0; i < Model.Purchaseorderdetails.Count; i++)
+                {
+                    <div class="product-row" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <label asp-for="Purchaseorderdetails[i].ProductId" class="control-label">Product</label>
+                                <select asp-for="Purchaseorderdetails[i].ProductId" class="form-control product-select" asp-items="ViewBag.ProductId">
+                                    <option value="">Select Product</option>
+                                </select>
+                                <span asp-validation-for="Purchaseorderdetails[i].ProductId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label asp-for="Purchaseorderdetails[i].ProductDescription" class="control-label"></label>
+                                <input asp-for="Purchaseorderdetails[i].ProductDescription" class="form-control" />
+                                <span asp-validation-for="Purchaseorderdetails[i].ProductDescription" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label asp-for="Purchaseorderdetails[i].Quantity" class="control-label"></label>
+                                <input asp-for="Purchaseorderdetails[i].Quantity" class="form-control quantity" type="number" min="1" />
+                                <span asp-validation-for="Purchaseorderdetails[i].Quantity" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label asp-for="Purchaseorderdetails[i].UnitPrice" class="control-label"></label>
+                                <input asp-for="Purchaseorderdetails[i].UnitPrice" class="form-control unit-price" type="number" step="0.01" />
+                                <span asp-validation-for="Purchaseorderdetails[i].UnitPrice" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-1 form-group">
+                                <label asp-for="Purchaseorderdetails[i].DiscountType" class="control-label">Discount Type</label>
+                                <select asp-for="Purchaseorderdetails[i].DiscountType" class="form-control discount-type">
+                                    <option value="Amount">Amount</option>
+                                    <option value="Percentage">Percentage</option>
+                                </select>
+                                <span asp-validation-for="Purchaseorderdetails[i].DiscountType" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-1 form-group">
+                                <label asp-for="Purchaseorderdetails[i].Discount" class="control-label"></label>
+                                <input asp-for="Purchaseorderdetails[i].Discount" class="form-control discount" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="Purchaseorderdetails[i].Discount" class="text-danger"></span>
+                            </div>
+                            <input type="hidden" class="vat-rate" value="0" />
+                        </div>
+                        <button type="button" class="btn btn-danger remove-product">Remove</button>
+                    </div>
+                }
+            </div>
+            <button type="button" id="add-product" class="btn btn-primary mt-2">Add Product</button>
+
+            <!-- Financial Summary -->
+            <h4>Financial Summary</h4>
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.Subtotal" class="control-label"></label>
+                    <input asp-for="Purchaseorder.Subtotal" class="form-control subtotal" readonly />
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.Vatamount" class="control-label"></label>
+                    <input asp-for="Purchaseorder.Vatamount" class="form-control vat-amount" readonly />
+                </div>
+                <div class="col-md-4 form-group">
+                    <label asp-for="Purchaseorder.TotalAmount" class="control-label"></label>
+                    <input asp-for="Purchaseorder.TotalAmount" class="form-control total-amount" readonly />
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to update totals
+        function updateTotals() {
+            let subtotal = 0;
+            let vatAmount = 0;
+
+            $(".product-row").each(function () {
+                let quantity = parseFloat($(this).find(".quantity").val()) || 0;
+                let unitPrice = parseFloat($(this).find(".unit-price").val()) || 0;
+                let vatRate = parseFloat($(this).find(".vat-rate").val()) || 0;
+                let discount = parseFloat($(this).find(".discount").val()) || 0;
+                let discountType = $(this).find(".discount-type").val();
+
+                let lineTotal = quantity * unitPrice;
+                let discountAmount = discountType === "Percentage" ? lineTotal * (discount / 100) : discount;
+                lineTotal -= discountAmount;
+                let vat = lineTotal * (vatRate / 100);
+
+                subtotal += lineTotal;
+                vatAmount += vat;
+            });
+
+            $(".subtotal").val(subtotal.toFixed(2));
+            $(".vat-amount").val(vatAmount.toFixed(2));
+            $(".total-amount").val((subtotal + vatAmount).toFixed(2));
+        }
+
+        // Add new product row
+        $("#add-product").click(function () {
+            var index = $(".product-row").length;
+            var productRow = `
+                        <div class="product-row" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label">Product</label>
+                                    <select name="Purchaseorderdetails[${index}].ProductId" class="form-control product-select">
+                                        <option value="">Select Product</option>
+        @foreach (var item in (SelectList)ViewBag.ProductId)
+        {
+                                                <option value="@item.Value">@item.Text</option>
+        }
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label">Product Description</label>
+                                    <input name="Purchaseorderdetails[${index}].ProductDescription" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 form-group">
+                                    <label class="control-label">Quantity</label>
+                                    <input name="Purchaseorderdetails[${index}].Quantity" class="form-control quantity" type="number" min="1" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 form-group">
+                                    <label class="control-label">Unit Price</label>
+                                    <input name="Purchaseorderdetails[${index}].UnitPrice" class="form-control unit-price" type="number" step="0.01" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-md-1 form-group">
+                                    <label class="control-label">Discount Type</label>
+                                    <select name="Purchaseorderdetails[${index}].DiscountType" class="form-control discount-type">
+                                        <option value="Amount">Amount</option>
+                                        <option value="Percentage">Percentage</option>
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-md-1 form-group">
+                                    <label class="control-label">Discount</label>
+                                    <input name="Purchaseorderdetails[${index}].Discount" class="form-control discount" type="number" step="0.01" min="0" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <input type="hidden" class="vat-rate" value="0" />
+                            </div>
+                            <button type="button" class="btn btn-danger remove-product">Remove</button>
+                        </div>`;
+            $("#products").append(productRow);
+            updateTotals();
+        });
+
+        // Remove product row
+        $(document).on("click", ".remove-product", function () {
+            if ($(".product-row").length > 1) {
+                $(this).closest(".product-row").remove();
+                updateTotals();
+            }
+        });
+
+        // Populate UnitPrice and Vatrate on Product selection
+        $(document).on("change", ".product-select", function () {
+            var select = $(this);
+            var productId = select.val();
+            if (productId) {
+                $.getJSON(`/Purchaseorders/GetProductDetails?productId=${productId}`, function (data) {
+                    if (data.productId) {
+                        var row = select.closest(".product-row");
+                        row.find(".unit-price").val(data.purchasePrice || '');
+                        row.find(".vat-rate").val(data.vatrate || 0);
+                        updateTotals();
+                    }
+                }).fail(function (error) {
+                    console.error("Error fetching product details:", error);
+                });
+            }
+        });
+
+        // Update totals on input changes
+        $(document).on("input", ".quantity, .unit-price, .discount, .discount-type", function () {
+            updateTotals();
+        });
+    </script>
+}

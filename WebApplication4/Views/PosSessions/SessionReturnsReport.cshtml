@@ -1,0 +1,423 @@
+﻿@model SessionReturnsReportViewModel
+@{
+    ViewData["Title"] = "تقرير المرتجعات للشيفت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Modern Color Palette */
+    :root {
+        --primary: #5e72e4; /* Soft blue */
+        --primary-dark: #3a4ab9;
+        --accent: #11cdef; /* Cyan */
+        --success: #2dce89; /* Green */
+        --danger: #f5365c; /* Coral */
+        --light: #f8f9fe; /* Very light blue */
+        --dark: #32325d; /* Dark blue */
+        --gray: #8898aa; /* Medium gray */
+        --border: #e9ecef; /* Light gray */
+    }
+
+    /* Typography */
+    body {
+        font-family: 'Tajawal', 'Segoe UI', sans-serif;
+        background-color: #f6f9fc;
+        color: var(--dark);
+        line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Tajawal', 'Segoe UI', sans-serif;
+        font-weight: 700;
+    }
+
+    /* Layout Structure */
+    .report-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 20px;
+    }
+
+    /* Card Design */
+    .report-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Header Section */
+    .report-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 1.75rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+
+    .report-title {
+        font-size: 1.75rem;
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+        .report-title i {
+            margin-left: 12px;
+            font-size: 1.5rem;
+        }
+
+    /* Action Buttons */
+    .report-actions .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.6rem 1.5rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-light {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: none;
+    }
+
+        .btn-light:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+    /* Information Sections */
+    .info-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .info-box {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    }
+
+        .info-box h5 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(94, 114, 228, 0.2);
+        }
+
+    .info-item {
+        display: flex;
+        margin-bottom: 0.85rem;
+    }
+
+    .info-label {
+        color: var(--gray);
+        font-weight: 500;
+        min-width: 130px;
+        font-size: 0.95rem;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    /* Table Design */
+    .table-container {
+        padding: 0 2rem 2rem;
+    }
+
+    .returns-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+
+        .returns-table thead th {
+            background-color: var(--light);
+            color: var(--dark);
+            font-weight: 700;
+            padding: 1.1rem;
+            text-align: right;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+        }
+
+        .returns-table tbody td {
+            padding: 1.1rem;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+            transition: background-color 0.2s ease;
+        }
+
+        .returns-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .returns-table tbody tr:hover td {
+            background-color: rgba(94, 114, 228, 0.03);
+        }
+
+    .numeric-cell {
+        font-family: 'Courier New', Courier, monospace;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    /* Total Row */
+    .total-row {
+        background-color: rgba(47, 206, 137, 0.05);
+        font-weight: 700;
+    }
+
+        .total-row td {
+            border-top: 2px solid rgba(47, 206, 137, 0.2) !important;
+            border-bottom: none !important;
+            color: var(--success);
+        }
+
+    /* Footer Actions */
+    .footer-actions {
+        padding: 1.5rem 2rem;
+        text-align: center;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border: none;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(94, 114, 228, 0.25);
+    }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(94, 114, 228, 0.3);
+        }
+
+    /* Print Styles */
+    .print-only {
+        display: none;
+    }
+
+    @@media print {
+        body {
+            background: white !important;
+            font-size: 12px;
+        }
+
+        .report-container {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+        }
+
+        .report-card {
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .print-only {
+            display: block;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .report-header {
+            background: white !important;
+            color: var(--dark) !important;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .returns-table thead th {
+            background-color: #f1f1f1 !important;
+            color: var(--dark) !important;
+        }
+
+        .info-section {
+            padding: 1rem 0;
+        }
+
+        .total-row td {
+            color: var(--success) !important;
+        }
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .info-section {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .report-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+        }
+
+        .report-actions {
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+            .report-actions .btn {
+                width: 100%;
+            }
+
+        .table-container {
+            padding: 0 1rem 1rem;
+            overflow-x: auto;
+        }
+
+        .returns-table {
+            min-width: 700px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .report-container {
+            padding: 0 15px;
+        }
+
+        .report-title {
+            font-size: 1.5rem;
+        }
+
+        .info-box {
+            padding: 1.25rem;
+        }
+
+        .info-item {
+            flex-direction: column;
+        }
+
+        .info-label {
+            min-width: 100%;
+            margin-bottom: 0.25rem;
+        }
+    }
+</style>
+
+<div class="report-container">
+    <div class="report-card">
+        <!-- Header Section -->
+        <div class="report-header">
+            <h1 class="report-title">
+                <i class="fas fa-exchange-alt"></i> تقرير المرتجعات للشيفت
+            </h1>
+            <div class="report-actions no-print">
+                <button class="btn btn-light" onclick="window.print()">
+                    <i class="fas fa-print"></i> طباعة التقرير
+                </button>
+            </div>
+        </div>
+
+        <!-- Print Header -->
+        <div class="print-only">
+            <h3>تقرير المرتجعات للشيفت</h3>
+            <div class="d-flex justify-content-center">
+                <p class="mx-3"><strong>الفرع:</strong> @Model.Session.Branch?.BranchName</p>
+                <p class="mx-3"><strong>تاريخ الطباعة:</strong> @DateTime.Now.ToString("yyyy/MM/dd HH:mm")</p>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section">
+            <div class="info-box">
+                <h5><i class="fas fa-info-circle ml-2"></i>معلومات الشيفت</h5>
+                <div class="info-item">
+                    <span class="info-label">الفرع:</span>
+                    <span class="info-value">@Model.Session.Branch?.BranchName</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">نقطة البيع:</span>
+                    <span class="info-value">@Model.Session.PosNavigation?.Posname</span>
+                </div>
+            </div>
+            <div class="info-box">
+                <h5><i class="fas fa-clock ml-2"></i>معلومات التوقيت</h5>
+                <div class="info-item">
+                    <span class="info-label">وقت البدء:</span>
+                    <span class="info-value">@Model.Session.StartTime.ToString("yyyy/MM/dd HH:mm")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Returns Table -->
+        <div class="table-container">
+            <table class="returns-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم المنتج</th>
+                        <th class="numeric-cell">الكمية</th>
+                        <th class="numeric-cell">سعر الوحدة</th>
+                        <th class="numeric-cell">المجموع</th>
+                        <th class="numeric-cell">الضريبة</th>
+                        <th class="numeric-cell">الإجمالي</th>
+                        <th class="numeric-cell">رقم الفاتورة</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int counter = 1;
+                        foreach (var product in Model.ReturnedProducts)
+                        {
+                            <tr>
+                                <td>@counter</td>
+                                <td>@product.ProductName</td>
+                                <td class="numeric-cell">@product.Quantity</td>
+                                <td class="numeric-cell">@product.UnitPrice.ToString("N2")</td>
+                                <td class="numeric-cell">@product.LineTotal.ToString("N2")</td>
+                                <td class="numeric-cell">@product.VatAmount.ToString("N2")</td>
+                                <td class="numeric-cell">@product.TotalAmount.ToString("N2")</td>
+                                <td class="numeric-cell">@product.InvoiceId</td>
+                                <td>@product.InvoiceDate.ToString("yyyy/MM/dd HH:mm")</td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    <tr class="total-row">
+                        <td colspan="2">الإجمالي</td>
+                        <td class="numeric-cell">@Model.Totals.TotalQuantity</td>
+                        <td></td>
+                        <td class="numeric-cell">@Model.Totals.TotalLineTotal.ToString("N2")</td>
+                        <td class="numeric-cell">@Model.Totals.TotalVatAmount.ToString("N2")</td>
+                        <td class="numeric-cell">@Model.Totals.TotalAmount.ToString("N2")</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="footer-actions no-print">
+            <a href="@Url.Action("ShiftReport", new { sessionId = Model.Session.SessionId })" class="btn btn-primary">
+                <i class="fas fa-arrow-right ml-2"></i> العودة لتقرير الشيفت
+            </a>
+        </div>
+    </div>
+</div>

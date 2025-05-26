@@ -1,0 +1,245 @@
+﻿@model WebApplication4.Models.User
+
+@{
+    ViewData["Title"] = "تفاصيل المستخدم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --primary-dark: #1a6ab7;
+            --primary-light: #e6f0fa;
+            --text-color: #3a3a3a;
+            --light-border: #e0e6ed;
+            --transition-speed: 0.3s;
+            --card-shadow: 0 10px 30px rgba(32, 124, 212, 0.15);
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6f0fa 100%);
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 2rem;
+        }
+
+        .user-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            background: white;
+            transition: transform var(--transition-speed);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+            .user-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .card-header::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+                transform: rotate(30deg);
+            }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0;
+            position: relative;
+            font-size: 1.8rem;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+            }
+
+        .detail-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-border);
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+            .detail-item:last-child {
+                border-bottom: none;
+            }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            flex: 1;
+            text-align: right;
+            padding-right: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 8px rgba(32, 124, 212, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+            .btn-primary-custom:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(32, 124, 212, 0.4);
+                color: white;
+            }
+
+        .btn-outline-secondary {
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+        }
+
+            .btn-outline-secondary:hover {
+                transform: translateY(-2px);
+            }
+
+        @@media (max-width: 768px) {
+            .card-title {
+                font-size: 1.5rem;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .detail-label, .detail-value {
+                width: 100%;
+                text-align: right;
+            }
+
+            .detail-label {
+                margin-bottom: 0.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-primary-custom, .btn-outline-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .user-details {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-card">
+            <div class="card-header">
+                <h1 class="card-title">
+                    <i class="bi bi-person-badge"></i> تفاصيل المستخدم
+                </h1>
+            </div>
+
+            <div class="card-body p-0 user-details">
+                <div class="detail-item">
+                    <div class="detail-label">اسم المستخدم</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Username)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">البريد الإلكتروني</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Email)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">الدور</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Role)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">تاريخ الإنشاء</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.CreatedAt)</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a asp-action="Edit" asp-route-id="@Model?.UserId" class="btn btn-primary-custom">
+                    <i class="bi bi-pencil-square"></i> تعديل
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-right"></i> العودة للقائمة
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

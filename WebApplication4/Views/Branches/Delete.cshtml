@@ -1,0 +1,240 @@
+﻿@model WebApplication4.Models.Branch
+
+@{
+    ViewData["Title"] = "حذف الفرع";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --danger-color: #dc3545;
+            --danger-dark: #c82333;
+            --gray-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e6ed;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            direction: rtl;
+        }
+
+        .confirmation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--danger-color);
+        }
+
+        .confirmation-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .confirmation-icon {
+            color: var(--danger-color);
+            font-size: 2rem;
+        }
+
+        .confirmation-title {
+            color: #2c3e50;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .confirmation-message {
+            color: var(--danger-color);
+            font-weight: 500;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .confirmation-message i {
+                font-size: 1.3rem;
+            }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            border-right: 3px solid var(--danger-color);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray-color);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-delete:hover {
+                background-color: var(--danger-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+            }
+
+        .btn-cancel {
+            background-color: #f8f9fa;
+            color: var(--gray-color);
+            border: 1px solid var(--border-color);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+            .btn-cancel:hover {
+                background-color: #e9ecef;
+                color: #495057;
+            }
+
+        @@media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column-reverse;
+            }
+
+            .btn-delete, .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="confirmation-header">
+                <i class="fas fa-exclamation-triangle confirmation-icon"></i>
+                <h1 class="confirmation-title">حذف الفرع</h1>
+            </div>
+
+            <div class="confirmation-message">
+                <i class="fas fa-exclamation-circle"></i>
+                هل أنت متأكد أنك تريد حذف هذا الفرع؟ لا يمكن التراجع عن هذا الإجراء.
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.BranchName)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.BranchName)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.BranchStatus)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.BranchStatus)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.City)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.City)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Country)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Country)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.CreatedAt)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.CreatedAt)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Location)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Location)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.MasterBranch)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.MasterBranch)</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.CommercialRegister)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.CommercialRegister)</div>
+                </div>
+            </div>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="BranchId" />
+                <div class="action-buttons">
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="fas fa-arrow-right"></i> العودة إلى القائمة
+                    </a>
+                    <button type="submit" class="btn-delete">
+                        <i class="fas fa-trash-alt"></i> تأكيد الحذف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

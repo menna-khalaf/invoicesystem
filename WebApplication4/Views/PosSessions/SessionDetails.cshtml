@@ -1,0 +1,84 @@
+﻿@model WebApplication4.Models.PosSession
+
+@{
+    ViewData["Title"] = "تفاصيل الشيفت";
+}
+
+<div class="container-fluid">
+    <h2>تفاصيل الشيفت</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">معلومات الشيفت</h5>
+                    <p><strong>الفرع:</strong> @Model.Branch?.BranchName</p>
+                    <p><strong>نقطة البيع:</strong> @Model.PosNavigation?.Posname</p>
+                    <p><strong>المستخدم:</strong> @Model.Employee?.FullName</p>
+                    <p><strong>المخزن:</strong> @Model.Storehouse?.StorehouseName</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">التوقيت</h5>
+                    <p><strong>وقت البدء:</strong> @Model.StartTime.ToString("yyyy-MM-dd HH:mm")</p>
+                    <p><strong>وقت الانتهاء:</strong> @(Model.EndTime?.ToString("yyyy-MM-dd HH:mm") ?? "لم ينتهي بعد")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">النقدية</h5>
+                    <p><strong>الرصيد الافتتاحي:</strong> @Model.StartingCash.ToString("0.00")</p>
+                    <p><strong>الرصيد الختامي:</strong> @(Model.EndingCash?.ToString("0.00") ?? "غير محسوب")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">إحصاءات</h5>
+                    <p><strong>عدد الفواتير:</strong> @Model.Invoices?.Count</p>
+                    <p><strong>الحالة:</strong> @Model.Status</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>فواتير الشيفت</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>التاريخ</th>
+                        <th>المجموع</th>
+                        <th>الضريبة</th>
+                        <th>الإجمالي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var invoice in Model.Invoices)
+                    {
+                        <tr>
+                            <td>@invoice.InvoiceId</td>
+                            <td>@invoice.InvoiceDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            @* <td>@invoice.lin.ToString("0.00")</td> *@
+                            @* <td>@invoice.TaxAmount.ToString("0.00")</td>
+                            <td>@invoice.TotalAmount.ToString("0.00")</td> *@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

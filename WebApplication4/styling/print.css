@@ -1,0 +1,55 @@
+﻿@media print {
+    body * {
+        visibility: hidden; /* إخفاء جميع العناصر */
+    }
+
+    #reportContent, #reportContent * {
+        visibility: visible; /* إظهار التقرير فقط */
+    }
+
+    #reportContent {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    /* إخفاء القائمة الجانبية والتذييل */
+    .sidebar, .navbar, footer {
+        display: none !important;
+    }
+
+    /* تحسين الطباعة */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}

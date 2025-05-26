@@ -1,0 +1,301 @@
+﻿@model WebApplication4.Models.Shift
+
+@{
+    ViewData["Title"] = "تفاصيل الوردية";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3c94bd;
+            --primary-light: #eef2ff;
+            --primary-dark: #3c94bd;
+            --secondary-color: #1c7bd4;
+            --background-color: #f8f9fa;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--background-color);
+            direction: rtl;
+            color: #2b2d42;
+            margin: 0;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container-fluid {
+            max-width: 1400px;
+            padding: 0 2rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            background: white;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .card-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: #3c94bd;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .dl-horizontal dt {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dl-horizontal dd {
+            color: #2d3748;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--secondary-color), #05b38b);
+            color: white;
+            box-shadow: 0 4px 6px rgba(5, 179, 139, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #05b38b, var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(5, 179, 139, 0.3);
+        }
+
+        .btn-light {
+            background: white;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-light:hover {
+            background: #f7fafc;
+            color: var(--primary-color);
+            border-color: #cbd5e0;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+
+        h4 {
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @@keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @@media (max-width: 1200px) {
+            .container-fluid {
+                padding: 0 1.5rem;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .container-fluid {
+                padding: 0 1rem;
+            }
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            body {
+                padding: 1rem 0;
+            }
+            .card-header {
+                padding: 1.25rem 1.5rem;
+            }
+            .dl-horizontal dt, .dl-horizontal dd {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="m-0">تفاصيل الوردية</h1>
+            </div>
+            <div class="card-body">
+                <h4>تفاصيل الوردية</h4>
+                <hr />
+                <dl class="dl-horizontal row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.StartDateTime)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StartDateTime)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ShiftHours)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ShiftHours)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.RepeatWeekly)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.RepeatWeekly)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.CreatedAt)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.CreatedAt)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.RepeatDays)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.RepeatDays)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Notes)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Notes)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Employee)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Employee.FullName)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Pos)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Pos.Posname)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.User)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.User.Email)
+                    </dd>
+                </dl>
+                <div class="form-actions">
+                    <a asp-action="Edit" asp-route-id="@Model?.ShiftId" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> تعديل
+                    </a>
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fas fa-arrow-left"></i> العودة للقائمة
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Add hover effect for buttons
+            $('.btn').hover(
+                function () {
+                    $(this).css('transform', 'translateY(-2px)');
+                },
+                function () {
+                    $(this).css('transform', 'translateY(0)');
+                }
+            );
+        });
+    </script>
+</body>
+</html>

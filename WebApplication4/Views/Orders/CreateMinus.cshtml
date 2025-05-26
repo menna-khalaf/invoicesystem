@@ -1,0 +1,698 @@
+﻿@model WebApplication4.Models.CreateOrderViewModel
+@{
+    ViewData["Title"] = "إذن صرف مخزني";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&Lalezar&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3c94bd;
+            --secondary-color: #1c7bd4;
+            --accent-color: #650101;
+            --card-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-hover-bg: linear-gradient(135deg, #3c94bd 0%, #f9fcfc 100%);
+            --white: #ffffff;
+            --light-gray: #f5f7fa;
+            --text-color: #252422;
+            --border-color: #e0e0e0;
+            --table-header-color: #1c7bd4;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            direction: rtl;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        .form-title {
+            font-family: 'Lalezar', cursive;
+            font-size: 2.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .form-title i {
+                color: var(--white);
+            }
+
+        .btn-submit {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .btn-submit:hover {
+                background: #002b57;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .btn-submit:disabled {
+                background: #a9a9a9;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+        .form-card {
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            color: var(--text-color);
+            border: none;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            padding: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards;
+        }
+
+            .form-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: var(--accent-color);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 15px;
+            height: auto;
+            transition: all 0.3s;
+            background-color: var(--white);
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.25rem rgba(60, 148, 189, 0.25);
+                outline: none;
+            }
+
+            .form-control[readonly] {
+                background-color: #e9ecef;
+                cursor: not-allowed;
+            }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .products-table thead th {
+                background: var(--table-header-color);
+                color: white;
+                padding: 15px;
+                text-align: center;
+                font-weight: 600;
+                position: sticky;
+                top: 0;
+            }
+
+            .products-table tbody td {
+                padding: 12px;
+                border-bottom: 1px solid var(--border-color);
+                text-align: center;
+                vertical-align: middle;
+                background-color: var(--white);
+            }
+
+            .products-table tbody tr:hover td {
+                background-color: #f0f8ff;
+            }
+
+        .btn-add {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto;
+        }
+
+            .btn-add:hover {
+                background: #317a9b;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            }
+
+        .btn-remove {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-remove:hover {
+                background-color: #c62828;
+            }
+
+        .total-sum-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .total-sum-label {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        .total-sum-input {
+            width: 150px;
+            padding: 10px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-align: center;
+            background-color: var(--white);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary-color);
+        }
+
+            .btn-back:hover {
+                background-color: var(--primary-color);
+                color: white;
+                text-decoration: none;
+            }
+
+        .validation-summary {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ef9a9a;
+            display: none;
+            font-weight: 600;
+        }
+
+        .text-danger {
+            color: #c62828;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .form-container {
+                padding: 0 15px;
+            }
+
+            .form-card {
+                padding: 15px;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .btn-submit, .btn-add, .btn-back {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .products-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @@keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title"><i class="fas fa-boxes"></i> إذن صرف مخزني</h1>
+            <button type="button" id="submitOrder" class="btn-submit">
+                <i class="fas fa-save"></i> إنشاء إذن الصرف
+            </button>
+        </div>
+
+        <div id="validationSummary" class="validation-summary"></div>
+
+        <form id="orderForm" asp-action="CreateMinus" asp-controller="Orders">
+            @Html.AntiForgeryToken()
+
+            <div class="form-card">
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> معلومات أساسية</h3>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label required-field">نوع الطلب</label>
+                            <input asp-for="OrderType" class="form-control" value="صرف" readonly />
+                            <span asp-validation-for="OrderType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="OrderDate" class="form-label required-field">تاريخ الطلب</label>
+                            <input asp-for="OrderDate" class="form-control" type="date"
+                                   value="@(Model.OrderDate?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))" required />
+                            <span asp-validation-for="OrderDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="CustomerId" class="form-label required-field">العميل</label>
+                            <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId" required>
+                                <option value="">-- اختر العميل --</option>
+                            </select>
+                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="StorehouseId" class="form-label required-field">المستودع</label>
+                            <select asp-for="StorehouseId" class="form-select" asp-items="ViewBag.StorehouseId" required>
+                                <option value="">-- اختر المستودع --</option>
+                            </select>
+                            <span asp-validation-for="StorehouseId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EmployeeId" class="form-label required-field">الموظف</label>
+                            <select asp-for="EmployeeId" class="form-select" asp-items="ViewBag.EmployeeId" required>
+                                <option value="">-- اختر الموظف --</option>
+                            </select>
+                            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-box-open"></i> المنتجات</h3>
+                    <table id="productRows" class="products-table">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>سعر الوحدة</th>
+                                <th>الإجمالي</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Products.Count; i++)
+                            {
+                                <tr class="productRow">
+                                    <td>
+                                        <select asp-for="Products[i].ProductId" class="form-control product-select" required>
+                                            <option value="">-- اختر المنتج --</option>
+                                            @foreach (var product in ViewBag.Products)
+                                            {
+                                                <option value="@product.ProductId" data-price="@product.Price" data-balance="@product.Balance">@product.ProductName</option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="Products[i].ProductId" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="Products[i].Quantity" class="form-control quantity" type="number" min="1" required />
+                                        <span asp-validation-for="Products[i].Quantity" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="Products[i].UnitPrice" class="form-control unit-price" readonly />
+                                        <span asp-validation-for="Products[i].UnitPrice" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="Products[i].Total" class="form-control total" readonly />
+                                        <span asp-validation-for="Products[i].Total" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn-remove remove-row">
+                                            <i class="fas fa-trash-alt"></i> إزالة
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.Products.Any())
+                            {
+                                <tr class="productRow">
+                                    <td>
+                                        <select name="Products[0].ProductId" class="form-control product-select" required>
+                                            <option value="">-- اختر المنتج --</option>
+                                            @foreach (var product in ViewBag.Products)
+                                            {
+                                                <option value="@product.ProductId" data-price="@product.Price" data-balance="@product.Balance">@product.ProductName</option>
+                                            }
+                                        </select>
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Products[0].ProductId" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input name="Products[0].Quantity" class="form-control quantity" type="number" min="1" required />
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Products[0].Quantity" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input name="Products[0].UnitPrice" class="form-control unit-price" readonly />
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Products[0].UnitPrice" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <input name="Products[0].Total" class="form-control total" readonly />
+                                        <span class="text-danger field-validation-valid" data-valmsg-for="Products[0].Total" data-valmsg-replace="true"></span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn-remove remove-row">
+                                            <i class="fas fa-trash-alt"></i> إزالة
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" id="addRow" class="btn-add">
+                        <i class="fas fa-plus"></i> إضافة منتج
+                    </button>
+                </div>
+
+                <div class="form-section">
+                    <div class="total-sum-container">
+                        <span class="total-sum-label">الإجمالي:</span>
+                        <input id="totalSum" class="total-sum-input" readonly />
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-sticky-note"></i> ملاحظات</h3>
+                    <textarea asp-for="Notes" class="form-control" rows="4" placeholder="أدخل أي ملاحظات إضافية هنا..."></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a asp-action="Index" class="btn-back">
+                <i class="fas fa-arrow-left"></i> العودة إلى القائمة
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let productIndex = @Model.Products.Count || 1;
+
+            // Update total for a row
+            function updateTotal(row) {
+                const quantity = parseInt(row.find('.quantity').val()) || 0;
+                const unitPrice = parseFloat(row.find('.unit-price').val()) || 0;
+                const total = quantity * unitPrice;
+                row.find('.total').val(total.toFixed(2));
+                updateTotalSum();
+            }
+
+            // Update total sum
+            function updateTotalSum() {
+                let totalSum = 0;
+                $('.total').each(function () {
+                    totalSum += parseFloat($(this).val()) || 0;
+                });
+                $('#totalSum').val(totalSum.toFixed(2));
+            }
+
+            // Bind events to rows
+            function bindRowEvents(row) {
+                row.find('.product-select').on('change', function () {
+                    const selectedValue = $(this).val();
+                    const price = parseFloat($(this).find(':selected').data('price')) || 0;
+                    const balance = parseInt($(this).find(':selected').data('balance')) || 0;
+                    const quantityInput = row.find('.quantity');
+                    const currentQuantity = parseInt(quantityInput.val()) || 0;
+
+                    // Reset quantity if it exceeds balance
+                    if (currentQuantity > balance && selectedValue) {
+                        quantityInput.val(balance || 1);
+                        alert(`الكمية المدخلة أكبر من الرصيد المتاح (${balance}). تم تعديل الكمية إلى الحد الأقصى المتاح.`);
+                    }
+
+                    row.find('.unit-price').val(price.toFixed(2));
+                    updateTotal(row);
+                    updateProductSelectionOptions();
+                });
+
+                row.find('.quantity').on('input', function () {
+                    const quantity = parseInt($(this).val()) || 0;
+                    const balance = parseInt(row.find('.product-select :selected').data('balance')) || 0;
+                    if (quantity > balance && row.find('.product-select').val()) {
+                        $(this).val(balance || 1);
+                        alert(`الكمية المدخلة (${quantity}) أكبر من الرصيد المتاح (${balance}). تم تعديل الكمية إلى الحد الأقصى المتاح.`);
+                    }
+                    updateTotal(row);
+                });
+
+                row.find('.remove-row').on('click', function () {
+                    if ($('#productRows tbody tr').length > 1) {
+                        row.remove();
+                        updateTotalSum();
+                        updateProductSelectionOptions();
+                    } else {
+                        $('#validationSummary').show().text('يجب أن يحتوي إذن الصرف على منتج واحد على الأقل.');
+                    }
+                });
+            }
+
+            // Initialize existing rows
+            $('.productRow').each(function () {
+                const row = $(this);
+                const select = row.find('.product-select');
+                const selectedOption = select.find(':selected');
+                if (selectedOption.val()) {
+                    const price = parseFloat(selectedOption.data('price')) || 0;
+                    row.find('.unit-price').val(price.toFixed(2));
+                    updateTotal(row);
+                }
+                bindRowEvents(row);
+            });
+
+            // Add Row
+            $('#addRow').on('click', function () {
+                const template = `
+                    <tr class="productRow">
+                        <td>
+                            <select name="Products[${productIndex}].ProductId" class="form-control product-select" required>
+                                <option value="">-- اختر المنتج --</option>
+                                @foreach (var product in ViewBag.Products)
+                                {
+                                    <option value="@product.ProductId" data-price="@product.Price" data-balance="@product.Balance">@product.ProductName</option>
+                                }
+                            </select>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Products[${productIndex}].ProductId" data-valmsg-replace="true"></span>
+                        </td>
+                        <td>
+                            <input name="Products[${productIndex}].Quantity" class="form-control quantity" type="number" min="1" required />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Products[${productIndex}].Quantity" data-valmsg-replace="true"></span>
+                        </td>
+                        <td>
+                            <input name="Products[${productIndex}].UnitPrice" class="form-control unit-price" readonly />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Products[${productIndex}].UnitPrice" data-valmsg-replace="true"></span>
+                        </td>
+                        <td>
+                            <input name="Products[${productIndex}].Total" class="form-control total" readonly />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Products[${productIndex}].Total" data-valmsg-replace="true"></span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn-remove remove-row">
+                                <i class="fas fa-trash-alt"></i> إزالة
+                            </button>
+                        </td>
+                    </tr>`;
+                const newRow = $(template);
+                $('#productRows tbody').append(newRow);
+                bindRowEvents(newRow);
+                updateProductSelectionOptions();
+                productIndex++;
+            });
+
+            // Update product selection options to disable selected products
+            function updateProductSelectionOptions() {
+                const selectedProductIds = $('.product-select').map(function () {
+                    return $(this).val();
+                }).get().filter(id => id);
+
+                $('.product-select').each(function () {
+                    const currentSelect = $(this);
+                    const currentValue = currentSelect.val();
+                    currentSelect.find('option').prop('disabled', false);
+                    selectedProductIds.forEach(id => {
+                        if (id !== currentValue) {
+                            currentSelect.find(`option[value="${id}"]`).prop('disabled', true);
+                        }
+                    });
+                });
+            }
+
+            // Form Submission
+            $('#submitOrder').on('click', function () {
+                const form = $('#orderForm');
+                const validationSummary = $('#validationSummary');
+
+                validationSummary.hide().empty();
+
+                if (!form[0].checkValidity()) {
+                    validationSummary.show().text('يرجى ملء جميع الحقول المطلوبة.');
+                    form[0].reportValidity();
+                    return;
+                }
+
+                const formData = new FormData(form[0]);
+                const data = {
+                    OrderType: formData.get('OrderType'),
+                    OrderDate: formData.get('OrderDate'),
+                    CustomerId: parseInt(formData.get('CustomerId')) || 0,
+                    StorehouseId: parseInt(formData.get('StorehouseId')) || 0,
+                    EmployeeId: parseInt(formData.get('EmployeeId')) || 0,
+                    Notes: formData.get('Notes'),
+                    Products: []
+                };
+
+                let hasValidProducts = false;
+                $('#productRows tr').each(function () {
+                    const product = {
+                        ProductId: parseInt($(this).find('.product-select').val()) || 0,
+                        Quantity: parseInt($(this).find('.quantity').val()) || 0,
+                        UnitPrice: parseFloat($(this).find('.unit-price').val()) || 0,
+                        Total: parseFloat($(this).find('.total').val()) || 0
+                    };
+                    if (product.ProductId > 0 && product.Quantity > 0) {
+                        data.Products.push(product);
+                        hasValidProducts = true;
+                    }
+                });
+
+                if (!hasValidProducts) {
+                    validationSummary.show().text('يرجى إضافة منتج واحد على الأقل مع كمية صحيحة.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("CreateMinus", "Orders")',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': formData.get('__RequestVerificationToken')
+                    },
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                            window.location.href = result.redirectUrl;
+                        } else {
+                            validationSummary.show().text('خطأ: ' + result.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        let message = 'حدث خطأ أثناء إرسال إذن الصرف.';
+                        try {
+                            const error = JSON.parse(xhr.responseText);
+                            message = error.message || message;
+                        } catch (e) {
+                            message += ' ' + xhr.statusText;
+                        }
+                        validationSummary.show().text(message);
+                    }
+                });
+            });
+
+            // Initialize product selection options
+            updateProductSelectionOptions();
+        });
+    </script>
+</body>
+</html>

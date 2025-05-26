@@ -1,0 +1,397 @@
+﻿@model List<WebApplication4.Models.InvoiceViewModel>
+@{
+    ViewData["Title"] = "سجل اليومية المحاسبي";
+    var invoiceId = ViewBag.InvoiceId;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --secondary-color: #ecf0f1;
+            --accent-color: #3498db;
+            --debit-color: #e74c3c;
+            --credit-color: #2ecc71;
+            --border-color: #bdc3c7;
+            --text-color: #2c3e50;
+            --light-text: #ffffff;
+            --row-alt: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .journal-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .journal-header {
+            background: var(--primary-color);
+            color: var(--light-text);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .journal-header h2 {
+                font-size: 26px;
+                font-weight: 600;
+                margin: 0;
+            }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            border: none;
+        }
+
+        .btn-danger {
+            background-color: var(--debit-color);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+                transform: translateY(-1px);
+            }
+
+        .btn-success {
+            background-color: var(--credit-color);
+            color: white;
+        }
+
+            .btn-success:hover {
+                background-color: #27ae60;
+                transform: translateY(-1px);
+            }
+
+        .journal-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 30px;
+            background: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .journal-subheader .info-group {
+                display: flex;
+                gap: 20px;
+            }
+
+            .journal-subheader .info-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14px;
+            }
+
+        .journal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+            .journal-table thead {
+                background-color: var(--primary-color);
+                color: var(--light-text);
+            }
+
+            .journal-table th {
+                padding: 14px 16px;
+                text-align: right;
+                font-weight: 500;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+                .journal-table th:last-child {
+                    border-right: none;
+                }
+
+            .journal-table tbody tr {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+                .journal-table tbody tr:nth-child(even) {
+                    background-color: var(--row-alt);
+                }
+
+                .journal-table tbody tr:hover {
+                    background-color: rgba(52, 152, 219, 0.05);
+                }
+
+            .journal-table td {
+                padding: 12px 16px;
+                text-align: right;
+            }
+
+        .debit-amount {
+            color: var(--debit-color);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .credit-amount {
+            color: var(--credit-color);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .journal-footer {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .totals {
+            display: flex;
+            gap: 30px;
+        }
+
+        .total-box {
+            padding: 8px 20px;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            min-width: 180px;
+        }
+
+            .total-box .label {
+                font-size: 13px;
+                color: #7f8c8d;
+                margin-bottom: 5px;
+            }
+
+            .total-box .amount {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+        .debit-total .amount {
+            color: var(--debit-color);
+        }
+
+        .credit-total .amount {
+            color: var(--credit-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #1a6fc9;
+                transform: translateY(-1px);
+            }
+
+        @@media (max-width: 768px) {
+            .journal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .journal-subheader .info-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .journal-table {
+                font-size: 13px;
+            }
+
+                .journal-table th,
+                .journal-table td {
+                    padding: 10px 12px;
+                }
+
+            .totals {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .total-box {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="journal-container">
+        <div class="journal-header">
+            <h2>سجل اليومية للفاتورة رقم @invoiceId</h2>
+            <div class="header-actions">
+                <button id="exportPdf" class="btn btn-danger">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+               
+
+                <button id="exportExcel" class="btn btn-success">
+                    <i class="fas fa-file-pdf"></i> Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="journal-subheader">
+            <div class="info-group">
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>@DateTime.Now.ToString("yyyy/MM/dd")</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>@DateTime.Now.ToString("hh:mm tt")</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-file-invoice"></i>
+                <span>عدد القيود: @Model.Count</span>
+            </div>
+        </div>
+
+        <div class="journal-content">
+            <table class="journal-table">
+                <thead>
+                    <tr>
+                        <th>تاريخ القيد</th>
+                        <th>الوصف</th>
+                        <th>مدين</th>
+                        <th>دائن</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model)
+                    {
+                        <tr>
+                            <td>@(entry.EntryDate.HasValue ? entry.EntryDate.Value.ToString("yyyy/MM/dd") : "-")</td>
+                            <td>@entry.Description</td>
+                            <td class="debit-amount">@entry.DebitAmount</td>
+                            <td class="credit-amount">@entry.CreditAmount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="journal-footer">
+            <div class="totals">
+                <div class="total-box debit-total">
+                    <div class="label">إجمالي المدين</div>
+                    <div class="amount">@Model.Sum(e => e.DebitAmount)</div>
+                </div>
+                <div class="total-box credit-total">
+                    <div class="label">إجمالي الدائن</div>
+                    <div class="amount">@Model.Sum(e => e.CreditAmount)</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 15px 30px; text-align: left;">
+            <a href="@Url.Action("Indexdetaildsales", "Invoices")" class="btn btn-primary">
+                <i class="fas fa-arrow-right"></i> العودة للقائمة
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // PDF Export
+        document.getElementById('exportPdf').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4');
+            const element = document.querySelector('.journal-container');
+            const headerActions = document.querySelector('.header-actions');
+
+            // Hide the buttons before capturing
+            headerActions.style.display = 'none';
+
+            html2canvas(element, {
+                scale: 2,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = doc.internal.pageSize.getWidth();
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+
+                doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                doc.save(`Journal_${@invoiceId}_${new Date().toISOString().slice(0, 10)}.pdf`);
+
+                // Show the buttons again after capturing
+                headerActions.style.display = 'flex';
+            });
+        });
+
+        // Excel Export
+        document.getElementById('exportExcel').addEventListener('click', function () {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.table_to_sheet(document.querySelector('.journal-table'));
+
+            // Add header information
+            XLSX.utils.sheet_add_aoa(ws, [
+                ["سجل اليومية المحاسبي"],
+                [`الفاتورة رقم: ${@invoiceId}`],
+                [`تاريخ التقرير: ${new Date().toLocaleDateString('ar-EG')}`],
+                [""]
+            ], { origin: "A1" });
+
+            XLSX.utils.book_append_sheet(wb, ws, "Journal");
+            XLSX.writeFile(wb, `Journal_${@invoiceId}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        });
+    </script>
+</body>
+</html>

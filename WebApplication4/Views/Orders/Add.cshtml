@@ -1,0 +1,325 @@
+﻿@using WebApplication4.Models
+@model CreateOrderViewModel
+
+@{
+    ViewData["Title"] = "اذن اضافه مخزني";
+}
+
+<!-- Title and Create Button Row -->
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <input type="submit" value="إنشاء" class="btn btn-primary" style="background: linear-gradient(45deg, #5fbde1, #1e90ff); border: none;" />
+    </div>
+    <div>
+        <h2 class="text-right">اذن اضافه مخزني</h2>
+    </div>
+</div>
+
+<form asp-action="Add" id="orderForm">
+    @Html.AntiForgeryToken()
+
+    <!-- Table Layout for Order Details -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">نوع الطلب</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">تاريخ الطلب</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">العميل</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">المستودع</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">الموظف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!-- Order Type -->
+                <td>
+                    <input asp-for="OrderType" class="form-control" value="اضافه" readonly />
+                    <span asp-validation-for="OrderType" class="text-danger"></span>
+                </td>
+
+                <!-- Order Date -->
+                <td>
+                    <input asp-for="OrderDate" class="form-control" type="date" />
+                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                </td>
+
+                <!-- Customer Dropdown -->
+                <td>
+                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers">
+                        <option value="">-- اختر العميل --</option>
+                    </select>
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </td>
+
+                <!-- Storehouse Dropdown -->
+                <td>
+                    <select asp-for="StorehouseId" class="form-control" asp-items="ViewBag.Storehouses">
+                        <option value="">-- اختر المستودع --</option>
+                    </select>
+                    <span asp-validation-for="StorehouseId" class="text-danger"></span>
+                </td>
+
+                <!-- Employee Dropdown -->
+                <td>
+                    <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees">
+                        <option value="">-- اختر الموظف --</option>
+                    </select>
+                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Products Label -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div></div>
+        <div>
+            <h2 class="text-right">المنتجات</h2>
+        </div>
+    </div>
+
+    <!-- Product Rows -->
+    <table id="productRows" class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">الإجراء</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">الإجمالي</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">سعر الوحدة</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">الكمية</th>
+                <th style="background: linear-gradient(45deg, #5fbde1, #1e90ff); text-align: right;">المنتج</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Products.Count; i++)
+            {
+                <tr class="productRow">
+                    <!-- Remove Button -->
+                    <td>
+                        <button type="button" class="btn btn-danger remove-row">إزالة</button>
+                    </td>
+
+                    <!-- Total -->
+                    <td>
+                        <input asp-for="Products[i].Total" class="form-control total" readonly />
+                        <span asp-validation-for="Products[i].Total" class="text-danger"></span>
+                    </td>
+
+                    <!-- Unit Price -->
+                    <td>
+                        <input asp-for="Products[i].UnitPrice" class="form-control unit-price" readonly />
+                        <span asp-validation-for="Products[i].UnitPrice" class="text-danger"></span>
+                    </td>
+
+                    <!-- Quantity -->
+                    <td>
+                        <input asp-for="Products[i].Quantity" class="form-control quantity" />
+                        <span asp-validation-for="Products[i].Quantity" class="text-danger"></span>
+                    </td>
+
+                    <!-- Product Dropdown -->
+                    <td>
+                        <select asp-for="Products[i].ProductId" class="form-control product-select">
+                            <option value="">-- اختر المنتج --</option>
+                            @foreach (var product in ViewBag.Products)
+                            {
+                                <option value="@product.ProductId" data-price="@product.PurchasePrice">@product.ProductName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Products[i].ProductId" class="text-danger"></span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Add Row Button -->
+    <div class="text-right" style="margin-top: 10px;">
+        <button type="button" id="addRow" class="btn btn-primary" style="background: linear-gradient(45deg, #5fbde1, #1e90ff); border: none;">+ إضافة منتج</button>
+    </div>
+
+    <!-- Total Sum -->
+    <div class="form-group text-left" style="display: flex; align-items: center; gap: 10px;">
+        <input id="totalSum" class="form-control" readonly style="width: 100px; padding: 10px; font-size: 14px;" />
+        <label class="control-label">الاجمالي</label>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group text-right">
+        <label asp-for="Notes" class="control-label">ملاحظات</label>
+        <textarea asp-for="Notes" class="form-control notes-field" rows="4" style="width: 70%;"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+</form>
+
+<div id="productOptionsTemplate" style="display: none;">
+    <select class="form-control product-select">
+        <option value="">-- اختر المنتج --</option>
+        @foreach (var product in ViewBag.Products)
+        {
+            <option value="@product.ProductId" data-price="@product.PurchasePrice">@product.ProductName</option>
+        }
+    </select>
+</div>
+
+<!-- Another Table Example -->
+<div class="d-flex justify-content-between align-items-center">
+    <div></div>
+    <div>
+        <h2 class="text-right">جدول آخر</h2>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to update total for a row
+            function updateTotal(row) {
+                const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+                const unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
+                const total = quantity * unitPrice;
+                row.querySelector('.total').value = total.toFixed(2); // Format to 2 decimal places
+                updateTotalSum(); // Update the total sum
+            }
+
+            // Function to update the total sum
+            function updateTotalSum() {
+                let totalSum = 0;
+                document.querySelectorAll('.total').forEach(totalInput => {
+                    totalSum += parseFloat(totalInput.value) || 0;
+                });
+                document.getElementById('totalSum').value = totalSum.toFixed(2); // Format to 2 decimal places
+            }
+
+            // Event listener for product dropdown change
+            document.addEventListener("change", function (event) {
+                if (event.target.classList.contains('product-select')) {
+                    const selectedOption = event.target.options[event.target.selectedIndex];
+                    const row = event.target.closest('tr');
+
+                    if (selectedOption.value) {
+                        // Update Unit Price field
+                        row.querySelector('.unit-price').value = selectedOption.getAttribute('data-price') || "0.00";
+
+                        // Update Total field
+                        updateTotal(row);
+                    } else {
+                        // Reset fields if no product is selected
+                        row.querySelector('.unit-price').value = "0.00";
+                        row.querySelector('.total').value = "0.00";
+                        updateTotalSum(); // Update the total sum
+                    }
+                }
+            });
+
+            // Event listener for quantity input change
+            document.addEventListener("input", function (event) {
+                if (event.target.classList.contains('quantity')) {
+                    const row = event.target.closest('tr');
+                    updateTotal(row);
+                }
+            });
+
+            // Add Row Functionality
+            document.getElementById('addRow').addEventListener('click', function () {
+                const tableBody = document.querySelector('#productRows tbody');
+                const newRow = tableBody.insertRow();
+                const index = tableBody.rows.length - 1;
+
+                // Clone the product dropdown template
+                const productSelect = document.querySelector('#productOptionsTemplate').cloneNode(true);
+                productSelect.style.display = 'block'; // Make it visible
+                productSelect.querySelector('select').name = `Products[${index}].ProductId`; // Update the name attribute
+
+                // Add the cloned dropdown to the new row
+                const cell1 = newRow.insertCell();
+                cell1.innerHTML = `<button type="button" class="btn btn-danger remove-row">إزالة</button>`;
+
+                const cell2 = newRow.insertCell();
+                cell2.innerHTML = `<input type="number" name="Products[${index}].Total" class="form-control total" readonly />`;
+
+                const cell3 = newRow.insertCell();
+                cell3.innerHTML = `<input type="number" name="Products[${index}].UnitPrice" class="form-control unit-price" readonly />`;
+
+                const cell4 = newRow.insertCell();
+                cell4.innerHTML = `<input type="number" name="Products[${index}].Quantity" class="form-control quantity" />`;
+
+                const cell5 = newRow.insertCell();
+                cell5.appendChild(productSelect);
+            });
+
+            // Remove Row Functionality
+            document.addEventListener("click", function (event) {
+                if (event.target.classList.contains('remove-row')) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                    updateTotalSum(); // Update the total sum after removing a row
+                }
+            });
+
+            // Form submission handling using AJAX
+            document.getElementById('orderForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Collect form data
+                const formData = {
+                    OrderType: document.querySelector('input[name="OrderType"]').value,
+                    OrderDate: document.querySelector('input[name="OrderDate"]').value, // Include OrderDate
+                    CustomerId: parseInt(document.querySelector('select[name="CustomerId"]').value),
+                    StorehouseId: parseInt(document.querySelector('select[name="StorehouseId"]').value),
+                    EmployeeId: parseInt(document.querySelector('select[name="EmployeeId"]').value),
+                    Notes: document.querySelector('.notes-field').value,
+                    Products: []
+                };
+
+                // Collect product details
+                document.querySelectorAll('#productRows tbody tr').forEach(row => {
+                    const productId = parseInt(row.querySelector('.product-select').value);
+                    const quantity = parseInt(row.querySelector('.quantity').value);
+                    const unitPrice = parseFloat(row.querySelector('.unit-price').value);
+                    const total = parseFloat(row.querySelector('.total').value);
+
+                    if (productId && quantity && unitPrice && total) {
+                        formData.Products.push({
+                            ProductId: productId,
+                            Quantity: quantity,
+                            UnitPrice: unitPrice,
+                            Total: total
+                        });
+                    }
+                });
+
+                // Log form data to console for debugging
+                console.log('Form Data:', formData);
+
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(formData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; }); // Parse and throw validation errors
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Server Response:', data);
+                        if (data.success) {
+                            window.location.href = data.redirectUrl; // Redirect on success
+                        } else {
+                            alert(data.message); // Show error message
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert(error.message || 'حدث خطأ أثناء إرسال النموذج.');
+                    });
+            });
+        });
+    </script>
+}

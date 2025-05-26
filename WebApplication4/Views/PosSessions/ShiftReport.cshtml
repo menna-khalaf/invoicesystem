@@ -1,0 +1,636 @@
+﻿@model ShiftReportViewModel
+@{
+    ViewData["Title"] = "تقرير الشيفت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --warning-color: #f8961e;
+        --info-color: #4895ef;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --print-font-size: 10px;
+        --mobile-font-size: 12px;
+        --desktop-font-size: 14px;
+        --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+        --gradient-success: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+        --gradient-danger: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+        --border-radius: 10px;
+        --transition: all 0.3s ease;
+    }
+
+    /* Modern reset and base styles */
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-size: var(--desktop-font-size);
+        font-family: 'Tajawal', sans-serif;
+        background-color: #f5f7fa;
+        color: var(--dark-color);
+    }
+
+    /* Full-width container with subtle pattern */
+    .container-fluid {
+        width: 100vw;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+        background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0);
+        background-size: 20px 20px;
+    }
+
+    /* Card with modern styling */
+    .card {
+        width: 100vw;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border: none;
+        box-shadow: var(--shadow-md);
+        background-color: white;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    /* Card header with gradient */
+    .card-header {
+        width: 100%;
+        padding: 1.5rem;
+        position: sticky;
+        top: 0;
+        background: var(--gradient-primary);
+        color: white;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(67, 97, 238, 0.3);
+    }
+
+        .card-header h6 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-header h6 i {
+                margin-left: 10px;
+            }
+
+    /* Grid layout for summary cards */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+        padding: 0 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Summary card styling */
+    .summary-card {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: none;
+        position: relative;
+        z-index: 1;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .summary-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .summary-card .text-xs {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: white !important;
+        }
+
+        .summary-card .h5 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            color: white;
+        }
+
+        .summary-card .col-auto i {
+            font-size: 2.5rem;
+            opacity: 0.2;
+            color: white;
+        }
+
+    /* Custom card colors */
+    .card-total {
+        background: var(--gradient-primary);
+    }
+
+    .card-returns {
+        background: var(--gradient-danger);
+    }
+
+    .card-net {
+        background: var(--gradient-success);
+    }
+
+    /* Table container with modern styling */
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        padding: 0 1rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Modern table styling */
+    table {
+        width: 100%;
+        min-width: max-content;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: auto;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    thead {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    th {
+        padding: 0.5rem 0.75rem;
+        text-align: right;
+        white-space: nowrap;
+        font-weight: 600;
+        position: relative;
+    }
+
+        th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 50%;
+            width: 1px;
+            background-color: rgba(255,255,255,0.3);
+            transform: translateY(-50%);
+        }
+
+    td {
+        padding: 0.5rem 0.75rem;
+        text-align: right;
+        white-space: nowrap;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        transition: var(--transition);
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Hover effect for table rows */
+    .table-hover tbody tr:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+        transform: scale(1.005);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* Status badges */
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: 50px;
+    }
+
+    /* Action buttons */
+    .invoice-actions .btn {
+        padding: 0.35rem 0.65rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        margin-right: 0.25rem;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+        .invoice-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+    /* Print button styling */
+    .print-btn {
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+            color: white;
+        }
+
+        .print-btn i {
+            margin-left: 8px;
+        }
+
+    /* Back button styling */
+    .back-btn {
+        background: white;
+        border: 1px solid var(--primary-color);
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .back-btn:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+
+        .back-btn i {
+            margin-left: 8px;
+        }
+
+    /* Section headers */
+    .section-header {
+        position: relative;
+        padding-right: 1rem;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -5px;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        body {
+            font-size: var(--mobile-font-size);
+        }
+
+        .card-header {
+            padding: 1rem;
+        }
+
+            .card-header h6 {
+                font-size: 1rem;
+            }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        th, td {
+            padding: 0.5rem 0.5rem;
+        }
+
+        .section-header {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Print-specific styles */
+    @@media print {
+        @@page {
+            size: auto;
+            margin: 5mm;
+        }
+
+        body {
+            width: 100%;
+            font-size: var(--print-font-size);
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .container-fluid, .card, .table-container {
+            width: 100%;
+            max-width: 100%;
+            box-shadow: none !important;
+        }
+
+        .card-header {
+            background: var(--primary-color) !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        table {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .summary-card {
+            break-inside: avoid;
+        }
+    }
+
+    /* Animation for table rows */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    tbody tr {
+        animation: fadeIn 0.3s ease-out forwards;
+        opacity: 0;
+    }
+
+        tbody tr:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        tbody tr:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        tbody tr:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        tbody tr:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        tbody tr:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        tbody tr:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        tbody tr:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        tbody tr:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 text-white">
+                <i class="fas fa-file-invoice"></i> تقرير الشيفت
+            </h6>
+          @*   <button class="btn btn-light btn-sm no-print" onclick="window.print()">
+                <i class="fas fa-print me-2"></i> طباعة
+            </button> *@
+        </div>
+        <div class="card-body">
+            <!-- Shift Information Section -->
+            <div class="row mb-5">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="section-header">معلومات الشيفت</h5>
+                    <div class="shift-info-box bg-light p-4 rounded">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-store text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">الفرع</small>
+                                <strong>@Model.Session.Branch?.BranchName</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-cash-register text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">نقطة البيع</small>
+                                <strong>@Model.Session.PosNavigation?.Posname</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-warehouse text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">المخزن</small>
+                                <strong>@Model.Session.Storehouse?.StorehouseName</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="section-header">تفاصيل الجلسة</h5>
+                    <div class="shift-info-box bg-light p-4 rounded">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-tie text-primary me-3"></i>
+                          @*   <div>
+                                <small class="text-muted d-block">الموظف</small>
+                                <strong>@Model.Session.Employee?.FullName</strong>
+                            </div> *@
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-clock text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">وقت البدء</small>
+                                <strong>@Model.Session.StartTime.ToString("yyyy/MM/dd HH:mm")</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-stopwatch text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">وقت الانتهاء</small>
+                                <strong>@(Model.Session.EndTime?.ToString("yyyy/MM/dd HH:mm") ?? "لم ينتهي بعد")</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card card-total">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs">إجمالي الفواتير</div>
+                                <div class="h5 mb-0">@Model.TotalSales.ToString("N2") </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-card card-returns">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs">إجمالي المرتجعات</div>
+                                <div class="h5 mb-0">@Model.TotalReturns.ToString("N2") </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-card card-net">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs">صافي المبيعات</div>
+                                <div class="h5 mb-0">@Model.NetSales.ToString("N2") </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Table -->
+            <h5 class="section-header">تفاصيل الفواتير</h5>
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>رقم الفاتورة</th>
+                            <th>التاريخ</th>
+                            <th>العميل</th>
+                            <th>النوع</th>
+                            <th>طريقة الدفع</th>
+                            <th>الإجمالي</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                            <tr class="@(invoice.InvoiceType == "مرتجع" ? "table-warning" : "")">
+                                <td><span class="badge bg-primary">#@invoice.InvoiceId</span></td>
+                                <td>@invoice.InvoiceDate.ToString("yyyy/MM/dd HH:mm")</td>
+                                <td>@(invoice.Customer?.CustomerName ?? "نقدي")</td>
+                                <td>
+                                    @if (invoice.InvoiceType == "مرتجع")
+                                    {
+                                        <span class="badge bg-danger">@invoice.InvoiceType</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">@invoice.InvoiceType</span>
+                                    }
+                                </td>
+                                <td>@invoice.PaymentMethod</td>
+                                <td><strong>@Model.GetInvoiceTotal(invoice).ToString("N2") </strong></td>
+                                <td class="invoice-actions">
+                                    <a href="@Url.Action("detailingreturn", "posSessions", new { id = invoice.InvoiceId })"
+                                       class="btn btn-sm btn-info no-print" title="تفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if (invoice.InvoiceType != "مرتجع")
+                                    {
+                                        <a href="@Url.Action("ReturnSalesCashier", "posSessions", new { originalInvoiceId = invoice.InvoiceId })"
+                                           class="btn btn-sm btn-warning no-print" title="إنشاء مرتجع">
+                                            <i class="fas fa-undo"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row mt-4 no-print">
+                <div class="col-md-12 text-center">
+                    <button class="print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> طباعة التقرير
+                    </button>
+                   @*  <a href="@Url.Action("Index", "PosSessions")" class="back-btn ms-3">
+                        <i class="fas fa-arrow-left"></i> العودة لقائمة الشيفتات
+                    </a> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add animation to summary cards
+    document.querySelectorAll('.summary-card').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.style.opacity = '0';
+        card.style.animation = 'fadeIn 0.5s ease-out forwards';
+    });
+
+    // Add print button effect
+    document.querySelector('.print-btn').addEventListener('mouseover', function () {
+        this.innerHTML = '<i class="fas fa-print"></i> جاري التجهيز للطباعة';
+    });
+
+    document.querySelector('.print-btn').addEventListener('mouseout', function () {
+        this.innerHTML = '<i class="fas fa-print"></i> طباعة التقرير';
+    });
+</script>

@@ -1,0 +1,54 @@
+﻿@model WebApplication4.Models.Adjustmentproduct
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Adjustmentproduct</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ActualQuantity)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ActualQuantity)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Difference)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Difference)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Balanced)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Balanced)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Adjustment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Adjustment.AdjustmentId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Inventory)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Inventory.InventoryId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Product)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Product.ProductName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.AdjustmentProductId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

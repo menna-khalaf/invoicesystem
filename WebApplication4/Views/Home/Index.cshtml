@@ -1,0 +1,770 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <title>Chain App Dev - App Landing Page HTML5 Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--
+
+    TemplateMo 570 Chain App Dev
+
+    https://templatemo.com/tm-570-chain-app-dev
+
+    -->
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/css/templatemo-chain-app-dev.css">
+    <link rel="stylesheet" href="../assets/css/animated.css">
+    <link rel="stylesheet" href="../assets/css/owl.css">
+
+    <style>
+        /* Remove left and right padding/margin from the footer */
+        footer {
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+            width: 100%;
+        }
+
+        /* Target the section under the form to remove white space */
+        .container-fluid.no-padding {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 0;
+            margin-right: 0;
+            width: 100%;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="../assets/images/logo.png" alt="راحتك" style="height:70px; width: 70px;">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="#top" class="active">الرئيسيه</a></li>
+                            <li class="scroll-to-section"><a href="#services">المميزات</a></li>
+                            <li class="scroll-to-section"><a href="#about">عن البرنامج</a></li>
+                            <li class="scroll-to-section"><a href="#pricing">الاسعار</a></li>
+                            <li class="scroll-to-section"><a href="#newsletter">البرامج</a></li>
+                            <li>
+                                <div class="gradient-button">
+                                    <a asp-controller="Usered" asp-action="Login">
+                                        <i class="fa fa-sign-in-alt"></i> دخول
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <section class="hero-banner" id="top" style="width: 100%; position: relative; overflow: hidden; padding: 100px 0; background: #ffffff;">
+        <div class="banner-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div class="banner-content-wrapper" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 30px;">
+                <!-- Text Content Section -->
+                <div class="hero-text-content" style="flex: 1; min-width: 300px; padding: 20px; position: relative; z-index: 2;">
+                    <div class="content-inner" style="text-align: right;">
+                        <div class="tagline" style="margin-bottom: 15px;">
+                            <span style="display: inline-block; padding: 8px 20px; background: rgba(52, 152, 219, 0.1); color: #3498db; border-radius: 50px; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px;">نظام الفواتير الإلكترونية</span>
+                        </div>
+
+                        <h1 class="hero-heading" style="font-size: 2.8rem; margin-bottom: 25px; color: #2c3e50; line-height: 1.3; font-weight: 700; position: relative;">
+                            <span style="background: linear-gradient(90deg, #3498db, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent;">موقع راحتك الالكتروني</span>
+                            <br>نظام رقمي متكامل لإدارة الفواتير
+                        </h1>
+
+                        <p class="hero-description" style="font-size: 1.1rem; color: #7f8c8d; margin-bottom: 35px; line-height: 1.6;">
+                            نظام متكامل لإدارة الفواتير الإلكترونية بكل سهولة وأمان. وفر الوقت والجهد مع حلولنا الذكية المصممة خصيصًا لاحتياجاتك.
+                        </p>
+
+                        <div class="cta-buttons" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: flex-end;">
+                            <a href="/Usered/Login" class="primary-btn" style="display: inline-flex; align-items: center; padding: 15px 30px; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); position: relative; overflow: hidden;">
+                                <span style="position: relative; z-index: 2;">تسجيل الدخول</span>
+                                <span style="margin-right: 10px; position: relative; z-index: 2;">→</span>
+                                <span style="position: absolute; top: 0; right: 0; width: 0; height: 100%; background: rgba(255,255,255,0.2); transition: width 0.4s ease; z-index: 1;"></span>
+                            </a>
+                            <a href="/Usered/Create" class="secondary-btn" style="display: inline-flex; align-items: center; padding: 15px 30px; background: white; color: #2ecc71; border: 2px solid #2ecc71; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.1); position: relative; overflow: hidden;">
+                                <span style="position: relative; z-index: 2;">مستخدم جديد</span>
+                                <span style="margin-right: 10px; position: relative; z-index: 2;">+</span>
+                                <span style="position: absolute; top: 0; right: 0; width: 0; height: 100%; background: rgba(46, 204, 113, 0.1); transition: width 0.4s ease; z-index: 1;"></span>
+                            </a>
+                        </div>
+
+                        <div class="features-list" style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: flex-end;">
+                            <div class="feature-item" style="display: flex; align-items: center; background: #f8f9fa; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                                <span style="margin-right: 8px; color: #2ecc71;">✓</span>
+                                <span style="font-size: 0.9rem;">فواتير إلكترونية</span>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: center; background: #f8f9fa; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                                <span style="margin-right: 8px; color: #2ecc71;">✓</span>
+                                <span style="font-size: 0.9rem;">تقارير ذكية</span>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: center; background: #f8f9fa; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                                <span style="margin-right: 8px; color: #2ecc71;">✓</span>
+                                <span style="font-size: 0.9rem;">دعم فني 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Section -->
+                <div class="hero-image-container" style="flex: 1; min-width: 300px; position: relative;">
+                    <div class="image-wrapper" style="position: relative; width: 100%; max-width: 600px; margin: 0 auto;">
+                        <img src="../assets/images/slider2-dec.png" alt="نظام الفواتير الإلكترونية" style="width: 100%; height: auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); transform: perspective(1000px) rotateY(-10deg); transition: transform 0.5s ease;">
+
+                        <!-- Floating elements around the image -->
+                        <div class="floating-shapes" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;">
+                            <div class="shape-1" style="position: absolute; top: 10%; left: 5%; width: 40px; height: 40px; background: #3498db; border-radius: 50%; opacity: 0.1; animation: float 6s ease-in-out infinite;"></div>
+                            <div class="shape-2" style="position: absolute; top: 70%; left: 15%; width: 60px; height: 60px; background: #2ecc71; border-radius: 50%; opacity: 0.1; animation: float 8s ease-in-out infinite 1s;"></div>
+                            <div class="shape-3" style="position: absolute; top: 30%; left: 80%; width: 30px; height: 30px; background: #e74c3c; border-radius: 50%; opacity: 0.1; animation: float 5s ease-in-out infinite 0.5s;"></div>
+                            <div class="shape-4" style="position: absolute; top: 80%; left: 85%; width: 50px; height: 50px; background: #f39c12; border-radius: 50%; opacity: 0.1; animation: float 7s ease-in-out infinite 1.5s;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background elements -->
+        <div class="background-elements" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; pointer-events: none;">
+            <div class="bg-circle-1" style="position: absolute; top: 20%; left: 10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(52, 152, 219, 0.03) 0%, rgba(52, 152, 219, 0) 70%); border-radius: 50%; animation: pulse 12s infinite;"></div>
+            <div class="bg-circle-2" style="position: absolute; bottom: 10%; right: 15%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(46, 204, 113, 0.03) 0%, rgba(46, 204, 113, 0) 70%); border-radius: 50%; animation: pulse 15s infinite 3s;"></div>
+        </div>
+    </section>
+
+    <style>
+        /* Keyframe animations */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        @@keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.3;
+            }
+        }
+
+        /* Hover effects */
+        .primary-btn:hover, .secondary-btn:hover {
+            transform: translateY(-5px) !important;
+        }
+
+        .primary-btn:hover {
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4) !important;
+        }
+
+        .secondary-btn:hover {
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2) !important;
+            background: #f8f9fa !important;
+        }
+
+            .primary-btn:hover span, .secondary-btn:hover span {
+                width: 100% !important;
+            }
+
+        .image-wrapper:hover img {
+            transform: perspective(1000px) rotateY(0deg) !important;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08) !important;
+            background: white !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 991px) {
+            .hero-text-content, .hero-image-container {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                text-align: center !important;
+            }
+
+            .cta-buttons, .features-list {
+                justify-content: center !important;
+            }
+
+            .hero-heading {
+                font-size: 2.2rem !important;
+            }
+
+            .tagline {
+                text-align: center !important;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .hero-heading {
+                font-size: 1.8rem !important;
+            }
+
+            .primary-btn, .secondary-btn {
+                padding: 12px 25px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .feature-item {
+                padding: 8px 15px !important;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add animation classes for staggered animations
+            const elements = [
+                { selector: '.tagline', delay: 0 },
+                { selector: '.hero-heading', delay: 0.2 },
+                { selector: '.hero-description', delay: 0.4 },
+                { selector: '.cta-buttons', delay: 0.6 },
+                { selector: '.features-list', delay: 0.8 },
+                { selector: '.image-wrapper img', delay: 0.3 }
+            ];
+
+            elements.forEach(item => {
+                const el = document.querySelector(item.selector);
+                if (el) {
+                    el.style.opacity = '0';
+                    el.style.animation = `fadeInUp 0.8s ease-out ${item.delay}s forwards`;
+                }
+            });
+        });
+    </script>
+    <div id="services" class="services section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading  wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.5s">
+                        <h4> المميزات التي تقدمها <em>راحتك الالكترونيه</em>  </h4>
+                        <img src="../assets/images/heading-line-dec.png" alt="">
+                        <p>منصة راحتك نظام محاسبي إلكتروني لإدارة الحسابات المالية تهدف إلي تحويل عملية إصدار الفواتير والإشعارات الورقية إلي إلكترونية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item first-service text-right">
+                         
+                        <h4>المبيعات</h4> <!-- Removed inline padding; use CSS instead -->
+                        <p>تتيح هذه الخاصية للتجار لمتابعة منتجاتهم والأرباح بشكل دوري منظم.</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("index", "Invoices")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- Arrow points left for RTL -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item second-service text-right">
+                         
+                        <h4>المشتريات</h4>
+                        <p>نساعدك في عمل كل أنواع الفواتير التي من بينها فواتير المشتريات المبسطة</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("indexPurshasing", "Invoices")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- Arrow now points left for RTL -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item second-service text-right">
+                         
+                        <h4>العملاء</h4>
+                        <p>احصل من خلالنا على دعم كامل في كل ما يتعلق بالموارد البشرية</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("index", "Customers")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- Arrow points left for RTL -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item second-service text-right">
+                        
+                        <h4>المخازن</h4>
+                        <p>من الخدمات التي نوفرها لك إمكانية تحويل مخزون من مستودع لآخر</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("index", "Adjustments")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- RTL arrow direction -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <h1 style="height: 17px;;"></h1>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item second-service text-right">
+                        
+                        <h4>الموردين</h4>
+                        <p>تتيح هذه الخاصية للتجار لمتابعة منتجاتهم والأرباح بشكل دوري منظم.</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("index", "Employees")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- RTL arrow direction -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item second-service text-right">
+                         
+                        <h4>نقاط البيع</h4>
+                        <p>نساعدك في عمل كل أنواع الفواتير التي من بينها فواتير البيع المبسطة.</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("index", "Poes")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- RTL arrow direction -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item third-service text-right">
+                         
+                        <h4>التقارير</h4>
+                        <p>إن كنت تريد متابعة نمو النشاط الخاص بشركتك فإننا نساعدك في ذلك.</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("GetInvoiceSummary", "InvoiceDetails")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- RTL arrow direction -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" dir="rtl">
+                    <div class="service-item fourth-service text-right">
+                         
+                        <h4>الحسابات العامه</h4>
+                        <p>نساعدك في عمل كل أنواع الفواتير التي من بينها فواتير البيع المبسطة.</p>
+                        <div class="text-button">
+                            <a href="@Url.Action("create", "Cashandbankaccounts")" class="btn btn-primary">
+                                عرض المزيد <i class="fa fa-arrow-left"></i> <!-- RTL arrow direction -->
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about" class="about-us section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 align-self-center">
+                    <div class="section-heading">
+                        <h4>لماذا نختار  <em>راحتك</em>   </h4>
+                        <img src="../assets/images/heading-line-dec.png" alt="">
+                        <p>اكتشف كيف يساعدك نظام راحتك في إدارة أعمالك بكفاءة وفعالية</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">الحماية والأمان</a></h4>
+                                <p>تولي منصة فاتورة أقصي اهتمام لسلامة البيانات، لذا فأننا نستخدم أحدث تكنولوجيا مؤمنة بالكامل ومشفرة، إلى جانب وجود قيود قوية على صلاحية الوصول إلى البيانات، بالإضافة إلى عمليات نسخ احتياطي دورية.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">دعم فني مجاني على مدار الساعة</a></h4>
+                                <p>دعم فني مجاني للرد على الاستفسارات والمساعدة في حال وجود أي مشكلة ؛ يمكنك التواصل من خلال الواتس اب و الدردشة المباشرة او البريد الإلكتروني على مدار اليوم، وذلك لضمان الحصول على تجربة مثالية عند استخدام منصة فاتورة.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">تجربة متخصصه لأجلك</a></h4>
+                                <p>أيا كان مشروعك أو مجالك عملك يمكنك استخدام منصة فاتورة والاستفادة من مميزاتها المتعددة من خلال تفعيل المزايا والخدمات المطلوبة فقط، وتعديل في قوالب الفواتير وعروض الأسعار وغيرها من المطبوعات للحصول على تجربة مثالية مخصصة لاحتياجاتك.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">واجهة سهلة الاستخدام</a></h4>
+                                <p>أدِر أعمالك بسهولة مع العديد من الخصائص والأدوات المضمّنة في واجهة سهلة الاستخدام بخطوات بسيطة، إذ لا تحتاج إلى امتلاك معرفة عميقة بطرق المحاسبة المعقدة من أجل العمل على منصة فاتورة.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <p>سنمنحك نسخة تجريبية مدتها 14 يومًا حسابًا مجانيًا ، وعندما تنتهي الفترة التجريبية ، يمكنك ترقية نفس الحساب إلى الباقة المناسبة لك.</p>
+                            <div class="gradient-button">
+                                <a href="#">سجل معنا الان </a>
+                            </div>
+                            @*  <span>*No Credit Card Required</span> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="right-image">
+                        <img src="../assets/images/about-right-dec.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div id="pricing" class="pricing-tables">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading">
+                        <h4>باقات <em> راحتك </em></h4>
+                        <img src="../assets/images/heading-line-dec.png" alt="">
+                        <p>خطوتك لإدارة أعمالك وتطويرها تبدأ هنا أختر باقتك التي تناسب احتياجاتك</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="pricing-item-regular">
+                            <span class="price">899</span>
+                            <h4>Light : 3 مستخدمين</h4>
+                            <div class="icon">
+                                <img src="../assets/images/pricing-table-01.png" alt="">
+                            </div>
+                            <ul>
+                                <li>مبيعات</li>
+                                <li>مشتريات</li>
+                                <li>مخزون</li>
+                                <li>العملاء</li>
+                                <li>الموردين</li>
+                                <li class="non-function">الحسابات العامه</li>
+                                <li>التقارير</li>
+                                <li class="non-function">القوائم الماليه</li>
+                                <li class="non-function">التحليل المالي </li>
+                                @* <li class="non-function">More Options</li> *@
+                            </ul>
+                            <div class="border-button">
+                                <a href="#">تفاصيل اكثر</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="pricing-item-pro">
+                            <span class="price">1199</span>
+                            <h4>Standard:10مستخدمين</h4>
+                            <div class="icon">
+                                <img src="../assets/images/pricing-table-01.png" alt="">
+                            </div>
+                            <ul>
+                                <li>مبيعات</li>
+                                <li>مشتريات</li>
+                                <li>مخزون</li>
+                                <li>العملاء</li>
+                                <li>الموردين</li>
+                                <li >الحسابات العامه</li>
+                                <li>التقارير</li>
+                                <li class="non-function">القوائم الماليه</li>
+                                <li class="non-function">التحليل المالي </li>
+                            </ul>
+                            <div class="border-button">
+                                <a href="#">تفاصيل اكثر</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="pricing-item-regular">
+                            <span class="price">1799</span>
+                            <h4>Professional:15مستخدمين</h4>
+                            <div class="icon">
+                                <img src="../assets/images/pricing-table-01.png" alt="">
+                            </div>
+                            <ul>
+                                <li>مبيعات</li>
+                                <li>مشتريات</li>
+                                <li>مخزون</li>
+                                <li>العملاء</li>
+                                <li>الموردين</li>
+                                <li>الحسابات العامه</li>
+                                <li>التقارير</li>
+                                <li>القوائم الماليه</li>
+                                <li class="non-function">التحليل المالي </li>
+                            </ul>
+                            <div class="border-button">
+                                <a href="#">تفاصيل اكثر</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="pricing-item-regular">
+                            <span class="price">1799</span>
+                            <h4>Advanced : عدد غير محدود</h4>
+                            <div class="icon">
+                                <img src="../assets/images/pricing-table-01.png" alt="">
+                            </div>
+                            <ul>
+                                <li>مبيعات</li>
+                                <li>مشتريات</li>
+                                <li>مخزون</li>
+                                <li>العملاء</li>
+                                <li>الموردين</li>
+                                <li>الحسابات العامه</li>
+                                <li>التقارير</li>
+                                <li>القوائم الماليه</li>
+                                <li>التحليل المالي </li>
+                            </ul>
+                            <div class="border-button">
+                                <a href="#">تفاصيل اكثر</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    -->
+
+    <footer id="newsletter" style="background: linear-gradient(135deg, #343a40 0%, #212529 100%); color: white; padding: 80px 0 0; position: relative;">
+        <div style="content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: url('../assets/images/dots-pattern-white.png') repeat; opacity: 0.05; z-index: 0;"></div>
+        <div class="container">
+            <div class="row">
+                <!-- Contact Info -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget wow fadeInUp" style="position: relative; z-index: 1; margin-bottom: 40px;" data-wow-delay="0.2s">
+                        <h4 style="font-size: 1.3rem; margin-bottom: 25px; color: white; position: relative; padding-bottom: 15px;">
+                            اتصل بنا
+                            <span style="content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 2px; background: #287cd4;"></span>
+                        </h4>
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: #287cd4; font-size: 1rem; margin-bottom: 5px;">المبيعات</h5>
+                            <p style="margin: 0;"><a href="tel:+966559906233" style="color: rgba(255, 255, 255, 0.9); transition: all 0.3s ease; text-decoration: none; font-weight: 500;">+966 55 990 6233</a></p>
+                        </div>
+                        <div>
+                            <h5 style="color: #287cd4; font-size: 1rem; margin-bottom: 5px;">خدمة العملاء</h5>
+                            <p style="margin: 0;"><a href="tel:+966559887033" style="color: rgba(255, 255, 255, 0.9); transition: all 0.3s ease; text-decoration: none; font-weight: 500;">+966 55 988 7033</a></p>
+                        </div>
+                        <p style="margin-top: 20px;"><a href="mailto:R2020k2@gmail.com" style="color: rgba(255, 255, 255, 0.7); transition: all 0.3s ease; text-decoration: none;"><i class="fas fa-envelope" style="margin-left: 5px;"></i> R2020k2@gmail.com</a></p>
+                    </div>
+                </div>
+
+                <!-- About Us -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget wow fadeInUp" style="position: relative; z-index: 1; margin-bottom: 40px;" data-wow-delay="0.4s">
+                        <h4 style="font-size: 1.3rem; margin-bottom: 25px; color: white; position: relative; padding-bottom: 15px;">
+                            من نحن
+                            <span style="content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 2px; background: #287cd4;"></span>
+                        </h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">الرئيسية</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">المميزات</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">عن البرنامج</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">الآراء</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">الأسعار</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Useful Links -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget wow fadeInUp" style="position: relative; z-index: 1; margin-bottom: 40px;" data-wow-delay="0.6s">
+                        <h4 style="font-size: 1.3rem; margin-bottom: 25px; color: white; position: relative; padding-bottom: 15px;">
+                            روابط مفيدة
+                            <span style="content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 2px; background: #287cd4;"></span>
+                        </h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">تطبيقات مجانية</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">محرك التطبيقات</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">برمجة</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">تطوير</a>
+                            </li>
+                            <li style="margin-bottom: 12px; position: relative; padding-right: 15px;">
+                                <i class="fas fa-chevron-left" style="position: absolute; right: 0; top: 5px; color: #287cd4; font-size: 0.8rem;"></i>
+                                <a href="#" style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease; text-decoration: none; display: block;">أخبار التطبيقات</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Company Info -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget wow fadeInUp" style="position: relative; z-index: 1; margin-bottom: 40px;" data-wow-delay="0.8s">
+                        <h4 style="font-size: 1.3rem; margin-bottom: 25px; color: white; position: relative; padding-bottom: 15px;">
+                            عن الشركة
+                            <span style="content: ''; position: absolute; bottom: 0; right: 0; width: 50px; height: 2px; background: #287cd4;"></span>
+                        </h4>
+                        <div class="logo mb-3">
+                            <img src="../assets/images/white252-logo.png" alt="فاتورة راحتك" class="img-fluid" style="max-height: 70px;">
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6; margin-bottom: 20px;">فاتورة راحتك - نظام فواتير ذكي يدعم إدارة المخازن والمبيعات ويجمع البيانات المالية في تقارير سهلة الفهم.</p>
+                        <div class="social-icons" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <a href="https://instagram.com/srahtkm" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.twitter.com/srahtkm" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.facebook.com/Srahtkm" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://wa.me/966508829946" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://t.me/rahtkm" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-telegram-plane"></i></a>
+                            <a href="https://www.linkedin.com/in/rahtkm" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); color: white; border-radius: 50%; transition: all 0.3s ease; text-decoration: none;"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copyright -->
+                <div class="col-lg-12">
+                    <div class="copyright-text" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 30px 0; text-align: center;">
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0; font-size: 0.9rem;">
+                            جميع الحقوق محفوظة © 2020 <span style="color: #287cd4; font-weight: 600;">فاتورة راحتك</span>
+                           
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Hover Effects */
+        .footer-widget a:hover {
+            color: #287cd4 !important;
+            transform: translateX(-5px);
+        }
+
+        .social-icons a:hover {
+            background: #287cd4 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(40, 124, 212, 0.3);
+        }
+
+        /* Responsive Adjustments */
+        @@media (max-width: 991px) {
+            .footer-widget {
+                text-align: center;
+            }
+
+                .footer-widget h4 span {
+                    right: 50%;
+                    transform: translateX(50%);
+                }
+
+                .footer-widget ul li {
+                    padding-right: 0 !important;
+                }
+
+                    .footer-widget ul li i {
+                        display: none !important;
+                    }
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/owl-carousel.js"></script>
+    <script src="../assets/js/animation.js"></script>
+    <script src="../assets/js/imagesloaded.js"></script>
+    <script src="../assets/js/popup.js"></script>
+    <script src="../assets/js/custom.js"></script>
+</body>
+</html>

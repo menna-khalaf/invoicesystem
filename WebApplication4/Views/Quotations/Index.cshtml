@@ -1,0 +1,184 @@
+﻿@model IEnumerable<WebApplication4.Models.Quotation>
+
+@{
+    ViewData["Title"] = "قائمة عروض الأسعار";
+}
+
+<h1 class="page-title">قائمة عروض الأسعار</h1>
+
+<p class="text-end mb-4">
+    <a asp-action="Create" class="btn btn-gradient">➕ إنشاء عرض سعر جديد</a>
+</p>
+
+<div class="table-responsive shadow-lg p-3 rounded bg-white">
+    <table class="table table-hover table-striped text-center align-middle custom-table" dir="rtl">
+        <thead class="table-head">
+            <tr>
+                <th>رقم العرض</th>
+                <th>اسم العميل</th>
+                <th>اسم الموظف</th>
+                <th>تاريخ العرض</th>
+                <th>تاريخ الانتهاء</th>
+                <th>الحالة</th>
+                <th>اسم الفرع</th>
+                <th>اسم المستودع</th>
+                <th>عدد العناصر</th>
+                <th>المجموع الكلي</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="11" class="text-muted py-5">لا توجد عروض أسعار متاحة.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.QuotationId</td>
+                        <td>@item.Customer.CustomerName</td>
+                        <td>@item.Employee.FullName</td>
+                        <td>@item.QuotationDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.ExpiryDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.Status</td>
+                        <td>@item.Branch.BranchName</td>
+                        <td>@item.Storehouse.StorehouseName</td>
+                        <td>@item.ItemsCount</td>
+                        <td>@item.TotalAmount</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-dark custom-dropdown-toggle" type="button" aria-expanded="false">⋮</button>
+                                <ul class="dropdown-menu dropdown-menu-end text-end fade">
+                                    <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.QuotationId">✏️ تعديل</a></li>
+                                    <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.QuotationId">🗑️ حذف</a></li>
+                                    <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.QuotationId">🔍 تفاصيل</a></li>
+                                    <li><a class="dropdown-item" asp-action="ConvertToInvoice" asp-route-id="@item.QuotationId">💳 تحويل لفاتورة</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    body {
+        direction: rtl;
+        background: linear-gradient(to left, #dfe9f3, #ffffff);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        color: #4a4e69;
+        font-size: 2.2rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(to left, #5fa8d3, #7d7ddc);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: 0.3s ease-in-out;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to left, #4d7ea8, #5e60ce);
+            transform: scale(1.05);
+        }
+
+    .custom-table thead {
+        background-color: #6c5ce7;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f0f4ff;
+        transition: background-color 0.3s;
+    }
+
+    .dropdown .custom-dropdown-toggle {
+        background-color: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .dropdown-menu {
+        position: absolute !important;
+        right: 0;
+        top: auto;
+        transform: translateY(-100%);
+        z-index: 1050;
+    }
+
+    .dropdown {
+        position: relative;
+    }
+
+        .dropdown-menu a {
+            padding: 8px 15px;
+            transition: background-color 0.2s;
+        }
+
+            .dropdown-menu a:hover {
+                background-color: #f1f3f5;
+                color: #1d3557;
+            }
+
+    .table-responsive {
+        margin: auto;
+        max-width: 95%;
+    }
+
+    td, th {
+        vertical-align: middle !important;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.custom-dropdown-toggle').on('click', function () {
+                var $dropdown = $(this).closest('.dropdown');
+                var $menu = $dropdown.find('.dropdown-menu');
+                var isVisible = $menu.hasClass('show');
+
+                $('.dropdown-menu').removeClass('show');
+                $('.custom-dropdown-toggle').attr('aria-expanded', 'false');
+
+                if (!isVisible) {
+                    $menu.addClass('show');
+                    $(this).attr('aria-expanded', 'true');
+                } else {
+                    $menu.removeClass('show');
+                    $(this).attr('aria-expanded', 'false');
+                }
+            });
+
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').removeClass('show');
+                    $('.custom-dropdown-toggle').attr('aria-expanded', 'false');
+                }
+            });
+
+            $('.dropdown-menu a').on('click', function () {
+                $('.dropdown-menu').removeClass('show');
+                $('.custom-dropdown-toggle').attr('aria-expanded', 'false');
+            });
+        });
+    </script>
+}

@@ -1,0 +1,637 @@
+﻿@model List<WebApplication4.Controllers.AccountHierarchyViewModel>
+
+@{
+    ViewData["Title"] = "قائمه الحسابات";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>قائمه الحسابات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-bg: #ffffff;
+            --sidebar-text: #2d3748;
+            --sidebar-hover: #f7fafc;
+            --sidebar-active: #4c51bf;
+            --content-bg: #f8fafc;
+            --text-color: #1a202c;
+            --border-color: #e2e8f0;
+            --primary-color: #4c51bf;
+            --success-color: #38a169;
+            --warning-color: #dd6b20;
+            --danger-color: #e53e3e;
+            --info-color: #3182ce;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--content-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 1px solid var(--border-color);
+        }
+
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar h4 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+
+            .sidebar h4 i {
+                margin-left: 0.75rem;
+                color: var(--primary-color);
+            }
+
+        .sidebar-header small {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .nav-link {
+            color: var(--sidebar-text);
+            border-radius: var(--radius);
+            margin: 0.25rem 1rem;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.95rem;
+        }
+
+            .nav-link:hover {
+                background-color: var(--sidebar-hover);
+                color: var(--primary-color);
+                transform: translateX(-5px);
+            }
+
+            .nav-link[aria-expanded="true"] {
+                background-color: var(--sidebar-hover);
+                color: var(--primary-color);
+                font-weight: 600;
+            }
+
+            .nav-link i {
+                margin-left: 0.75rem;
+                font-size: 1rem;
+                width: 1.25rem;
+                text-align: center;
+            }
+
+        .content {
+            margin-right: var(--sidebar-width);
+            padding: 2rem;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+            transition: var(--transition);
+        }
+
+            .content h1 {
+                color: var(--text-color);
+                font-weight: 700;
+                margin-bottom: 1.75rem;
+                display: flex;
+                align-items: center;
+                position: relative;
+                padding-bottom: 0.75rem;
+                font-size: 1.75rem;
+            }
+
+                .content h1:after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: 5rem;
+                    height: 4px;
+                    background: var(--primary-color);
+                    border-radius: 2px;
+                }
+
+                .content h1 i {
+                    margin-left: 1rem;
+                    color: var(--primary-color);
+                }
+
+        .form-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border-top: 3px solid var(--primary-color);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .accordion-button::after {
+            margin-left: 0;
+            margin-right: auto;
+            transition: var(--transition);
+        }
+
+        .ms-3 {
+            margin-right: 1rem !important;
+            margin-left: 0 !important;
+        }
+
+        .nav-flex-column .nav-flex-column {
+            background-color: rgba(237, 242, 247, 0.5);
+            margin-top: 0.25rem;
+            border-radius: var(--radius);
+        }
+
+            .nav-flex-column .nav-flex-column .nav-link {
+                padding-right: 2.5rem;
+                margin: 0.15rem 0.75rem;
+                font-size: 0.925rem;
+            }
+
+            .nav-flex-column .nav-flex-column .nav-flex-column .nav-link {
+                padding-right: 3.5rem;
+                margin: 0.1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+        .badge {
+            font-weight: 600;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            border-radius: 0.375rem;
+            margin-right: 0.5rem;
+        }
+
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .bg-success {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-warning {
+            background-color: var(--warning-color) !important;
+        }
+
+        .bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        .bg-info {
+            background-color: var(--info-color) !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(100%);
+                width: 280px;
+            }
+
+                .sidebar.active {
+                    transform: translateX(0);
+                }
+
+            .content {
+                margin-right: 0;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+            }
+
+            .content {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Toggle button for mobile */
+        .sidebar-toggle {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 1100;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+        }
+
+            .sidebar-toggle:hover {
+                transform: scale(1.1);
+            }
+
+        @@media (max-width: 992px) {
+            .sidebar-toggle {
+                display: flex;
+            }
+        }
+
+        /* Animation for account items */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .nav-item {
+            animation: fadeIn 0.3s ease-out forwards;
+            opacity: 0;
+        }
+
+            .nav-item:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .nav-item:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .nav-item:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .nav-item:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+            .nav-item:nth-child(5) {
+                animation-delay: 0.5s;
+            }
+
+            .nav-item:nth-child(6) {
+                animation-delay: 0.6s;
+            }
+
+            .nav-item:nth-child(7) {
+                animation-delay: 0.7s;
+            }
+
+            .nav-item:nth-child(8) {
+                animation-delay: 0.8s;
+            }
+
+        /* Account type colors */
+        .account-type-1 .nav-link[aria-expanded="true"] {
+            color: var(--primary-color);
+        }
+
+        .account-type-2 .nav-link[aria-expanded="true"] {
+            color: var(--success-color);
+        }
+
+        .account-type-3 .nav-link[aria-expanded="true"] {
+            color: var(--warning-color);
+        }
+
+        .account-type-4 .nav-link[aria-expanded="true"] {
+            color: var(--danger-color);
+        }
+
+        /* New styles for better visual hierarchy */
+        .account-type-1 .nav-link i {
+            color: var(--primary-color);
+        }
+
+        .account-type-2 .nav-link i {
+            color: var(--success-color);
+        }
+
+        .account-type-3 .nav-link i {
+            color: var(--warning-color);
+        }
+
+        .account-type-4 .nav-link i {
+            color: var(--danger-color);
+        }
+
+        /* Improved form elements */
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: var(--radius);
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+            }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+            .btn-primary:hover {
+                background-color: #434190;
+                border-color: #434190;
+                transform: translateY(-2px);
+            }
+
+        /* Alert styles */
+        .alert {
+            border-radius: var(--radius);
+            padding: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background-color: rgba(56, 161, 105, 0.1);
+            border-left-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(229, 62, 62, 0.1);
+            border-left-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* Loading spinner */
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-width: 0.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile toggle button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="bi bi-currency-exchange"></i> نظام المحاسبة</h4>
+            <small>قائمه الحسابات المالية</small>
+        </div>
+        <ul class="nav flex-column mb-4">
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-action="@Url.Action("AddParentAccount")" style="background-color: rgba(56, 161, 105, 0.08);">
+                    <i class="bi bi-plus-circle-fill" style="color: var(--success-color);"></i> إضافة حساب رئيسي
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-action="@Url.Action("AddChildAccount")" style="background-color: rgba(76, 81, 191, 0.08);">
+                    <i class="bi bi-plus-circle-fill" style="color: var(--primary-color);"></i> إضافة حساب فرعي
+                </a>
+            </li>
+        </ul>
+        <ul class="nav flex-column accordion" id="accountAccordion">
+            @{
+                int accountTypeIndex = 1;
+                string[] accountTypeColors = { "primary", "success", "warning", "danger" };
+            }
+            @foreach (var accountType in Model)
+            {
+                <li class="nav-item account-type-@accountTypeIndex">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#collapse-@accountType.AccountTypeName.Replace(" ", "-")" aria-expanded="false">
+                        <i class="bi bi-folder-fill"></i> @accountType.AccountTypeName
+                        <span class="badge bg-@accountTypeColors[accountTypeIndex-1] ms-auto">@accountType.ParentAccounts.Count</span>
+                    </a>
+                    <div id="collapse-@accountType.AccountTypeName.Replace(" ", "-")" class="collapse" data-bs-parent="#accountAccordion">
+                        <ul class="nav flex-column ms-3">
+                            @foreach (var parent in accountType.ParentAccounts)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="collapse" href="#collapse-@accountType.AccountTypeName.Replace(" ", "-")-@parent.ParentAccountName.Replace(" ", "-")">
+                                        <i class="bi bi-folder2-open"></i> @parent.ParentAccountName
+                                        <span class="badge bg-info ms-auto">@parent.ChildAccounts.Count</span>
+                                    </a>
+                                    <div id="collapse-@accountType.AccountTypeName.Replace(" ", "-")-@parent.ParentAccountName.Replace(" ", "-")" class="collapse" data-bs-parent="#collapse-@accountType.AccountTypeName.Replace(" ", "-")">
+                                        <ul class="nav flex-column ms-3">
+                                            @foreach (var child in parent.ChildAccounts)
+                                            {
+                                                <li class="nav-item">
+                                                    <a class="nav-link">
+                                                        <i class="bi bi-file-earmark-text-fill" style="color: #718096;"></i>
+                                                        @child.Name
+                                                        <span class="badge @(child.Balance >= 0 ? "bg-success" : "bg-danger") ms-auto">
+                                                            @string.Format("{0:N2} ", child.Balance)
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+                accountTypeIndex++;
+                if (accountTypeIndex > 4) { accountTypeIndex = 1; }
+            }
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <h1><i class="bi bi-diagram-3-fill"></i> قائمه الحسابات</h1>
+            <div id="dynamic-content" class="form-container">
+                <div class="text-center py-5">
+                    <i class="bi bi-journal-text" style="font-size: 3rem; color: var(--primary-color);"></i>
+                    <h4 class="mt-3">مرحبًا بك في نظام قائمه الحسابات</h4>
+                    <p class="text-muted">اختر من القائمة الجانبية لبدء الإدارة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // Load view content dynamically
+        document.querySelectorAll('.nav-link[data-action]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('data-action');
+                const contentDiv = document.getElementById('dynamic-content');
+
+                // Show loading state
+                contentDiv.innerHTML = `
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">جار التحميل...</span>
+                                </div>
+                                <p class="mt-2">جارٍ التحميل...</p>
+                            </div>`;
+
+                // Fetch the view content
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        contentDiv.innerHTML = data;
+                        initializeFormScripts();
+                    })
+                    .catch(error => {
+                        console.error('Error loading content:', error);
+                        contentDiv.innerHTML = `
+                                    <div class="alert alert-danger">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> حدث خطأ أثناء تحميل النموذج. يرجى المحاولة مرة أخرى.
+                                    </div>`;
+                    });
+
+                // Close sidebar on mobile
+                if (window.innerWidth <= 992) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize form scripts and handle form submissions
+        function initializeFormScripts() {
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const url = this.getAttribute('action');
+                    const contentDiv = document.getElementById('dynamic-content');
+
+                    // Show submitting state
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalButtonContent = submitButton.innerHTML;
+                    submitButton.innerHTML = `
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                جارٍ الإرسال...
+                            `;
+                    submitButton.disabled = true;
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Submission failed');
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            contentDiv.innerHTML = `
+                                        <div class="alert alert-success">
+                                            <i class="bi bi-check-circle-fill"></i> تمت الإضافة بنجاح!
+                                        </div>`;
+                            setTimeout(() => {
+                                window.location.reload(); // Refresh to update the account list
+                            }, 1500);
+                        })
+                        .catch(error => {
+                            console.error('Error submitting form:', error);
+                            contentDiv.innerHTML = `
+                                        <div class="alert alert-danger">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> حدث خطأ أثناء الإضافة. يرجى المحاولة مرة أخرى.
+                                        </div>`;
+                            submitButton.innerHTML = originalButtonContent;
+                            submitButton.disabled = false;
+                        });
+                });
+            });
+        }
+
+        // Close sidebar when clicking on content (mobile)
+        document.querySelector('.content').addEventListener('click', function () {
+            if (window.innerWidth <= 992) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
+
+        // Smooth scroll for sidebar
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (this.getAttribute('data-bs-toggle') === 'collapse') return;
+
+                document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+
+                if (window.innerWidth <= 992) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

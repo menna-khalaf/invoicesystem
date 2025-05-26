@@ -1,0 +1,346 @@
+﻿@model WebApplication4.Models.Exchange
+
+@{
+    ViewData["Title"] = "تعديل";
+    Layout = null; /* Remove layout for custom styling */
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h4 {
+            color: var(--dark-color);
+            text-align: center;
+            margin-bottom: 20px;
+            animation: slideIn 0.7s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--primary-color), rgba(0, 0, 0, 0));
+            margin: 20px 0;
+            animation: expand 1s ease-out;
+        }
+
+        @@keyframes expand {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-md-4 {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .col-md-4:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            }
+
+        .text-danger {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            width: 100%;
+        }
+
+            .btn-primary:hover {
+                background-color: #2980b9;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+
+            a:hover {
+                color: #2980b9;
+                text-decoration: underline;
+            }
+
+        /* Staggered animations for form groups */
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .form-group:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .form-group:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        .form-group:nth-child(9) {
+            animation-delay: 0.9s;
+        }
+
+        .form-group:nth-child(10) {
+            animation-delay: 1.0s;
+        }
+
+        .form-group:nth-child(11) {
+            animation-delay: 1.1s;
+        }
+
+        .form-group:nth-child(12) {
+            animation-delay: 1.2s;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .col-md-4 {
+                padding: 20px;
+            }
+
+            .form-control {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>تعديل</h1>
+
+    <h4>تبادل</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ExchangeId" />
+
+                <div class="form-group">
+                    <label asp-for="ExchangeDate" class="control-label">تاريخ السند</label>
+                    <input asp-for="ExchangeDate" class="form-control" />
+                    <span asp-validation-for="ExchangeDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label">المبلغ</label>
+                    <input asp-for="Amount" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">الوصف</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PaymentMethod" class="control-label">طريقة الدفع</label>
+                    <input asp-for="PaymentMethod" class="form-control" />
+                    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ExchangeType" class="control-label">نوع السند</label>
+                    <input asp-for="ExchangeType" class="form-control" />
+                    <span asp-validation-for="ExchangeType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="VendorId" class="control-label">البائع</label>
+                    <select asp-for="VendorId" class="form-control" asp-items="ViewBag.VendorId"></select>
+                    <span asp-validation-for="VendorId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CustomerId" class="control-label">العميل</label>
+                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CostCenterId" class="control-label">مركز التكلفة</label>
+                    <select asp-for="CostCenterId" class="form-control" asp-items="ViewBag.CostCenterId"></select>
+                    <span asp-validation-for="CostCenterId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AccountId" class="control-label">الحساب</label>
+                    <select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
+                    <span asp-validation-for="AccountId" class="text-danger"></span>
+                </div>
+
+             @*    <div class="form-group">
+                    <label asp-for="UserId" class="control-label">المستخدم</label>
+                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div> *@
+
+                <div class="form-group">
+                    <label asp-for="CreatedAt" class="control-label">تاريخ الإنشاء</label>
+                    <input asp-for="CreatedAt" class="form-control" />
+                    <span asp-validation-for="CreatedAt" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="حفظ" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a asp-action="Index">العودة إلى القائمة</a>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

@@ -1,0 +1,206 @@
+﻿@model WebApplication4.Controllers.IncomeExpenseReportViewModel
+
+@{
+    ViewData["Title"] = "تقرير الإيرادات والمصروفات";
+}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #3f37c9;
+        --accent: #4cc9f0;
+        --dark: #2b2d42;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --info: #4cc9f0;
+        --border-radius: 10px;
+        --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #dfe7f0 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        direction: rtl;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--secondary);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: none;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 20px 0;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px #eee;
+    }
+
+        table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover td {
+            background-color: rgba(72, 149, 239, 0.05);
+        }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+        .back-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+    @@media (max-width: 768px) {
+        .card {
+            padding: 20px;
+        }
+
+        table {
+            display: block;
+            overflow-x: auto;
+        }
+
+            table th, table td {
+                white-space: nowrap;
+            }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeIn 0.5s ease forwards;
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-chart-line"></i> تقرير الإيرادات والمصروفات</h1>
+
+    <div class="card">
+        <div class="form-section">
+            <h4><i class="fas fa-info-circle"></i> تفاصيل التقرير</h4>
+            @if (!Model.ReportItems.Any())
+            {
+                <p class="text-center text-muted">لا توجد بيانات للعرض لهذا المستخدم.</p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>نوع الحساب</th>
+                            <th>اسم الحساب الفرعي</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ReportItems)
+                        {
+                            <tr>
+                                <td>@item.AccountType</td>
+                                <td>@item.ChildAccountName</td>
+                                <td>@item.Total.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <div class="text-center">
+            <a asp-action="Index" asp-controller="Reports" class="back-link">
+                <i class="fas fa-arrow-right"></i> العودة إلى قائمة التقارير
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Placeholder for any future client-side enhancements
+        });
+    </script>
+}

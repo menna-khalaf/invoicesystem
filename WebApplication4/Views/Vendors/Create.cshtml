@@ -1,0 +1,244 @@
+﻿@model WebApplication4.Models.Vendor
+
+@{
+    ViewData["Title"] = "إنشاء مورد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .tax-number-group {
+            transition: all 0.3s ease;
+        }
+
+            .tax-number-group.disabled {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+        #taxNumberInput:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Custom color scheme */
+        .bg-custom {
+            background-color: #207cd4 !important;
+        }
+
+        .text-custom {
+            color: #207cd4 !important;
+        }
+
+        .btn-custom {
+            background-color: #207cd4 !important;
+            border-color: #207cd4 !important;
+        }
+
+            .btn-custom:hover {
+                background-color: #1a66a8 !important;
+                border-color: #1a66a8 !important;
+            }
+
+        hr.custom {
+            background-color: #207cd4 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid px-0">
+        <!-- Full width container -->
+        <div class="mb-4">
+            <h1 class="display-4 text-center">إنشاء مورد جديد</h1>
+            <hr class="custom" style="height: 3px; opacity: 1;" />
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Full width form -->
+                <form asp-action="Create" class="card shadow-lg">
+                    <div class="card-header bg-custom text-white py-3">
+                        <h4 class="mb-0 text-center"><i class="fas fa-user-tie me-2"></i>بيانات المورد</h4>
+                    </div>
+                    <div class="card-body">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="row">
+                            <!-- العمود الأول -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="VendorName" class="form-label fw-bold text-dark">اسم المورد</label>
+                                    <input asp-for="VendorName" class="form-control" placeholder="أدخل اسم المورد" />
+                                    <span asp-validation-for="VendorName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="PhoneNumber1" class="form-label fw-bold text-dark">رقم الهاتف الأساسي</label>
+                                            <input asp-for="PhoneNumber1" class="form-control" placeholder="الهاتف الأساسي" />
+                                            <span asp-validation-for="PhoneNumber1" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="PhoneNumber2" class="form-label fw-bold text-dark">رقم الهاتف الثانوي</label>
+                                            <input asp-for="PhoneNumber2" class="form-control" placeholder="الهاتف الثانوي" />
+                                            <span asp-validation-for="PhoneNumber2" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label fw-bold text-dark">البريد الإلكتروني</label>
+                                    <input asp-for="Email" class="form-control" placeholder="البريد الإلكتروني" />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Location" class="form-label fw-bold text-dark">الموقع</label>
+                                    <input asp-for="Location" class="form-control" placeholder="موقع المورد" />
+                                    <span asp-validation-for="Location" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- العمود الثاني -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="taxableCheck"
+                                               name="TaxableCheck"
+                                               value="true"
+                                        @(Model.TaxableCheck == true ? "checked" : "") />
+                                        <input type="hidden" name="TaxableCheck" value="false" />
+                                        <label class="form-check-label fw-bold text-dark" for="taxableCheck">مورد ضريبي</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3 tax-number-group" id="taxNumberGroup">
+                                            <label asp-for="TaxNumber" class="form-label fw-bold text-dark">الرقم الضريبي</label>
+                                            <input asp-for="TaxNumber" class="form-control" placeholder="الرقم الضريبي" id="taxNumberInput" />
+                                            <span asp-validation-for="TaxNumber" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="CommercialRegister" class="form-label fw-bold text-dark">السجل التجاري</label>
+                                            <input asp-for="CommercialRegister" class="form-control" placeholder="السجل التجاري" />
+                                            <span asp-validation-for="CommercialRegister" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Classification" class="form-label fw-bold text-dark">التصنيف</label>
+                                    <input asp-for="Classification" class="form-control" placeholder="تصنيف المورد" />
+                                    <span asp-validation-for="Classification" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="CreditLimit" class="form-label fw-bold text-dark">الحد الائتماني</label>
+                                    <div class="input-group">
+                                        <input asp-for="CreditLimit" class="form-control" placeholder="0.00" />
+                                        <span class="input-group-text">ر.س</span>
+                                    </div>
+                                    <span asp-validation-for="CreditLimit" class="text-danger small"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <input type="hidden" asp-for="UserId" value="@ViewData["CurrentUserId"]" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="EmployeeId" class="form-label fw-bold text-dark">الموظف</label>
+                                            <select asp-for="EmployeeId" class="form-select" asp-items="ViewBag.EmployeeId">
+                                                <option value="">اختر موظف</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light py-3">
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-right me-1"></i> العودة للقائمة
+                            </a>
+                            <button type="submit" class="btn btn-custom px-4 text-white">
+                                <i class="fas fa-save me-1"></i> حفظ المورد
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                function toggleTaxNumber() {
+                    const isTaxable = $('#taxableCheck').is(':checked');
+                    const taxNumberGroup = $('#taxNumberGroup');
+                    const taxNumberInput = $('#taxNumberInput');
+
+                    if (isTaxable) {
+                        taxNumberGroup.removeClass('disabled');
+                        taxNumberInput.prop('disabled', false);
+                        taxNumberInput.prop('required', true);
+                    } else {
+                        taxNumberGroup.addClass('disabled');
+                        taxNumberInput.prop('disabled', true);
+                        taxNumberInput.prop('required', false);
+                        taxNumberInput.val('');
+                    }
+                }
+
+                const initialTaxable = @(Model.TaxableCheck == true ? "true" : "false");
+                if (initialTaxable) {
+                    $('#taxableCheck').prop('checked', true);
+                } else {
+                    $('#taxNumberInput').prop('disabled', true);
+                }
+                toggleTaxNumber();
+
+                $('#taxableCheck').change(function () {
+                    toggleTaxNumber();
+                });
+
+                $('form').submit(function (e) {
+                    const isTaxable = $('#taxableCheck').is(':checked');
+                    const taxNumber = $('#taxNumberInput').val().trim();
+
+                    if (isTaxable && !taxNumber) {
+                        e.preventDefault();
+                        alert('الرجاء إدخال الرقم الضريبي للمورد الضريبي');
+                        $('#taxNumberInput').focus();
+                    }
+                });
+            });
+        </script>
+    }
+</body>
+</html>

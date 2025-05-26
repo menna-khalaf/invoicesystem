@@ -1,0 +1,388 @@
+﻿@model IEnumerable<WebApplication4.Models.Branch>
+
+@{
+    ViewData["Title"] = "الفروع";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --primary-light: #e6f2ff;
+            --primary-dark: #1a6ab8;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --gray-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e6ed;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-title {
+            color: #2c3e50;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            flex: 1;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+            .search-input:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(32, 124, 212, 0.2);
+                outline: none;
+            }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+            .search-btn:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+            .table thead th {
+                background-color: var(--primary-color);
+                color: white;
+                padding: 15px;
+                text-align: right;
+                font-weight: 600;
+                position: sticky;
+                top: 0;
+            }
+
+            .table tbody tr {
+                border-bottom: 1px solid var(--border-color);
+                transition: all 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background-color: var(--primary-light);
+                }
+
+            .table td {
+                padding: 12px 15px;
+                color: #555;
+                vertical-align: middle;
+            }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-inactive {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--gray-color);
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+            .action-icon:hover {
+                transform: scale(1.1);
+            }
+
+            .action-icon.view {
+                color: var(--primary-color);
+                background-color: rgba(32, 124, 212, 0.1);
+            }
+
+                .action-icon.view:hover {
+                    background-color: rgba(32, 124, 212, 0.2);
+                }
+
+            .action-icon.edit {
+                color: var(--warning-color);
+                background-color: rgba(255, 193, 7, 0.1);
+            }
+
+                .action-icon.edit:hover {
+                    background-color: rgba(255, 193, 7, 0.2);
+                }
+
+            .action-icon.delete {
+                color: var(--danger-color);
+                background-color: rgba(220, 53, 69, 0.1);
+            }
+
+                .action-icon.delete:hover {
+                    background-color: rgba(220, 53, 69, 0.2);
+                }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-color);
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                color: var(--border-color);
+            }
+
+        @@media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table, .table tbody, .table tr, .table td {
+                display: block;
+                width: 100%;
+            }
+
+                .table tr {
+                    margin-bottom: 15px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 8px;
+                    padding: 10px;
+                }
+
+                .table td {
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid var(--border-color);
+                }
+
+                    .table td:last-child {
+                        border-bottom: none;
+                        text-align: center;
+                    }
+
+                    .table td::before {
+                        content: attr(data-label);
+                        font-weight: bold;
+                        float: right;
+                        margin-left: 10px;
+                    }
+
+            .action-icons {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-building"></i> إدارة الفروع</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن فرع...">
+                <button class="search-btn" onclick="searchTable()">
+                    <i class="fas fa-search"></i>
+                    <span>بحث</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            @if (Model.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>اسم الفرع</th>
+                            <th>الحالة</th>
+                            <th>المدينة</th>
+                            <th>الدولة</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th>الموقع</th>
+                            <th>السجل التجاري</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td data-label="اسم الفرع">@Html.DisplayFor(modelItem => item.BranchName)</td>
+                                <td data-label="الحالة">
+                                    <span class="status-badge @(item.BranchStatus == "نشط" ? "status-active" : "status-inactive")">
+                                        @Html.DisplayFor(modelItem => item.BranchStatus)
+                                    </span>
+                                </td>
+                                <td data-label="المدينة">@Html.DisplayFor(modelItem => item.City)</td>
+                                <td data-label="الدولة">@Html.DisplayFor(modelItem => item.Country)</td>
+                                <td data-label="تاريخ الإنشاء">@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                                <td data-label="الموقع">@Html.DisplayFor(modelItem => item.Location)</td>
+                                <td data-label="السجل التجاري">@Html.DisplayFor(modelItem => item.CommercialRegister)</td>
+                                <td data-label="الإجراءات">
+                                    <div class="action-icons">
+                                        <a href="@Url.Action("Details", "Branches", new { id = item.BranchId })" class="action-icon view" title="التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", "Branches", new { id = item.BranchId })" class="action-icon edit" title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @* <a href="@Url.Action("Delete", "Branches", new { id = item.BranchId })" class="action-icon delete" title="حذف">
+                                <i class="fas fa-trash-alt"></i>
+                                </a> *@
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-building"></i>
+                    <h3>لا توجد فروع مسجلة</h3>
+                    <p>يمكنك إضافة فرع جديد بالنقر على زر "إضافة فرع"</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        function searchTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const table = document.querySelector(".table");
+            const rows = table.querySelectorAll("tbody tr");
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                let match = false;
+
+                cells.forEach(cell => {
+                    if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+                        match = true;
+                    }
+                });
+
+                row.style.display = match ? "" : "none";
+            });
+        }
+
+        // Make table rows clickable (except for action cells)
+        document.querySelectorAll(".table tbody tr").forEach(row => {
+            row.addEventListener("click", function (e) {
+                if (!e.target.closest(".action-icons")) {
+                    const firstLink = this.querySelector("a[href]");
+                    if (firstLink) {
+                        window.location = firstLink.href;
+                    }
+                }
+            });
+        });
+
+        // Initialize search on Enter key
+        document.getElementById("searchInput").addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                searchTable();
+            }
+        });
+    </script>
+</body>
+</html>

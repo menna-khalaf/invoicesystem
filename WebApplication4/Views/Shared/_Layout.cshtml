@@ -1,0 +1,750 @@
+﻿
+<!DOCTYPE html>
+
+@{
+    var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["Action"]?.ToString();
+    bool isHomeIndex = string.Equals(controller, "Home", StringComparison.OrdinalIgnoreCase) &&
+                      string.Equals(action, "Index", StringComparison.OrdinalIgnoreCase);
+}
+
+<html lang="ar" dir="@(isHomeIndex ? "ltr" : "rtl")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - نظام الإدارة</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="~/css/layout.css" rel="stylesheet" />
+
+    @if (!isHomeIndex)
+    {
+        <style>
+            :root {
+                --primary-color: #1e2a44; /* Darker, modern navy */
+                --secondary-color: #00aaff; /* Vibrant cyan for highlights */
+                --accent-color: #ff6b6b; /* Coral accent for active states */
+                --text-color: #333;
+                --light-bg: #f8f9fa;
+                --menu-width: 280px; /* Desktop navbar width */
+                --menu-width-mobile: 240px; /* Smaller mobile navbar width */
+                --transition-speed: 0.3s; /* Smooth transition speed */
+                --glow-color: rgba(0, 170, 255, 0.3); /* Glow effect for hover */
+                --overlay-color: rgba(0, 0, 0, 0.5); /* Backdrop overlay */
+            }
+
+            body {
+                font-family: 'Tajawal', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f7fa;
+                color: var(--text-color);
+                display: flex;
+                min-height: 100vh;
+                position: relative;
+                overflow-x: hidden;
+            }
+
+            /* Creative Vertical Navbar */
+            .navbar-vertical {
+                width: var(--menu-width);
+                background: linear-gradient(135deg, var(--primary-color), #0f172a);
+                color: white;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                right: 0;
+                overflow-y: auto;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+                transition: transform var(--transition-speed);
+                z-index: 1001;
+                border-left: 3px solid var(--secondary-color);
+            }
+
+            /* Mobile: Navbar overlays content */
+            @@media (max-width: 992px) {
+                .navbar-vertical {
+                    width: var(--menu-width-mobile);
+                    transform: translateX(100%);
+                    z-index: 1001; /* Above content and overlay */
+                }
+
+                .navbar-vertical.open {
+                    transform: translateX(0);
+                }
+            }
+
+            .navbar-header {
+                padding: 15px;
+                font-size: 1.3rem;
+                font-weight: 700;
+                text-align: center;
+                background-color: rgba(0, 0, 0, 0.3);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .navbar-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: 0.5s;
+            }
+
+            .navbar-header:hover::before {
+                left: 100%;
+            }
+
+            .nav-menu {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .nav-item {
+                position: relative;
+                margin-bottom: 2px;
+                transition: all var(--transition-speed);
+            }
+
+            .nav-item > a {
+                display: flex;
+                align-items: center;
+                padding: 12px 20px;
+                color: rgba(255, 255, 255, 0.9);
+                text-decoration: none;
+                transition: all var(--transition-speed);
+                border-left: 3px solid transparent;
+                font-size: 0.95rem;
+                line-height: 1.4;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .nav-item > a:hover {
+                background-color: rgba(255, 255, 255, 0.15);
+                color: white;
+                border-left-color: var(--secondary-color);
+                box-shadow: inset 0 0 10px var(--glow-color);
+                transform: translateX(5px);
+            }
+
+            .nav-item > a i {
+                margin-left: 12px;
+                font-size: 1.1rem;
+                transition: transform var(--transition-speed);
+            }
+
+            .nav-item > a:hover i {
+                transform: scale(1.2);
+            }
+
+            .nav-item.active > a {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                border-left-color: var(--accent-color);
+                box-shadow: inset 0 0 15px var(--glow-color);
+            }
+
+            /* Submenu Styling */
+            .submenu {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height var(--transition-speed) ease-in-out;
+                background-color: rgba(0, 0, 0, 0.25);
+                padding-right: 0;
+            }
+
+            .nav-item.active .submenu {
+                max-height: 1000px;
+            }
+
+            .submenu .nav-item a {
+                padding: 10px 20px 10px 35px;
+                font-size: 0.9rem;
+                color: rgba(255, 255, 255, 0.85);
+                transition: all var(--transition-speed);
+            }
+
+            .submenu .nav-item a:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: translateX(3px);
+            }
+
+            .submenu .submenu .nav-item a {
+                padding: 8px 20px 8px 50px;
+                font-size: 0.85rem;
+            }
+
+            /* Indicator Arrows */
+            .has-submenu > a::after {
+                content: "\f078";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                transition: transform var(--transition-speed);
+                font-size: 0.8rem;
+                color: var(--secondary-color);
+            }
+
+            .has-submenu.active > a::after {
+                transform: translateY(-50%) rotate(180deg);
+            }
+
+            /* Main Content */
+            .main-content {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                background-color: var(--light-bg);
+                transition: margin-right var(--transition-speed);
+            }
+
+            /* Desktop: Adjust content margin to avoid overlap */
+            @@media (min-width: 993px) {
+                .main-content {
+                    margin-right: var(--menu-width);
+                }
+            }
+
+            /* Mobile Toggle Button */
+            .menu-toggle {
+                display: none;
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                z-index: 1100;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 10px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                transition: background-color var(--transition-speed), transform var(--transition-speed);
+                line-height: 1; /* Ensure consistent height */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                pointer-events: auto; /* Ensure button is clickable */
+            }
+
+            .menu-toggle i {
+                pointer-events: none; /* Prevent icon from capturing clicks */
+            }
+
+            .menu-toggle:hover {
+                background: var(--secondary-color);
+                box-shadow: 0 0 12px var(--glow-color);
+                transform: scale(1.1);
+            }
+
+            .menu-toggle:focus {
+                outline: 2px solid var(--accent-color);
+                outline-offset: 2px;
+            }
+
+            /* Hide toggle button on large screens */
+            @@media (min-width: 993px) {
+                .menu-toggle {
+                    display: none;
+                }
+            }
+
+            /* Overlay for mobile */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--overlay-color);
+                z-index: 1000; /* Below navbar, above content */
+                transition: opacity var(--transition-speed);
+                opacity: 0;
+            }
+
+            .overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
+            /* Ensure overlay is hidden on large screens */
+            @@media (min-width: 993px) {
+                .overlay {
+                    display: none;
+                }
+            }
+
+            /* Responsive Adjustments */
+            @@media (max-width: 992px) {
+                .menu-toggle {
+                    display: flex; /* Ensure button is visible and centered */
+                }
+
+                .main-content {
+                    margin-right: 0;
+                    width: 100%;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                .navbar-vertical {
+                    width: var(--menu-width-mobile);
+                }
+
+                .navbar-header {
+                    font-size: 1.2rem;
+                    padding: 12px;
+                }
+
+                .nav-item > a {
+                    font-size: 0.9rem;
+                    padding: 10px 15px;
+                }
+
+                .submenu .nav-item a {
+                    font-size: 0.85rem;
+                    padding: 8px 15px 8px 30px;
+                }
+
+                .submenu .submenu .nav-item a {
+                    padding: 6px 15px 6px 45px;
+                    font-size: 0.8rem;
+                }
+            }
+
+            @@media (max-width: 576px) {
+                .navbar-vertical {
+                    width: var(--menu-width-mobile);
+                }
+
+                .navbar-header {
+                    font-size: 1.1rem;
+                    padding: 10px;
+                }
+
+                .nav-item > a {
+                    font-size: 0.85rem;
+                    padding: 8px 12px;
+                }
+
+                .submenu .nav-item a {
+                    font-size: 0.8rem;
+                    padding: 6px 12px 6px 25px;
+                }
+
+                .submenu .submenu .nav-item a {
+                    padding: 5px 12px 5px 40px;
+                    font-size: 0.75rem;
+                }
+
+                .menu-toggle {
+                    padding: 8px 10px;
+                    font-size: 1.1rem;
+                }
+            }
+
+            /* Nested Submenu Styling */
+            .submenu .submenu {
+                background-color: rgba(0, 0, 0, 0.2);
+                padding-right: 15px;
+            }
+
+            .submenu .submenu .nav-item a {
+                padding-right: 50px !important;
+            }
+
+            /* Icons */
+            .fa-custom {
+                width: 24px;
+                text-align: center;
+            }
+        </style>
+    }
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+
+    @if (!isHomeIndex)
+    {
+        <button class="menu-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="overlay" id="overlay"></div>
+        <nav class="navbar-vertical" id="sidebar">
+            <div class="navbar-header">نظام الإدارة</div>
+            <ul class="nav-menu">
+                <!-- 1. معلومات الحساب -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Invoices")">
+                        <i class="fas fa-user fa-custom"></i>
+                        <span>معلومات الحساب</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item">
+                            <a href="@Url.Action("index", "usered")">تعديل وإضافة معلومات الحساب</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 2. نقاط البيع -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Invoices")">
+                        <i class="fas fa-cash-register fa-custom"></i>
+                        <span>نقاط البيع</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Invoices")">تخطيط الشيفتات</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Shifts")">أضافة شيفت جديد</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Invoices")">نقاط البيع</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Poes")">إضافة نقطة بيع جديدة</a></li>
+                             @*    <li class="nav-item"><a href="@Url.Action("Edit", "Poes")">تعديل نقطة بيع موجودة</a></li> *@
+                                <li class="nav-item"><a href="@Url.Action("GetActivePosList", "poes")">شاشة نقطة البيع (الكاشير)</a></li>
+                            </ul>
+                        </li>
+                      @*   <li class="nav-item"><a href="@Url.Action("Index", "Invoices")">اعدادات نقاط البيع</a></li> *@
+                    </ul>
+                </li>
+
+                <!-- 3. المبيعات -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Invoices")">
+                        <i class="fas fa-shopping-cart fa-custom"></i>
+                        <span>المبيعات</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Invoices")">فواتير المبيعات</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("create", "Invoices")">اضافة فاتورة مبيعات</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("indexdetaildsales", "Invoices")">تقرير فواتير المبيعات (إجمالي)</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("indexsales", "Invoices")">تقرير فواتير المبيعات (تفصيلي)</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("indexreturnsales", "Invoices")">تقرير فواتير مرتجعات المبيعات (إجمالي)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 4. المشتريات -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Invoices")">
+                        <i class="fas fa-shopping-bag fa-custom"></i>
+                        <span>المشتريات</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("indexpurshasing", "Invoices")">فواتير المشتريات</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("createPurshase", "Invoices")">اضافة فاتورة مشتريات</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Indexdetaildpurshasing", "Invoices")">تقرير فواتير المشتريات (إجمالي)</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("indexPurshasing", "Invoices")">تقرير فواتير المشتريات (تفصيلي)</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("indexReturns", "Invoices")">تقرير فواتير مرتجعات المشتريات (إجمالي)</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("indexreturns", "Invoices")">مرتجعات المشتريات</a>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("indexPurshase", "Invoices")">طلب شراء</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("createPurshase", "Invoices")">اضافة طلب شراء جديد</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 5. المخزون -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Inventories")">
+                        <i class="fas fa-warehouse fa-custom"></i>
+                        <span>المخزون</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Products")">ادارة المنتجات</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Products")">اضافة منتج جديد</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("index", "Products")"> عرض كافه المنتجات</a></li>
+                            </ul>
+
+
+                            <a href="@Url.Action("Index", "Products")">ادارة فئه المنتج</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "productcategories")">اضافة فئه منتج جديده</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("index", "productcategories")"> عرض كافه الفئات</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Adjustmentproducts")">جرد المخزون</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("create", "adjustments")">اضافة جرد جديد</a></li>
+                            </ul>
+
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("index", "adjustments")">  عرض الجرد السابق</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Branches")">الفروع</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Branches")">اضافة فرع جديد</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("index", "Branches")"> عرض كافه الفروع</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Storehouses")">المستودعات</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Storehouses")">اضافة مستودع</a></li>
+                            </ul>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("index", "Storehouses")"> عرض كافه المستودعات</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 6. العملاء -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Customers")">
+                        <i class="fas fa-user-friends fa-custom"></i>
+                        <span>العملاء</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("Create", "Customers")">اضافة عميل جديد</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("index", "Customers")">عرض كافه العملاء</a></li>
+                    </ul>
+                </li>
+
+                <!-- 7. الموردين -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-truck-loading fa-custom"></i>
+                        <span>الموردين</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("Create", "vendors")">اضافه مورد جديد</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("index", "vendors")">عرض كافه الموردين</a></li>
+                    </ul>
+                </li>
+
+                <!-- 8. الحسابات العامه -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Invoices")">
+                        <i class="fas fa-book fa-custom"></i>
+                        <span>الحسابات العامه</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item has-submenu">
+                            <a href="@Url.Action("Index", "Invoices")">الخزائن والحسابات البنكية</a>
+                            <ul class="submenu">
+                                <li class="nav-item"><a href="@Url.Action("Create", "Cashandbankaccounts")">إضافة حساب بنكي جديد</a></li>
+                                <li class="nav-item"><a href="@Url.Action("index", "Cashandbankaccounts")">عرض كلفه الحسابات البنكيه</a></li>
+                                <li class="nav-item"><a href="@Url.Action("indexStore", "Cashandbankaccounts")">عرض كلفه الخزائن</a></li>
+                                <li class="nav-item"><a href="@Url.Action("CreateStore", "Cashandbankaccounts")">إضافة خزينة جديد</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 9. مراكز التكلفه -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Usered")">
+                        <i class="fas fa-money-check-alt fa-custom"></i>
+                        <span>مراكز التكلفه</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("Create", "Costcenters")">اضافة مركز تكلفه</a></li>
+                    </ul>
+                </li>
+
+                <!-- 10. عرض السعر -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-file-invoice-dollar fa-custom"></i>
+                        <span>عرض السعر</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("index", "quotations")">عروض الاسعار</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("create", "quotations")">انشاء عرض سعر</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("index", "quotations")">كافه عروض الاسعار</a></li>
+                    </ul>
+                </li>
+
+                <!-- 11. تقارير -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-chart-bar fa-custom"></i>
+                        <span>تقارير</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("reorderreport", "products")">تقرير اعاده الشراء</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("agingreport", "vendors")">تقرير أعمار الديون (موردين)</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("CustomerAgingReport", "Customers")">تقرير أعمار الديون للعملاء</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("IncomeExpense", "reports")">تقرير الدخل</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("BalanceSheet", "reports")">تقرير الميزانيه العموميه</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("Dashboard", "reportingfull")">التحليل المالي</a></li>
+                    </ul>
+                </li>
+
+                <!-- 12. الاذونات -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-file-alt fa-custom"></i>
+                        <span>الاذونات</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("create", "orders")">اذن اضافه مخزني</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("createminus", "orders")">اذن صرف مخزني</a></li>
+                    </ul>
+                </li>
+
+                <!-- 13. الموظفين -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-user-tie fa-custom"></i>
+                        <span>الموظفين</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("create", "employees")">اضافه موظف جديد</a></li>
+                    </ul>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("index", "employees")">عرض كافه الموظفين</a></li>
+                    </ul>
+                </li>
+
+                <!-- 14. تسلسل الحسابات -->
+                <li class="nav-item has-submenu">
+                    <a href="@Url.Action("Index", "Employees")">
+                        <i class="fas fa-sitemap fa-custom"></i>
+                        <span>قائمه الحسابات</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="nav-item"><a href="@Url.Action("GetAccountHierarchy", "account")">عرض قائمه الحسابات</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    }
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @if (!isHomeIndex)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const sidebar = document.getElementById('sidebar');
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                const overlay = document.getElementById('overlay');
+
+                // Toggle sidebar and overlay on mobile only
+                sidebarToggle.addEventListener('click', function () {
+                    if (window.innerWidth <= 992) {
+                        sidebar.classList.toggle('open');
+                        overlay.classList.toggle('active');
+                    }
+                });
+
+                // Handle submenu toggling
+                document.querySelectorAll('.has-submenu > a').forEach(item => {
+                    item.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const parent = this.parentElement;
+
+                        if (parent.classList.contains('active')) {
+                            parent.classList.remove('active');
+                        } else {
+                            document.querySelectorAll('.nav-item.active').forEach(activeItem => {
+                                if (activeItem !== parent && activeItem.parentElement === parent.parentElement) {
+                                    activeItem.classList.remove('active');
+                                }
+                            });
+                            parent.classList.add('active');
+                        }
+                    });
+                });
+
+                // Close sidebar and overlay when clicking outside on mobile
+                document.addEventListener('click', function (e) {
+                    if (window.innerWidth <= 992 && !sidebar.contains(e.target) && e.target !== sidebarToggle) {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('active');
+                    }
+                });
+
+                // Handle window resize
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth > 992) {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+        </script>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

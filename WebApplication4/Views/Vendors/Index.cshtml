@@ -1,0 +1,307 @@
+﻿@model IEnumerable<WebApplication4.Models.Vendor>
+
+@{
+    ViewData["Title"] = "قائمة الموردين";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-header {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+            padding: 1.25rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .table th {
+                background-color: var(--light-bg);
+                color: var(--secondary-color);
+                font-weight: 700;
+                white-space: nowrap;
+                padding: 1rem;
+            }
+
+            .table td {
+                padding: 0.75rem;
+                vertical-align: middle;
+                border-top: 1px solid #eee;
+            }
+
+            .table tr:nth-child(even) {
+                background-color: rgba(0, 0, 0, 0.02);
+            }
+
+            .table tr:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+
+        .btn-action {
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+            .btn-action:hover {
+                color: white;
+                background-color: var(--primary-color);
+                transform: scale(1.05);
+            }
+
+        .btn-create {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-create:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        .badge-taxable {
+            background-color: #2ecc71;
+            color: white;
+            padding: 0.35rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-non-taxable {
+            background-color: #e74c3c;
+            color: white;
+            padding: 0.35rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .credit-limit {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .currency {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        @@media (max-width: 768px) {
+            .table thead {
+                display: none;
+            }
+
+            .table, .table tbody, .table tr, .table td {
+                display: block;
+                width: 100%;
+            }
+
+                .table tr {
+                    margin-bottom: 1.5rem;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    padding: 1rem;
+                    position: relative;
+                }
+
+                .table td {
+                    padding: 0.5rem;
+                    text-align: left;
+                    padding-right: 50%;
+                    position: relative;
+                    border: none;
+                    border-bottom: 1px solid #eee;
+                }
+
+                    .table td::before {
+                        content: attr(data-label);
+                        position: absolute;
+                        right: 0.5rem;
+                        font-weight: bold;
+                        color: var(--secondary-color);
+                    }
+
+            .actions-cell {
+                text-align: center !important;
+                padding-right: 0.5rem !important;
+            }
+
+                .actions-cell::before {
+                    display: none;
+                }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <h1 class="page-title mb-3"><i class="fas fa-users me-2"></i>قائمة الموردين</h1>
+            <a asp-action="Create" class="btn btn-create">
+                <i class="fas fa-plus"></i> إضافة مورد جديد
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>جميع الموردين</h5>
+                <div class="d-flex">
+                    <input type="text" class="form-control form-control-sm" placeholder="بحث..." id="searchInput">
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>اسم المورد</th>
+                                <th>الهاتف الأساسي</th>
+                                <th>الهاتف الثانوي</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الرقم الضريبي</th>
+                                <th>حالة الضريبة</th>
+                                <th>التصنيف</th>
+                                <th>الرصيد المتاح</th>
+                                <th>العملة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td data-label="اسم المورد">@Html.DisplayFor(modelItem => item.VendorName)</td>
+                                    <td data-label="الهاتف الأساسي">@Html.DisplayFor(modelItem => item.PhoneNumber1)</td>
+                                    <td data-label="الهاتف الثانوي">@Html.DisplayFor(modelItem => item.PhoneNumber2)</td>
+                                    <td data-label="البريد الإلكتروني">@Html.DisplayFor(modelItem => item.Email)</td>
+                                    <td data-label="الرقم الضريبي">@Html.DisplayFor(modelItem => item.TaxNumber)</td>
+                                    <td data-label="حالة الضريبة">
+                                        @if (item.TaxableCheck.HasValue && item.TaxableCheck.Value)
+                                        {
+                                            <span class="badge-taxable">مسجل ضريبياً</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-non-taxable">غير مسجل</span>
+                                        }
+                                    </td>
+                                    <td data-label="التصنيف">@Html.DisplayFor(modelItem => item.Classification)</td>
+                                    <td data-label="الرصيد المتاح" class="credit-limit">@Html.DisplayFor(modelItem => item.CreditLimit)</td>
+                                    <td data-label="العملة" class="currency">@Html.DisplayFor(modelItem => item.Currency)</td>
+                                    <td class="actions-cell">
+                                        <a asp-action="Edit" asp-route-id="@item.VendorId" class="btn-action" title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.VendorId" class="btn-action" title="تفاصيل">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                    @*     <a asp-action="Delete" asp-route-id="@item.VendorId" class="btn-action text-danger" title="حذف">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a> *@
+                                        <a asp-action="VendorDeferredPayments" asp-route-vendorId="@item.VendorId" class="btn-action" title="عرض الدفع الآجل">
+                                            <i class="fas fa-clock"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Search functionality
+            $('#searchInput').on('keyup', function () {
+                const value = $(this).val().toLowerCase();
+                $('tbody tr').filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+</body>
+</html>

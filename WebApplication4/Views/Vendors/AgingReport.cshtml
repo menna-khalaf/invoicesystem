@@ -1,0 +1,624 @@
+﻿@model WebApplication4.Models.APAgingReportViewModel
+
+@{
+    ViewData["Title"] = "تقرير تقادم الحسابات المستحقة الدفع";
+}
+
+<!-- Add custom styles -->
+<style>
+    /* Custom Colors */
+    :root {
+        --primary-color: #2179d0;
+        --secondary-color: #1a5f9c;
+        --accent-color: #ff6b35;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --table-header-bg: #2179d0;
+        --table-row-bg: #ffffff;
+        --table-hover-bg: #f0f7ff;
+        --border-color: #e1e8ed;
+    }
+
+    /* General Page Layout */
+    body {
+        background-color: var(--bg-color);
+        font-family: 'Tajawal', 'Arial', sans-serif;
+        color: #2d3748;
+        line-height: 1.6;
+    }
+
+    /* Header Section */
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1.5rem 0;
+        padding: 0 1rem;
+    }
+
+    h2 {
+        margin: 0;
+        color: var(--primary-color);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 10px;
+        text-align: right;
+    }
+
+        h2:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+
+    /* Filter Section */
+    .filter-container {
+        background-color: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+    }
+
+        .filter-container label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .filter-container .form-control {
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .filter-container .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(33, 121, 208, 0.1);
+            }
+
+    /* Table Styles */
+    .table-container {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        background-color: transparent;
+    }
+
+    thead {
+        background-color: var(--table-header-bg);
+        color: white;
+    }
+
+        thead th {
+            font-weight: 600;
+            padding: 1rem;
+            text-align: right;
+            border-bottom: none;
+        }
+
+    tbody tr {
+        background-color: var(--table-row-bg);
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--table-hover-bg);
+            transform: translateX(3px);
+        }
+
+    tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-top: none;
+    }
+
+    /* Status Badges */
+    .badge-delay {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75em;
+        text-align: center;
+    }
+
+    .badge-not-delayed {
+        background-color: #e6f7ee;
+        color: #10b981;
+    }
+
+    .badge-due-today {
+        background-color: #fff8e6;
+        color: #f59e0b;
+    }
+
+    .badge-1-30 {
+        background-color: #fff0f0;
+        color: #ef4444;
+    }
+
+    .badge-31-60 {
+        background-color: #fef6e6;
+        color: #f97316;
+    }
+
+    .badge-61-90 {
+        background-color: #eff6ff;
+        color: #3b82f6;
+    }
+
+    .badge-over-90 {
+        background-color: #f5f3ff;
+        color: #8b5cf6;
+    }
+
+    /* Buttons */
+    .dt-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .dt-buttons .btn {
+        border-radius: 8px;
+        padding: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .dt-buttons .btn i {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .dt-buttons .btn span {
+            display: none;
+            position: absolute;
+            left: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .dt-buttons .btn:hover span {
+            display: block;
+        }
+
+    .btn-primary {
+        background InjectableFactory: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+    /* Export Buttons */
+    .export-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .export-buttons .btn {
+        border-radius: 8px;
+        padding: 0.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .export-buttons .btn i {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .export-buttons .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .export-buttons .btn span {
+        display: none;
+        position: absolute;
+        left: 50px; /* Position tooltip to the right */
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 10;
+    }
+
+    .export-buttons .btn:hover span {
+        display: block;
+    }
+
+    /* Responsive Table */
+    @@media (max-width: 767px) {
+        .table-container {
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .table thead {
+            display: none;
+        }
+
+        .table, .table tbody, .table tr, .table td {
+            display: block;
+            width: 100%;
+        }
+
+            .table tr {
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+
+            .table td {
+                text-align: right;
+                padding: 0.75rem;
+                position: relative;
+                padding-right: 50%;
+            }
+
+                .table td::before {
+                    content: attr(data-label);
+                    font-weight: 600;
+                    position: absolute;
+                    right: 15px;
+                    color: var(--primary-color);
+                }
+
+        .header-container {
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
+        }
+
+        .dt-buttons {
+            justify-content: flex-end;
+        }
+
+        .export-buttons {
+            order: -1; /* Move export buttons to the top */
+            justify-content: flex-end;
+        }
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .table-container {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="header-container">
+    <div class="export-buttons">
+       @*  <button id="exportPdf" class="btn btn-sm btn-danger" title="تصدير إلى PDF">
+            <i class="fas fa-file-pdf"></i>
+        </button> *@
+        <button id="exportExcel" class="btn btn-sm btn-success" title="تصدير إلى Excel">
+            <i class="fas fa-file-excel"></i>
+        </button>
+    </div>
+    <h2><i class="fas fa-file-invoice-dollar mr-2"></i>تقرير تقادم الحسابات المستحقة الدفع</h2>
+    <div class="dt-buttons"></div>
+</div>
+
+<div class="filter-container mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="vendorFilter"><i class="fas fa-user-tie mr-2"></i>اسم المورد</label>
+            <select id="vendorFilter" class="form-control">
+                <option value="">الكل</option>
+                @foreach (var vendor in Model.Invoices.Select(i => i.VendorName).Distinct().OrderBy(v => v))
+                {
+                    <option value="@vendor">@vendor</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="daysPastDueFilter"><i class="fas fa-calendar-times mr-2"></i>أيام التأخير</label>
+            <input type="number" id="daysPastDueFilter" class="form-control" placeholder="أدخل أيام التأخير" min="0">
+        </div>
+        <div class="col-md-4">
+            <label for="delayCategoryFilter"><i class="fas fa-filter mr-2"></i>فئة التأخير</label>
+            <select id="delayCategoryFilter" class="form-control">
+                <option value="">الكل</option>
+                <option value="غير متأخرة">غير متأخرة</option>
+                <option value="مستحقة اليوم">مستحقة اليوم</option>
+                <option value="ديون متأخرة 30 يوم">ديون متأخرة 30 يوم</option>
+                <option value="ديون متأخرة 30-60 يوم">ديون متأخرة 30-60 يوم</option>
+                <option value="ديون متأخرة 60-90 يوم">ديون متأخرة 60-90 يوم</option>
+                <option value="ديون متأخرة لأكثر من 90 يوم">ديون متأخرة لأكثر من 90 يوم</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="table table-bordered" id="agingTable">
+        <thead>
+            <tr>
+                <th><i class="fas fa-id-card mr-2"></i>كود المورد</th>
+                <th><i class="fas fa-user-tie mr-2"></i>اسم المورد</th>
+                <th><i class="fas fa-file-invoice mr-2"></i>رقم الفاتورة</th>
+                <th><i class="fas fa-list-alt mr-2"></i>رقم التفصيل</th>
+                <th><i class="fas fa-money-bill-wave mr-2"></i>المبلغ المتبقي</th>
+                <th><i class="fas fa-calendar-day mr-2"></i>تاريخ الاستحقاق</th>
+                <th><i class="fas fa-clock mr-2"></i>أيام التأخير</th>
+                <th><i class="fas fa-tags mr-2"></i>فئة التأخير</th>
+                <th><i class="fas fa-calendar-week mr-2"></i>30 يوم</th>
+                <th><i class="fas fa-calendar-week mr-2"></i>30-60 يوم</th>
+                <th><i class="fas fa-calendar-week mr-2"></i>60-90 يوم</th>
+                <th><i class="fas fa-calendar-week mr-2"></i>أكثر من 90 يوم</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model.Invoices)
+            {
+                <tr>
+                    <td>@invoice.VendorId</td>
+                    <td>@invoice.VendorName</td>
+                    <td>@invoice.InvoiceId</td>
+                    <td>@(invoice.PayDetailId.HasValue ? invoice.PayDetailId.Value.ToString() : "-")</td>
+                    <td>@invoice.AmountDue.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</td>
+                    <td>@(invoice.DueDate.HasValue ? invoice.DueDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                    <td>@invoice.DaysPastDue</td>
+                    <td>
+                        @{
+                            var badgeClass = "badge-delay ";
+                            switch (invoice.DelayCategory)
+                            {
+                                case "غير متأخرة":
+                                    badgeClass += "badge-not-delayed";
+                                    break;
+                                case "مستحقة اليوم":
+                                    badgeClass += "badge-due-today";
+                                    break;
+                                case "ديون متأخرة 30 يوم":
+                                    badgeClass += "badge-1-30";
+                                    break;
+                                case "ديون متأخرة 30-60 يوم":
+                                    badgeClass += "badge-31-60";
+                                    break;
+                                case "ديون متأخرة 60-90 يوم":
+                                    badgeClass += "badge-61-90";
+                                    break;
+                                case "ديون متأخرة لأكثر من 90 يوم":
+                                    badgeClass += "badge-over-90";
+                                    break;
+                                default:
+                                    badgeClass += "badge-not-delayed";
+                                    break;
+                            }
+                        }
+                        <span class="@badgeClass">@invoice.DelayCategory</span>
+                    </td>
+                    <td>@invoice.Days1To30.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</td>
+                    <td>@invoice.Days31To60.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</td>
+                    <td>@invoice.Days61To90.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</td>
+                    <td>@invoice.DaysOver90.ToString("C", new System.Globalization.CultureInfo("ar-SA"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"></script>
+    <script>
+        // Define Amiri font for pdfmake
+        pdfMake.fonts = {
+            Amiri: {
+                normal: 'Amiri-Regular.ttf',
+                bold: 'Amiri-Bold.ttf',
+                italics: 'Amiri-Regular.ttf',
+                bolditalics: 'Amiri-Bold.ttf'
+            }
+        };
+
+        // Add base64-encoded Amiri font (simplified; use full base64 in production)
+        pdfMake.vfs = pdfMake.vfs || {};
+        // Note: Below is a placeholder. Replace with actual base64-encoded font data.
+        pdfMake.vfs['Amiri-Regular.ttf'] = 'data:font/truetype;base64,...'; // Replace with actual base64
+        pdfMake.vfs['Amiri-Bold.ttf'] = 'data:font/truetype;base64,...'; // Replace with actual base64
+
+        $(document).ready(function () {
+            var table = $('#agingTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Arabic.json'
+                },
+                order: [[1, 'asc'], [6, 'desc']],
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i><span>نسخ</span>',
+                        className: 'btn btn-sm btn-primary'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i><span>Excel</span>',
+                        className: 'btn btn-sm btn-success'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i><span>PDF</span>',
+                        className: 'btn btn-sm btn-danger',
+                        customize: function (doc) {
+                            // Ensure RTL and Amiri font for all text
+                            doc.defaultStyle = {
+                                font: 'Amiri',
+                                fontSize: 12,
+                                alignment: 'right'
+                            };
+                            // Style table headers
+                            doc.styles.tableHeader = {
+                                font: 'Amiri',
+                                fontSize: 12,
+                                bold: true,
+                                alignment: 'right',
+                                fillColor: '#2179d0',
+                                color: 'white'
+                            };
+                            // Ensure table body uses Amiri font
+                            doc.styles.tableBody = {
+                                font: 'Amiri',
+                                fontSize: 10,
+                                alignment: 'right'
+                            };
+                            // Set table widths to fit all columns
+                            doc.content[1].table.widths = ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'];
+                            // Add borders to table
+                            doc.content[1].layout = {
+                                hLineWidth: function (i, node) { return 0.5; },
+                                vLineWidth: function (i, node) { return 0.5; },
+                                hLineColor: function (i, node) { return '#e1e8ed'; },
+                                vLineColor: function (i, node) { return '#e1e8ed'; }
+                            };
+                            // Add title to PDF
+                            doc.content.unshift({
+                                text: 'تقرير تقادم الحسابات المستحقة الدفع',
+                                style: 'title',
+                                alignment: 'right',
+                                margin: [0, 0, 0, 20]
+                            });
+                            doc.styles.title = {
+                                font: 'Amiri',
+                                fontSize: 16,
+                                bold: true
+                            };
+                        },
+                        orientation: 'landscape',
+                        title: 'تقرير تقادم الحسابات المستحقة الدفع',
+                        exportOptions: {
+                            modifier: {
+                                page: 'current'
+                            }
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i><span>طباعة</span>',
+                        className: 'btn btn-sm btn-info'
+                    }
+                ],
+                initComplete: function () {
+                    $('.dt-buttons').appendTo('.header-container .dt-buttons');
+                    $('.dt-buttons .btn').addClass('btn-sm');
+                }
+            });
+
+            // Trigger PDF export
+            $('#exportPdf').on('click', function () {
+                table.button('.buttons-pdf').trigger();
+            });
+
+            // Trigger Excel export
+            $('#exportExcel').on('click', function () {
+                table.button('.buttons-excel').trigger();
+            });
+
+            $('#vendorFilter').on('change', function () {
+                var value = $(this).val();
+                table.column(1).search(value ? '^' + value + '$' : '', true, false).draw();
+            });
+
+            $('#daysPastDueFilter').on('keyup change', function () {
+                var value = $(this).val();
+                table.column(6).search(value ? '^' + value + '$' : '', true, false).draw();
+            });
+
+            $('#delayCategoryFilter').on('change', function () {
+                var value = $(this).val();
+                table.column(7).search(value ? '^' + value + '$' : '', true, false).draw();
+            });
+        });
+    </script>
+}

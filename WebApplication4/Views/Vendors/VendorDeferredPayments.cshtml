@@ -1,0 +1,272 @@
+﻿@model IEnumerable<WebApplication4.Models.DeferredPaymentModel>
+
+@{
+    ViewData["Title"] = "تفاصيل الدفعات الآجلة للمورد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #207cd4;
+            --primary-light: #e6f0fa;
+            --primary-dark: #1a68b5;
+            --accent-color: #ffc107;
+            --text-dark: #2c3e50;
+            --text-light: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-dark);
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .payment-header::after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .payment-header h3 {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .payment-header i {
+            margin-left: 10px;
+            font-size: 1.5rem;
+        }
+
+        .payment-table {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table thead {
+            background-color: var(--primary-light);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .table th {
+            color: var(--primary-dark);
+            font-weight: 700;
+            padding: 16px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: none;
+        }
+
+        .table td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(32, 124, 212, 0.03);
+            transform: scale(1.005);
+            box-shadow: 0 2px 8px rgba(32, 124, 212, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .status-paid {
+            color: #22c55e;
+            font-weight: 600;
+            background-color: rgba(34, 197, 94, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status-unpaid {
+            color: #ef4444;
+            font-weight: 600;
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(32, 124, 212, 0.3);
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        @@media (max-width: 992px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table th, .table td {
+                white-space: nowrap;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .payment-header h3 {
+                font-size: 1.5rem;
+            }
+            
+            .table th, .table td {
+                padding: 10px 12px;
+            }
+            
+            .btn-primary {
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="payment-header">
+            <h3 class="m-0">
+                <i class="bi bi-clock-history"></i> @ViewData["Title"]
+            </h3>
+        </div>
+
+        <div class="payment-table">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>معرف الدفع</th>
+                            <th>تاريخ الدفع</th>
+                            <th>معرف المورد</th>
+                            <th>الوصف</th>
+                            <th>المبلغ</th>
+                            <th>تاريخ الاستحقاق</th>
+                            <th>حالة الدفع</th>
+                            <th>تاريخ السداد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.PayId)</td>
+                                    <td>@item.PayDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@Html.DisplayFor(modelItem => item.VendorId)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                    <td class="amount-cell">@Html.DisplayFor(modelItem => item.DetailAmount) ر.س</td>
+                                    <td>@(item.DueDate.HasValue ? item.DueDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                                    <td>
+                                        <span class="@(item.IsPaid == true ? "status-paid" : "status-unpaid")">
+                                            @(item.IsPaid == true ? "مدفوع" : "غير مدفوع")
+                                            @if(item.IsPaid == true) {
+                                                <i class="bi bi-check-circle-fill ms-1"></i>
+                                            } else {
+                                                <i class="bi bi-exclamation-circle-fill ms-1"></i>
+                                            }
+                                        </span>
+                                    </td>
+                                    <td>@(item.PaidDate.HasValue ? item.PaidDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                                    <td>
+                                        <a href="@Url.Action("ProcessVendorPayment", "Vendors", new { payId = item.PayId, payDetailId = item.PayDetailId })"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-cash-stack"></i> معالجة
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9">
+                                    <div class="empty-state">
+                                        <i class="bi bi-inbox"></i>
+                                        <h5>لا توجد دفعات آجلة</h5>
+                                        <p class="text-muted">لا يوجد أي دفعات آجلة مسجلة لهذا المورد</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

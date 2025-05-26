@@ -1,0 +1,639 @@
+﻿@model WebApplication4.Models.QuotationViewModel
+
+@{
+    ViewData["Title"] = "إنشاء عرض سعر";
+}
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #3f37c9;
+        --accent: #4cc9f0;
+        --dark: #2b2d42;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --info: #4cc9f0;
+        --border-radius: 10px;
+        --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #dfe7f0 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--secondary);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: none;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+        .form-section h4 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-weight: 600;
+        }
+
+    label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: var(--border-radius);
+        border: 1px solid #ddd;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        transition: var(--transition);
+        height: auto;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 20px 0;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px #eee;
+    }
+
+        table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px 15px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover td {
+            background-color: rgba(72, 149, 239, 0.05);
+        }
+
+    .btn {
+        border-radius: var(--border-radius);
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn i {
+            margin-left: 8px;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #ff3a7c);
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #e01a5e, #ff3a7c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(247, 37, 133, 0.3);
+        }
+
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .totals-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: var(--border-radius);
+        margin-top: 30px;
+    }
+
+        .totals-section .form-group {
+            margin-bottom: 15px;
+        }
+
+        .totals-section label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .totals-section .form-control {
+            background-color: white;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+        .back-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+    .validation-summary-errors ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+    }
+
+    .validation-summary-errors li {
+        color: var(--danger);
+        background: rgba(247, 37, 133, 0.1);
+        padding: 10px 15px;
+        border-radius: var(--border-radius);
+        margin-bottom: 10px;
+        border-left: 4px solid var(--danger);
+    }
+
+    .field-validation-error {
+        color: var(--danger);
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: var(--danger) !important;
+    }
+
+    @@media (max-width: 768px) {
+        .card {
+            padding: 20px;
+        }
+
+        table {
+            display: block;
+            overflow-x: auto;
+        }
+
+            table th, table td {
+                white-space: nowrap;
+            }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeIn 0.5s ease forwards;
+    }
+</style>
+
+<div class="container">
+    <h1><i class="fas fa-file-invoice-dollar"></i> إنشاء عرض سعر</h1>
+
+    <div class="card">
+        <form asp-action="Create" id="quotationForm">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-section">
+                <h4><i class="fas fa-info-circle"></i> معلومات أساسية</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.CustomerId"></label>
+                            <select asp-for="Quotation.CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                                <option value="">-- اختر العميل --</option>
+                            </select>
+                            <span asp-validation-for="Quotation.CustomerId" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.EmployeeId"></label>
+                            <select asp-for="Quotation.EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId">
+                                <option value="">-- اختر الموظف --</option>
+                            </select>
+                            <span asp-validation-for="Quotation.EmployeeId" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.QuotationDate"></label>
+                            <input asp-for="Quotation.QuotationDate" class="form-control" type="date" />
+                            <span asp-validation-for="Quotation.QuotationDate" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.ExpiryDate"></label>
+                            <input asp-for="Quotation.ExpiryDate" class="form-control" type="date" />
+                            <span asp-validation-for="Quotation.ExpiryDate" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.StorehouseId"></label>
+                            <select asp-for="Quotation.StorehouseId" class="form-control" asp-items="ViewBag.StorehouseId">
+                                <option value="">-- اختر المستودع --</option>
+                            </select>
+                            <span asp-validation-for="Quotation.StorehouseId" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Quotation.BranchId"></label>
+                            <select asp-for="Quotation.BranchId" class="form-control" asp-items="ViewBag.BranchId">
+                                <option value="">-- اختر الفرع --</option>
+                            </select>
+                            <span asp-validation-for="Quotation.BranchId" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4><i class="fas fa-boxes"></i> المنتجات</h4>
+                <table class="table" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الوصف</th>
+                            <th>الكمية</th>
+                            <th>المجموع الفرعي <span title="الإجمالي قبل تطبيق الخصم" class="fas fa-info-circle"></span></th>
+                            <th>سعر الوحدة <span title="سعر الوحدة بعد تطبيق الخصم" class="fas fa-info-circle"></span></th>
+                            <th>نسبة الضريبة (%)</th>
+                            <th>نوع الخصم</th>
+                            <th>قيمة الخصم</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.QuotationDetails.Any())
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">لا توجد منتجات مضافة. أضف منتجًا باستخدام الزر أدناه.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < Model.QuotationDetails.Count; i++)
+                            {
+                                <tr data-vat-rate="0">
+                                    <td>
+                                        <select asp-for="QuotationDetails[i].ProductId" class="form-control product-select" asp-items="ViewBag.ProductId" required>
+                                            <option value="">-- اختر منتج --</option>
+                                        </select>
+                                        <span asp-validation-for="QuotationDetails[i].ProductId" class="field-validation-error"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="QuotationDetails[i].ProductDescription" class="form-control" placeholder="وصف المنتج" />
+                                    </td>
+                                    <td>
+                                        <input asp-for="QuotationDetails[i].Quantity" class="form-control quantity" type="number" min="1" value="1" required />
+                                        <span asp-validation-for="QuotationDetails[i].Quantity" class="field-validation-error"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="QuotationDetails[i].LineTotal" class="form-control line-total" readonly />
+                                        <span asp-validation-for="QuotationDetails[i].LineTotal" class="field-validation-error"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="QuotationDetails[i].UnitPrice" class="form-control unit-price" readonly />
+                                        <span asp-validation-for="QuotationDetails[i].UnitPrice" class="field-validation-error"></span>
+                                    </td>
+                                    <td>
+                                        <input class="form-control vat-rate" readonly />
+                                    </td>
+                                    <td>
+                                        <select asp-for="QuotationDetails[i].DiscountType" class="form-control discount-type">
+                                            <option value="Amount">مبلغ</option>
+                                            <option value="Percentage">نسبة مئوية</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input asp-for="QuotationDetails[i].Discount" class="form-control discount" type="number" step="0.01" value="0" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove-product">
+                                            <i class="fas fa-trash-alt"></i> إزالة
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" id="addProduct">
+                    <i class="fas fa-plus"></i> إضافة منتج
+                </button>
+            </div>
+
+            <div class="totals-section">
+                <h4><i class="fas fa-calculator"></i> الحسابات النهائية</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>المجموع الفرعي</label>
+                            <input asp-for="Quotation.Subtotal" class="form-control subtotal" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>قيمة الضريبة</label>
+                            <input id="vat-amount-display" class="form-control vat-amount-display" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>المجموع الكلي</label>
+                            <input asp-for="Quotation.TotalAmount" class="form-control total-amount" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary" id="submitButton" style="min-width: 150px;">
+                    <i class="fas fa-save"></i> إنشاء العرض
+                </button>
+                <a asp-action="Index" class="back-link">
+                    <i class="fas fa-arrow-right"></i> العودة إلى القائمة
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let productIndex = @Model.QuotationDetails.Count;
+
+            // Function to update totals
+            function updateTotals() {
+                let subtotal = 0;
+                let totalVat = 0;
+
+                $("#productsTable tbody tr").each(function () {
+                    let quantity = parseFloat($(this).find(".quantity").val()) || 0;
+                    let originalUnitPrice = parseFloat($(this).find(".unit-price").data("original-price")) || 0;
+                    let vatRate = parseFloat($(this).data("vat-rate")) || 0;
+                    let discount = parseFloat($(this).find(".discount").val()) || 0;
+                    let discountType = $(this).find(".discount-type").val();
+
+                    // Calculate LineTotal as Original UnitPrice * Quantity (before discount)
+                    let lineTotal = originalUnitPrice * quantity;
+                    $(this).find(".line-total").val(lineTotal.toFixed(2));
+
+                    // Apply discount to LineTotal
+                    let adjustedLineTotal = discountType === "Percentage"
+                        ? lineTotal * (1 - discount / 100)
+                        : lineTotal - discount;
+
+                    // Ensure adjusted LineTotal is non-negative
+                    adjustedLineTotal = Math.max(adjustedLineTotal, 0);
+
+                    // Calculate UnitPrice as adjustedLineTotal / Quantity (after discount)
+                    let calculatedUnitPrice = quantity > 0 ? adjustedLineTotal / quantity : 0;
+                    $(this).find(".unit-price").val(calculatedUnitPrice.toFixed(2));
+
+                    // Calculate VAT after discount
+                    let vat = adjustedLineTotal * (vatRate / 100);
+
+                    subtotal += adjustedLineTotal;
+                    totalVat += vat;
+                });
+
+                $(".subtotal").val(subtotal.toFixed(2));
+                $("#vat-amount-display").val(totalVat.toFixed(2));
+                $(".total-amount").val((subtotal + totalVat).toFixed(2));
+                $("#submitButton").prop("disabled", false);
+            }
+
+            // Fetch product details on product selection
+            $(document).on("change", ".product-select", function () {
+                let productId = $(this).val();
+                let $row = $(this).closest("tr");
+
+                if (productId) {
+                    $.ajax({
+                        url: "/Quotations/GetProductDetails",
+                        type: "GET",
+                        data: { productId: productId },
+                        success: function (data) {
+                            if (data.productId) {
+                                $row.find(".unit-price").data("original-price", data.price);
+                                $row.find(".vat-rate").val(data.vatrate.toFixed(2));
+                                $row.data("vat-rate", data.vatrate);
+                                updateTotals();
+                            } else {
+                                alert("المنتج غير موجود.");
+                                $row.find(".unit-price").val("").data("original-price", 0);
+                                $row.find(".line-total").val("");
+                                $row.find(".vat-rate").val("");
+                                $row.data("vat-rate", 0);
+                                updateTotals();
+                            }
+                        },
+                        error: function () {
+                            alert("خطأ في جلب تفاصيل المنتج.");
+                            $row.find(".unit-price").val("").data("original-price", 0);
+                            $row.find(".line-total").val("");
+                            $row.find(".vat-rate").val("");
+                            $row.data("vat-rate", 0);
+                            updateTotals();
+                        }
+                    });
+                } else {
+                    $row.find(".unit-price").val("").data("original-price", 0);
+                    $row.find(".line-total").val("");
+                    $row.find(".vat-rate").val("");
+                    $row.data("vat-rate", 0);
+                    updateTotals();
+                }
+
+                // Prevent duplicate product selections
+                let selectedIds = $(".product-select").map(function () { return $(this).val(); }).get();
+                let uniqueIds = new Set(selectedIds.filter(id => id));
+                if (uniqueIds.size < selectedIds.filter(id => id).length) {
+                    alert("هذا المنتج تم اختياره بالفعل. يرجى اختيار منتج مختلف.");
+                    $(this).val("");
+                    $row.find(".unit-price").val("").data("original-price", 0);
+                    $row.find(".line-total").val("");
+                    $row.find(".vat-rate").val("");
+                    $row.data("vat-rate", 0);
+                    updateTotals();
+                }
+            });
+
+            // Add new product row
+            $("#addProduct").click(function () {
+                let newRow = `
+                            <tr data-vat-rate="0">
+                                <td>
+                                    <select name="QuotationDetails[${productIndex}].ProductId" class="form-control product-select" required>
+                                        <option value="">-- اختر منتج --</option>
+        @foreach (var item in (SelectList)ViewBag.ProductId)
+        {
+                                                <option value="@item.Value">@item.Text</option>
+        }
+                                    </select>
+                                </td>
+                                <td><input name="QuotationDetails[${productIndex}].ProductDescription" class="form-control" placeholder="وصف المنتج" /></td>
+                                <td><input name="QuotationDetails[${productIndex}].Quantity" class="form-control quantity" type="number" min="1" value="1" required /></td>
+                                <td><input name="QuotationDetails[${productIndex}].LineTotal" class="form-control line-total" readonly /></td>
+                                <td><input name="QuotationDetails[${productIndex}].UnitPrice" class="form-control unit-price" readonly /></td>
+                                <td><input class="form-control vat-rate" readonly /></td>
+                                <td>
+                                    <select name="QuotationDetails[${productIndex}].DiscountType" class="form-control discount-type">
+                                        <option value="Amount">مبلغ</option>
+                                        <option value="Percentage">نسبة مئوية</option>
+                                    </select>
+                                </td>
+                                <td><input name="QuotationDetails[${productIndex}].Discount" class="form-control discount" type="number" step="0.01" value="0" /></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm remove-product">
+                                        <i class="fas fa-trash-alt"></i> إزالة
+                                    </button>
+                                </td>
+                            </tr>`;
+                $("#productsTable tbody").append(newRow);
+                productIndex++;
+                updateTotals();
+            });
+
+            // Remove product row
+            $(document).on("click", ".remove-product", function () {
+                if ($("#productsTable tbody tr").length > 1) {
+                    $(this).closest("tr").remove();
+                    updateTotals();
+                } else {
+                    alert("يجب أن يحتوي العرض على منتج واحد على الأقل.");
+                }
+            });
+
+            // Update totals on quantity, discount, or discount-type change
+            $(document).on("change input", ".quantity, .discount, .discount-type", updateTotals);
+
+            // Prevent multiple form submissions
+            $("#quotationForm").submit(function () {
+                $("#submitButton").prop("disabled", true);
+                setTimeout(function () { $("#submitButton").prop("disabled", false); }, 5000);
+            });
+
+            // Initialize totals
+            updateTotals();
+        });
+    </script>
+}

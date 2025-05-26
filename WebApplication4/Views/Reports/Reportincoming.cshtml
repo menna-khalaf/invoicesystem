@@ -1,0 +1,115 @@
+﻿@model IEnumerable<WebApplication4.Models.ProductSummary>
+
+
+@{
+    ViewData["Title"] = "تقرير المشتريات والمرتجعات";
+}
+
+<h2 class="text-center">تقرير المشتريات والمرتجعات</h2>
+
+<!-- زر تصدير إلى Excel -->
+<button id="exportExcel" class="btn btn-success mb-3">تصدير إلى Excel</button>
+
+<table id="purchasesTable" class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>اسم المنتج</th>
+            <th>الكمية المشتراة</th>
+            <th>الكمية المرتجعة</th>
+            <th>هل تمت إرجاعه؟</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.TotalPurchasedQuantity</td>
+                    <td>@item.TotalReturnedQuantity</td>
+                    <td>@((item.TotalReturnedQuantity > 0) ? "نعم" : "لا")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">لا توجد بيانات متاحة</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- إضافة مكتبة Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- إضافة مكتبة SheetJS لتصدير Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<div class="row text-center">
+    <div class="col-md-6 mb-3">
+        <canvas id="pieChart" width="300" height="300"></canvas>
+    </div>
+    <div class="col-md-6 mb-3">
+        <canvas id="barChart" width="300" height="300"></canvas>
+    </div>
+    <div class="col-md-6 mb-3">
+        <canvas id="lineChart" width="300" height="300"></canvas>
+    </div>
+    <div class="col-md-6 mb-3">
+        <canvas id="doughnutChart" width="300" height="300"></canvas>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var table = document.getElementById("purchasesTable");
+        var productNames = [];
+        var purchasedQuantities = [];
+        var returnedQuantities = [];
+
+        for (var i = 1; i < table.rows.length; i++) {
+            productNames.push(table.rows[i].cells[0].innerText);
+            purchasedQuantities.push(parseInt(table.rows[i].cells[1].innerText) || 0);
+            returnedQuantities.push(parseInt(table.rows[i].cells[2].innerText) || 0);
+        }
+
+        var chartDataPurchased = {
+            labels: productNames,
+            datasets: [{
+                label: "الكمية المشتراة",
+                data: purchasedQuantities,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#9C27B0'],
+                borderWidth: 1
+            }]
+        };
+
+        var chartDataReturned = {
+            labels: productNames,
+            datasets: [{
+                label: "الكمية المرتجعة",
+                data: returnedQuantities,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#9C27B0'],
+                borderWidth: 1
+            }]
+        };
+
+        var chartOptions = {
+            responsive: false,
+            maintainAspectRatio: false
+        };
+
+        new Chart(document.getElementById("pieChart"), { type: "pie", data: chartDataPurchased, options: chartOptions });
+        new Chart(document.getElementById("barChart"), { type: "bar", data: chartDataPurchased, options: chartOptions });
+        new Chart(document.getElementById("lineChart"), { type: "line", data: chartDataReturned, options: chartOptions });
+        new Chart(document.getElementById("doughnutChart"), { type: "doughnut", data: chartDataReturned, options: chartOptions });
+
+        // تصدير الجدول إلى Excel
+        document.getElementById("exportExcel").addEventListener("click", function () {
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.table_to_sheet(document.getElementById("purchasesTable"));
+            XLSX.utils.book_append_sheet(wb, ws, "تقرير المشتريات والمرتجعات");
+            XLSX.writeFile(wb, "تقرير_المشتريات_والمرتجعات.xlsx");
+        });
+    });
+</script>

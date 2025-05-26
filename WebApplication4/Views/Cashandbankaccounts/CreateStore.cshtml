@@ -1,0 +1,274 @@
+﻿@model WebApplication4.Models.Cashandbankaccount
+
+@{
+    ViewData["Title"] = "إنشاء حساب خزينة";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #207cd4;
+            --primary-light: #e6f2ff;
+            --primary-dark: #1a6ec1;
+            --secondary: #f8f9fa;
+            --text: #2d3748;
+            --text-light: #4a5568;
+            --border: #e2e8f0;
+            --error: #e53e3e;
+            --success: #38a169;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            background-color: #f7fafc;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            border-top: 3px solid var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+            .form-header h1 {
+                color: var(--primary);
+                font-weight: 700;
+                font-size: 1.75rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-header p {
+                color: var(--text-light);
+                font-size: 1rem;
+                margin-bottom: 0;
+            }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: white;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 2px rgba(32, 124, 212, 0.1);
+            }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23207cd4' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 0.75rem center;
+            background-size: 16px 12px;
+        }
+
+        .validation-error {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-1px);
+            }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+            .btn-outline:hover {
+                background-color: var(--secondary);
+            }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @@media (max-width: 576px) {
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Input focus effect */
+        .focus-effect {
+            position: relative;
+        }
+
+            .focus-effect:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background-color: var(--primary);
+                transition: width 0.3s ease;
+            }
+
+            .focus-effect:focus-within:after {
+                width: 100%;
+            }
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+        <div class="form-card">
+            <div class="form-header">
+                <h1><i class="fas fa-piggy-bank"></i> إنشاء حساب خزينة</h1>
+                <p>إضافة حساب نقدي أو بنكي جديد للنظام</p>
+            </div>
+
+            <form asp-action="CreateStore">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="form-group focus-effect">
+                    <label asp-for="AccountNumber" class="form-label">رقم الحساب</label>
+                    <input asp-for="AccountNumber" class="form-control" placeholder="أدخل رقم الحساب" />
+                    <span asp-validation-for="AccountNumber" class="validation-error"></span>
+                </div>
+
+                <div class="form-group focus-effect">
+                    <label asp-for="AccountName" class="form-label">اسم الحساب</label>
+                    <input asp-for="AccountName" class="form-control" placeholder="أدخل اسم الحساب" />
+                    <span asp-validation-for="AccountName" class="validation-error"></span>
+                </div>
+
+                <div class="form-group focus-effect">
+                    <label asp-for="BranchId" class="form-label">الفرع</label>
+                    <select asp-for="BranchId" class="form-control form-select" asp-items="ViewBag.BranchId">
+                        <option value="">-- اختر الفرع --</option>
+                    </select>
+                    <span asp-validation-for="BranchId" class="validation-error"></span>
+                </div>
+
+                <div class="form-group focus-effect">
+                    <label class="form-label">الموظف المسؤول</label>
+                    <select name="EmployeeId" class="form-control form-select" asp-items="ViewBag.EmployeeId">
+                        <option value="">-- اختر الموظف --</option>
+                    </select>
+                </div>
+
+                <div class="form-group focus-effect">
+                    <label asp-for="Balance" class="form-label">الرصيد الافتتاحي</label>
+                    <input asp-for="Balance" class="form-control" placeholder="أدخل الرصيد الافتتاحي" />
+                    <span asp-validation-for="Balance" class="validation-error"></span>
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" asp-for="AccountType" value="خزينة" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="Status" value="نشط" />
+                <input type="hidden" asp-for="CreatedAt" value="@DateTime.Now" />
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> رجوع
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Format balance input
+        $("input[name='Balance']").on('input', function () {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+
+        // Add slight animation to form elements
+        document.querySelectorAll('.form-group').forEach((el, i) => {
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, i * 100);
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+</body>
+</html>

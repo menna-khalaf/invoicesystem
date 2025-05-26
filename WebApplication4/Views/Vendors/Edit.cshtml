@@ -1,0 +1,316 @@
+﻿@model WebApplication4.Models.Vendor
+
+@{
+    ViewData["Title"] = "تعديل مورد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+            padding: 1.25rem;
+        }
+
+        .form-container {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            }
+
+        .control-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: var(--secondary-color);
+        }
+
+        .text-danger {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+            .btn-submit:hover {
+                background-color: #2980b9;
+                transform: translateY(-2px);
+                box-shadow: var(--shadow);
+            }
+
+        .btn-back {
+            background-color: var(--light-bg);
+            color: var(--secondary-color);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+            .btn-back:hover {
+                background-color: var(--secondary-color);
+                color: white;
+                text-decoration: none;
+            }
+
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            margin-left: 0.5rem;
+        }
+
+        .tax-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tax-status-label {
+            font-weight: 600;
+        }
+
+        @@media (max-width: 768px) {
+            .form-container {
+                padding: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .btn-submit {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <h1 class="page-title mb-3"><i class="fas fa-edit me-2"></i>تعديل مورد</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>بيانات المورد</h5>
+            </div>
+            <div class="form-container">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" asp-for="VendorId" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="VendorName" class="control-label">اسم المورد</label>
+                                <input asp-for="VendorName" class="form-control" placeholder="أدخل اسم المورد" />
+                                <span asp-validation-for="VendorName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber1" class="control-label">الهاتف الأساسي</label>
+                                <input asp-for="PhoneNumber1" class="form-control" placeholder="أدخل رقم الهاتف" />
+                                <span asp-validation-for="PhoneNumber1" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber2" class="control-label">الهاتف الثانوي</label>
+                                <input asp-for="PhoneNumber2" class="form-control" placeholder="أدخل رقم هاتف إضافي" />
+                                <span asp-validation-for="PhoneNumber2" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label">البريد الإلكتروني</label>
+                                <input asp-for="Email" class="form-control" placeholder="أدخل البريد الإلكتروني" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="tax-status">
+                                    <label class="tax-status-label">حالة الضريبة:</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="taxableCheck"
+                                               name="TaxableCheck" value="true" @(Model.TaxableCheck == true ? "checked" : "")>
+                                        <input type="hidden" name="TaxableCheck" value="false" />
+                                        <label class="form-check-label" for="taxableCheck">مورد ضريبي</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="taxNumberGroup">
+                                <label asp-for="TaxNumber" class="control-label">الرقم الضريبي</label>
+                                <input asp-for="TaxNumber" class="form-control" placeholder="أدخل الرقم الضريبي" id="taxNumberInput" />
+                                <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Classification" class="control-label">التصنيف</label>
+                                <input asp-for="Classification" class="form-control" placeholder="أدخل تصنيف المورد" />
+                                <span asp-validation-for="Classification" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="CommercialRegister" class="control-label">السجل التجاري</label>
+                                <input asp-for="CommercialRegister" class="form-control" placeholder="أدخل رقم السجل التجاري" />
+                                <span asp-validation-for="CommercialRegister" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Location" class="control-label">الموقع</label>
+                                <input asp-for="Location" class="form-control" placeholder="أدخل موقع المورد" />
+                                <span asp-validation-for="Location" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Currency" class="control-label">العملة</label>
+                                <input asp-for="Currency" class="form-control" placeholder="أدخل العملة" />
+                                <span asp-validation-for="Currency" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="CreditLimit" class="control-label">الحد الائتماني</label>
+                                <div class="input-group">
+                                    <input asp-for="CreditLimit" class="form-control" placeholder="0.00" />
+                                    <span class="input-group-text">ر.س</span>
+                                </div>
+                                <span asp-validation-for="CreditLimit" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="EmployeeId" class="control-label">الموظف المسؤول</label>
+                                <select asp-for="EmployeeId" class="form-select" asp-items="ViewBag.EmployeeId">
+                                    <option value="">اختر موظف</option>
+                                </select>
+                                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-submit">
+                            <i class="fas fa-save me-1"></i> حفظ التعديلات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a asp-action="Index" class="btn btn-back">
+                <i class="fas fa-arrow-right me-1"></i> العودة للقائمة
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to toggle tax number field
+            function toggleTaxNumber() {
+                const isTaxable = $('#taxableCheck').is(':checked');
+                const taxNumberGroup = $('#taxNumberGroup');
+                const taxNumberInput = $('#taxNumberInput');
+
+                if (isTaxable) {
+                    taxNumberGroup.show();
+                    taxNumberInput.prop('required', true);
+                } else {
+                    taxNumberGroup.hide();
+                    taxNumberInput.prop('required', false);
+                    taxNumberInput.val('');
+                }
+            }
+
+            // Set initial state based on model value
+            toggleTaxNumber();
+
+            // Handle checkbox change
+            $('#taxableCheck').change(function () {
+                toggleTaxNumber();
+            });
+        });
+    </script>
+</body>
+</html>

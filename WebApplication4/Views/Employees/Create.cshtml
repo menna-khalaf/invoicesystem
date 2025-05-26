@@ -1,0 +1,476 @@
+﻿@model WebApplication4.Models.Employee
+
+@{
+    ViewData["Title"] = "إضافة موظف جديد";
+    var userId = Context.Session.GetInt32("UserId")?.ToString() ?? "";
+}
+
+<!-- Add this to your head section or _Layout.cshtml -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-color: #207cd4;
+        --primary-light: #e6f2ff;
+        --primary-dark: #1a6ab7;
+    }
+    
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: #f8f9fa;
+    }
+    
+    .form-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(32, 124, 212, 0.15);
+        border: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .form-card:hover {
+        box-shadow: 0 15px 35px rgba(32, 124, 212, 0.2);
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color), #3a9efd);
+        color: white;
+        padding: 1.5rem;
+        border-bottom: 4px solid white;
+    }
+    
+    .form-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 0;
+    }
+    
+    .form-divider {
+        border-top: 2px dashed var(--primary-color);
+        opacity: 0.5;
+        margin: 1.5rem 0;
+    }
+    
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        position: relative;
+        padding-right: 15px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title:after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #ddd;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(32, 124, 212, 0.25);
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline {
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+    
+    .input-group-text {
+        background-color: var(--primary-light);
+        border-color: #ddd;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .bi {
+        margin-left: 5px;
+    }
+    
+    .required-field:after {
+        content: " *";
+        color: #dc3545;
+    }
+    
+    .floating-section {
+        background-color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid var(--primary-light);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="form-card bg-white">
+        <!-- Header -->
+        <div class="form-header text-center">
+            <h1 class="form-title">
+                <i class="bi bi-person-plus"></i> إضافة موظف جديد
+            </h1>
+        </div>
+        
+        <!-- Form Content -->
+        <div class="p-4 p-md-5">
+            <form asp-action="Create" id="employeeForm" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <!-- Hidden UserId Field -->
+                <input type="hidden" asp-for="UserId" value="@userId" />
+
+                <!-- Part 1: User Information -->
+                <div class="floating-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-person-badge"></i> معلومات المستخدم
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label required-field">الاسم الكامل</label>
+                            <input asp-for="FullName" class="form-control" required />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="Position" class="form-label required-field">المسمى الوظيفي</label>
+                            <input asp-for="Position" class="form-control" required />
+                            <span asp-validation-for="Position" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="Role" class="form-label required-field">الدور الوظيفي</label>
+                            <select asp-for="Role" class="form-select" asp-items="ViewBag.Role" required>
+                                <option value="">-- اختر الدور --</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 2: Contact and System Access -->
+                <div class="floating-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-phone"></i> بيانات الإتصال والدخول إلى النظام
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="MobileNumber" class="form-label required-field">رقم الجوال</label>
+                            <input asp-for="MobileNumber" class="form-control" placeholder="مثال: +966501234567" required />
+                            <small class="form-text text-muted">سيتم إرسال تفاصيل الدخول عبر WhatsApp</small>
+                            <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="SecondaryMobileNumber" class="form-label">رقم جوال آخر</label>
+                            <input asp-for="SecondaryMobileNumber" class="form-control" />
+                            <span asp-validation-for="SecondaryMobileNumber" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-check form-switch mt-4 pt-2">
+                                <input asp-for="AllowSystemAccess" class="form-check-input" type="checkbox" role="switch" style="width: 3em; height: 1.5em;">
+                                <label asp-for="AllowSystemAccess" class="form-check-label fw-bold">السماح بالدخول إلى النظام</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label">كلمة المرور</label>
+                            <div class="input-group mb-3">
+                                <input asp-for="Password" id="passwordInput" class="form-control" />
+                                <button type="button" id="generatePassword" class="btn btn-outline-primary">
+                                    <i class="bi bi-key"></i> توليد
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 3: Address -->
+                <div class="floating-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-geo-alt"></i> عنوان المستخدم
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Country" class="form-label">الدولة</label>
+                            <select asp-for="Country" class="form-select" id="countryDropdown">
+                                <option value="">-- اختر الدولة --</option>
+                                @foreach (var country in ViewBag.Countries)
+                                {
+                                    <option value="@country.Value" selected="@(country.Value == Model.Country ? "selected" : null)">@country.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Country" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label">المدينة</label>
+                            <select asp-for="City" class="form-select" id="cityDropdown">
+                                <option value="">-- اختر المدينة --</option>
+                            </select>
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label asp-for="Address" class="form-label">العنوان التفصيلي</label>
+                            <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 4: Attachments and Notes -->
+                <div class="floating-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-paperclip"></i> المرفقات والملاحظات
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">رفع المرفقات</label>
+                            <input type="file" name="attachments" multiple class="form-control" />
+                        </div>
+                        
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label">ملاحظات إضافية</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 5: Employment Details -->
+                <div class="floating-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-briefcase"></i> بيانات التوظيف
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Salary" class="form-label required-field">الراتب</label>
+                            <div class="input-group">
+                                <input asp-for="Salary" type="number" step="0.01" min="0" class="form-control" required />
+                                <span class="input-group-text">ر.س</span>
+                            </div>
+                            <span asp-validation-for="Salary" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="HireDate" class="form-label required-field">تاريخ التوظيف</label>
+                            <input asp-for="HireDate" type="date" value="@(Model.HireDate.ToString("yyyy-MM-dd"))" max="@(DateTime.Today.ToString("yyyy-MM-dd"))" class="form-control" required />
+                            <span asp-validation-for="HireDate" class="text-danger small"></span>
+                        </div>
+                        
+                       @*  <div class="col-md-6">
+                            <label asp-for="AttendanceTime" class="form-label">وقت الحضور</label>
+                            <input asp-for="AttendanceTime" type="time" value="@(Model.AttendanceTime?.ToString("HH:mm"))" class="form-control" />
+                            <span asp-validation-for="AttendanceTime" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="DepartureTime" class="form-label">وقت الانصراف</label>
+                            <input asp-for="DepartureTime" type="time" value="@(Model.DepartureTime?.ToString("HH:mm"))" class="form-control" />
+                            <span asp-validation-for="DepartureTime" class="text-danger small"></span>
+                        </div> *@
+                    </div>
+                </div>
+
+                <!-- Form Buttons -->
+                <div class="text-center mt-4 pt-3">
+                    <button type="submit" class="btn btn-primary px-4 me-3">
+                        <i class="bi bi-check-lg"></i> حفظ الموظف
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline px-4">
+                        <i class="bi bi-x-lg"></i> إلغاء
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Initialize datepicker with RTL support
+            $('.datepicker-right').attr('style', 'direction: ltr; text-align: right;');
+
+            // Form validation
+            $("#employeeForm").validate({
+                rules: {
+                    FullName: { required: true, minlength: 3 },
+                    Position: { required: true, minlength: 3 },
+                    Role: { required: true },
+                    MobileNumber: {
+                        required: true,
+                        minlength: 10,
+                        pattern: /^\+\d{10,15}$/ // Ensure international format
+                    },
+                    Email: { email: true },
+                    Salary: { required: true, min: 0 },
+                    HireDate: { required: true },
+                    UserId: { required: true } // Validate hidden UserId
+                },
+                messages: {
+                    FullName: {
+                        required: "يجب إدخال الاسم الكامل",
+                        minlength: "الاسم يجب أن يكون على الأقل 3 أحرف"
+                    },
+                    Position: {
+                        required: "يجب إدخال المسمى الوظيفي",
+                        minlength: "المسمى يجب أن يكون على الأقل 3 أحرف"
+                    },
+                    Role: "يجب اختيار الدور الوظيفي",
+                    MobileNumber: {
+                        required: "يجب إدخال رقم الجوال",
+                        minlength: "رقم الجوال يجب أن يكون على الأقل 10 أرقام",
+                        pattern: "يجب إدخال رقم الجوال بالصيغة الدولية (مثال: +966501234567)"
+                    },
+                    Email: "يجب إدخال بريد إلكتروني صالح",
+                    Salary: {
+                        required: "يجب إدخال الراتب",
+                        min: "الراتب يجب أن يكون رقم موجب"
+                    },
+                    HireDate: "يجب إدخال تاريخ التوظيف",
+                    UserId: "معرف المستخدم مطلوب"
+                },
+                errorClass: "text-danger",
+                errorElement: "span"
+            });
+
+            // // Time validation
+            // $("form").on("submit", function () {
+            //     const startTime = $("#AttendanceTime").val();
+            //     const endTime = $("#DepartureTime").val();
+            //     if (startTime && endTime && startTime >= endTime) {
+            //         Swal.fire({
+            //             icon: 'error',
+            //             title: 'خطأ في الوقت',
+            //             text: 'وقت الانصراف يجب أن يكون بعد وقت الحضور',
+            //             confirmButtonColor: '#207cd4'
+            //         });
+            //         return false;
+            //     }
+            //     return true;
+            // });
+
+            // Generate password
+            $("#generatePassword").click(function () {
+                const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*";
+                let newPassword = "";
+                for (let i = 0; i < 10; i++) {
+                    newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                $("#passwordInput").val(newPassword).attr("type", "text");
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم توليد كلمة مرور جديدة',
+                    text: 'تم إنشاء كلمة مرور قوية بنجاح',
+                    confirmButtonColor: '#207cd4'
+                });
+            });
+
+            // Load cities data from JSON file
+            $.getJSON('/cities.json', function (data) {
+                const countryCitiesMap = data;
+
+                // Populate cities based on the selected country
+                $("#countryDropdown").change(function () {
+                    const countryName = $(this).val();
+                    $("#cityDropdown").empty().append('<option value="">-- اختر المدينة --</option>');
+
+                    const countryData = countryCitiesMap.find(item => item.country === countryName);
+                    if (countryData && countryData.cities.length > 0) {
+                        countryData.cities.forEach(city => {
+                            $("#cityDropdown").append(
+                                `<option value="${city}">${city}</option>`
+                            );
+                        });
+                    } else {
+                        $("#cityDropdown").append(
+                            '<option value="">لا توجد مدن متاحة</option>'
+                        );
+                    }
+                });
+
+                // Trigger the country dropdown change event on page load if country is already selected
+                if ($("#countryDropdown").val()) {
+                    $("#countryDropdown").trigger("change");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Failed to load cities.json:", textStatus, errorThrown);
+                $("#cityDropdown").empty().append(
+                    '<option value="">فشل في تحميل المدن</option>'
+                );
+            });
+
+            // Ensure the city dropdown updates the model value
+            $("#cityDropdown").change(function () {
+                const city = $(this).val();
+                $("#City").val(city);
+            });
+        });
+    </script>
+}

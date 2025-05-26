@@ -1,0 +1,211 @@
+﻿@{
+    ViewData["Title"] = "تحويل نقدي";
+    var currentBalance = ViewBag.CurrentBalance;
+    var treasuryAccounts = ViewBag.TreasuryAccounts as List<Cashandbankaccount>;
+    var employeeAccounts = ViewBag.EmployeeAccounts as List<Cashandbankaccount>;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #f8f9fa; 
+        }
+        .container { 
+            max-width: 800px; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            margin-top: 2rem;
+        }
+        .keypad { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+        }
+        .keypad button { 
+            width: 100%; 
+            height: 60px; 
+            font-size: 20px; 
+        }
+        .btn-save { 
+            background-color: #343a40; 
+            color: white; 
+            grid-column: span 2; 
+        }
+        .btn-cancel { 
+            background-color: #dc3545; 
+            color: white; 
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .treasury-option, .employee-option {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="text-end mb-4">تحويل نقدي</h3>
+        <form asp-action="Create" method="post">
+            <div class="row mt-3">
+                <!-- Left Section -->
+                <div class="col-md-6">
+                    <p class="text-end">الرصيد المتاح <strong>@currentBalance.ToString("N2") ر.س</strong></p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">التاريخ والوقت</label>
+                        <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" disabled>
+                    </div>
+                    
+                    <div class="mb-3 d-flex">
+                        <div class="ms-2 w-50">
+                            <label class="form-label">نوع التحويل *</label>
+                            <select name="transferType" class="form-select" id="transferType" required>
+                                <option value="">اختر نوع التحويل</option>
+                                <option value="ToTreasury">تحويل إلى الخزينة</option>
+                                <option value="ToEmployee">تحويل إلى موظف</option>
+                            </select>
+                        </div>
+                        <div class="w-50">
+                            <label class="form-label">اسم الموظف/الخزينة *</label>
+                            <select name="targetAccountId" class="form-select" id="targetSelect" required>
+                                <option value="">الموظف/الخزينة</option>
+                                @foreach (var item in treasuryAccounts)
+                                {
+                                    <option value="@item.AccountId" class="treasury-option">@item.AccountName</option>
+                                }
+                                @foreach (var item in employeeAccounts)
+                                {
+                                    <option value="@item.AccountId" class="employee-option">@item.AccountName (@item.Employee?.FullName)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 d-flex">
+                        <div class="ms-2 w-50">
+                            <label class="form-label">تحويل من/إلى</label>
+                            <select class="form-select" disabled>
+                                <option>الخزينة</option>
+                            </select>
+                        </div>
+                        <div class="w-50">
+                            <label class="form-label">قيمة التحويل *</label>
+                            <input name="amount" type="text" class="form-control" id="transferValue" placeholder="أدخل قيمة التحويل..." required>
+                            @if (ViewData.ModelState["Amount"]?.Errors.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Amount"].Errors.First().ErrorMessage</span>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">الرصيد بعد التحويل</label>
+                        <input type="text" class="form-control" id="balanceAfter" disabled value="@currentBalance.ToString("N2")">
+                    </div>
+                    
+                    <button type="button" class="btn btn-cancel w-100 mb-3" onclick="window.location.href='@Url.Action("Index", "Home")'">إلغاء</button>
+                </div>
+                
+                <!-- Right Section (Keypad) -->
+                <div class="col-md-6 text-center">
+                    <div class="keypad">
+                        <button type="button" class="btn btn-light" onclick="addNumber(7)">7</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(8)">8</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(9)">9</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(4)">4</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(5)">5</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(6)">6</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(1)">1</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(2)">2</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(3)">3</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber(0)">0</button>
+                        <button type="button" class="btn btn-light" onclick="addNumber('.')">.</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearInput()">C</button>
+                        <button type="button" class="btn btn-secondary" onclick="deleteNumber()">Del</button>
+                        <button type="submit" class="btn btn-dark btn-save">حفظ</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function() {
+                // Initialize with all target options hidden
+                $('.treasury-option, .employee-option').hide();
+                updateBalance();
+                
+                $('#transferType').change(function() {
+                    const type = $(this).val();
+                    $('.treasury-option, .employee-option').hide();
+                    
+                    if (type === 'ToTreasury') {
+                        $('.treasury-option').show();
+                    } else if (type === 'ToEmployee') {
+                        $('.employee-option').show();
+                    }
+                    
+                    // Reset selected value
+                    $('#targetSelect').val('');
+                });
+                
+                $('#transferValue').on('input', function() {
+                    updateBalance();
+                });
+            });
+            
+            function addNumber(num) {
+                const input = document.getElementById('transferValue');
+                const currentValue = input.value;
+                
+                // Prevent multiple decimal points
+                if (num === '.' && currentValue.includes('.')) {
+                    return;
+                }
+                
+                // If empty or 0, replace it (except for decimal point)
+                if ((currentValue === '' || currentValue === '0') && num !== '.') {
+                    input.value = num;
+                } else {
+                    input.value += num;
+                }
+                
+                updateBalance();
+            }
+            
+            function clearInput() {
+                document.getElementById('transferValue').value = '';
+                updateBalance();
+            }
+            
+            function deleteNumber() {
+                const input = document.getElementById('transferValue');
+                input.value = input.value.slice(0, -1);
+                if (input.value === '') {
+                    input.value = '0';
+                }
+                updateBalance();
+            }
+            
+            function updateBalance() {
+                const amount = parseFloat($('#transferValue').val()) || 0;
+                const currentBalance = @currentBalance;
+                const newBalance = currentBalance - amount;
+                $('#balanceAfter').val(newBalance.toFixed(2));
+            }
+        </script>
+    }
+</body>
+</html>

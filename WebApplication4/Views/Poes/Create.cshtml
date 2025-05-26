@@ -1,0 +1,358 @@
+﻿@model WebApplication4.Models.Po
+
+@{
+    ViewData["Title"] = "إنشاء نقطة بيع";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #e6f2ff;
+            --primary-dark: #3a56d4;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --border-color: #e0e6ed;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            direction: rtl;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0);
+        }
+
+        h1 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        h4 {
+            color: var(--dark-color);
+            font-weight: 500;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 25px 0;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-right: 15px;
+            border-right: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: var(--light-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+            background-color: white;
+        }
+
+        .file-input {
+            padding: 10px;
+        }
+
+        .file-input::file-selector-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input::file-selector-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 30px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            background-color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .text-danger {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Animation */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @@media (max-width: 768px) {
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-submit {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="form-container">
+            <h1 class="animated"><i class="fas fa-cash-register"></i> إضافة نقطة بيع</h1>
+            <h4 class="animated delay-1">نقطة البيع</h4>
+            <hr class="animated delay-1" />
+
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger animated delay-1"></div>
+
+                <!-- First Section: Basic Information -->
+                <div class="form-section animated delay-1">
+                    <h3 class="form-section-title"><i class="fas fa-info-circle"></i> المعلومات الأساسية</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label required-field">الرقم المرجعي</label>
+                            <input asp-for="ReferenceNumber" class="form-control" placeholder="أدخل الرقم المرجعي" />
+                            <span asp-validation-for="ReferenceNumber" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required-field">اسم نقطة البيع</label>
+                            <input asp-for="Posname" class="form-control" placeholder="أدخل اسم نقطة البيع" />
+                            <span asp-validation-for="Posname" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required-field">الحالة</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="نشطة">نشطة</option>
+                                <option value="غير نشطة">غير نشطة</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Section: Connections -->
+                <div class="form-section animated delay-2">
+                    <h3 class="form-section-title"><i class="fas fa-link"></i> التوصيلات</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">الفرع</label>
+                            <select asp-for="BranchId" class="form-select" asp-items="ViewBag.BranchId">
+                                <option value="">اختر الفرع</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">المستودع</label>
+                            <select asp-for="StorehouseId" class="form-select" asp-items="ViewBag.StorehouseId">
+                                <option value="">اختر المستودع</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">الخزينة</label>
+                            <select asp-for="CashAccountId" class="form-select" asp-items="ViewBag.CashAccountId">
+                                <option value="">اختر الخزينة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">البنك</label>
+                            <select asp-for="BankAccountId" class="form-select" asp-items="ViewBag.BankAccountId">
+                                <option value="">اختر البنك</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Third Section: Additional Information -->
+                <div class="form-section animated delay-3">
+                    <h3 class="form-section-title"><i class="fas fa-file-alt"></i> معلومات إضافية</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">ملاحظات</label>
+                            <input asp-for="Notes" class="form-control" placeholder="أدخل الملاحظات (اختياري)" />
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">المرفقات</label>
+                            <input asp-for="Attachments" type="file" class="form-control file-input" />
+                            <span asp-validation-for="Attachments" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group" style="text-align: center; margin-top: 40px;">
+                    <button type="submit" class="btn-submit animated delay-4">
+                        <i class="fas fa-plus-circle"></i> إنشاء نقطة بيع
+                    </button>
+                </div>
+            </form>
+
+            <div style="text-align: center;">
+                <a asp-action="Index" class="back-link animated delay-4">
+                    <i class="fas fa-arrow-left"></i> العودة إلى القائمة
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>
